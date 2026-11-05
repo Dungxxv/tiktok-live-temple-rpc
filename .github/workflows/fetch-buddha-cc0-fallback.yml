@@ -1,0 +1,64 @@
+name: Fetch CC0 gilt-bronze Buddha fallback
+
+on:
+  push:
+    branches:
+      - feat/buddha-cc0-gilt-bronze-fallback
+    paths:
+      - .github/workflows/fetch-buddha-cc0-fallback.yml
+
+permissions:
+  contents: write
+
+jobs:
+  vendor-model:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Download and verify the public GLB
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p public/assets/models
+          curl --fail --location --retry 3 --retry-delay 2 \
+            "https://zenodo.org/records/10337923/files/c1c3d5a4878c42778eceded83673dea7.glb?download=1" \
+            --output public/assets/models/buddha-cc0-fallback.glb
+          echo "a00f6c35ae853c830faff61404265c5c  public/assets/models/buddha-cc0-fallback.glb" | md5sum --check -
+
+      - name: Inspect the downloaded GLB
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/inspect-glb.mjs public/assets/models/buddha-cc0-fallback.glb
+          node --input-type=module -e "
+            import fs from 'node:fs';
+            import { parseGLB } from './scripts/inspect-glb.mjs';
+            const report = parseGLB(fs.readFileSync('public/assets/models/buddha-cc0-fallback.glb'));
+            if (report.meshes < 1 || report.triangleEstimate < 1) throw new Error('GLB has no renderable triangles');
+            if (report.externalUris.length) throw new Error('GLB references external resources');
+            console.log('GLB integrity checks passed:', JSON.stringify({
+              meshes: report.meshes,
+              triangles: report.triangleEstimate,
+              materials: report.materials,
+              textures: report.textures,
+              animations: report.animations.length
+            }));
+          "
+
+      - name: Commit verified model to this feature branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/assets/models/buddha-cc0-fallback.glb
+          if git diff --cached --quiet; then
+            echo "No model changes to commit."
+            exit 0
+          fi
+          git commit -m "assets(3d): vendor CC0 gilt-bronze Buddha fallback"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

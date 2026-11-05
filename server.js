@@ -6,6 +6,7 @@ const { spawn } = require('child_process');
 const cors = require('cors');
 const { WebSocketServer } = require('ws');
 const { TikTokLiveConnection, WebcastEvent, ControlEvent } = require('tiktok-live-connector');
+const { normalizeGiftPayload, getGiftComboDelta } = require('./lib/tiktok-gift-payload.cjs');
 
 const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(__dirname, 'data');
@@ -115,6 +116,10 @@ class ZeroTTSManager {
     this.inflight = new Map();
     this.reqCounter = 0;
     this.buffer = '';
+    if (process.env.DISABLE_ZEROTTS_WORKER === '1') {
+      this.status = 'disabled';
+      return;
+    }
     this.startWorker();
   }
 
@@ -609,7 +614,13 @@ const Rituals = {
       uniqueId: devotee.uniqueId,
       avatar: devotee.avatar,
       giftType,
+      giftId: params.giftId == null ? '' : String(params.giftId).slice(0, 80),
       giftName,
+      giftGroupId: params.giftGroupId ? String(params.giftGroupId).slice(0, 180) : '',
+      giftComboDelta: Math.max(1, Number(params.giftComboDelta) || 1),
+      giftRepeatCount: Math.max(1, Number(params.giftRepeatCount) || 1),
+      giftRepeatEnd: Boolean(params.giftRepeatEnd),
+      giftStreakable: Boolean(params.giftStreakable),
       coins,
       merit,
       wish,
@@ -842,6 +853,9 @@ async function connectTikTokLive(usernameOrUrl) {
     } catch (_) {}
     tiktokConn = null;
   }
+  // A reconnect starts a new streak session; never carry cumulative counts
+  // across rooms/connections even if TikTok reuses a group ID.
+  giftComboTracker.clear();
 
   state.tiktok = {
     connected: false,
@@ -853,13 +867,17 @@ async function connectTikTokLive(usernameOrUrl) {
   };
   broadcastNotification('temple.state', getPublicState());
 
-  tiktokConn = new TikTokLiveConnection(cleanUser, {
+  const connection = new TikTokLiveConnection(cleanUser, {
     processInitialData: true,
     fetchRoomInfoOnConnect: false,
     enableExtendedGiftInfo: false
   });
+  tiktokConn = connection;
 
-  tiktokConn.on(ControlEvent.CONNECTED, (roomState) => {
+  const isCurrentConnection = () => tiktokConn === connection;
+
+  connection.on(ControlEvent.CONNECTED, (roomState) => {
+    if (!isCurrentConnection()) return;
     state.tiktok.connected = true;
     state.tiktok.connecting = false;
     state.tiktok.roomId = roomState?.roomId || tiktokConn?.roomId || null;
@@ -868,20 +886,24 @@ async function connectTikTokLive(usernameOrUrl) {
     broadcastNotification('temple.state', getPublicState());
   });
 
-  tiktokConn.on(ControlEvent.DISCONNECTED, () => {
+  connection.on(ControlEvent.DISCONNECTED, () => {
+    if (!isCurrentConnection()) return;
+    giftComboTracker.clear();
     state.tiktok.connected = false;
     state.tiktok.connecting = false;
     console.log(`[TikTok Live] Đã ngắt kết nối @${cleanUser}`);
     broadcastNotification('temple.state', getPublicState());
   });
 
-  tiktokConn.on(ControlEvent.ERROR, (err) => {
+  connection.on(ControlEvent.ERROR, (err) => {
+    if (!isCurrentConnection()) return;
     state.tiktok.lastError = err?.message || String(err);
     console.warn('[TikTok Live Warning]', state.tiktok.lastError);
     broadcastNotification('temple.state', getPublicState());
   });
 
-  tiktokConn.on(WebcastEvent.ROOM_USER, (data) => {
+  connection.on(WebcastEvent.ROOM_USER, (data) => {
+    if (!isCurrentConnection()) return;
     const viewerCount = Number(data?.total ?? data?.viewerCount ?? 0);
     if (viewerCount > 0) {
       state.tiktok.viewerCount = viewerCount;
@@ -889,26 +911,30 @@ async function connectTikTokLive(usernameOrUrl) {
     }
   });
 
-  tiktokConn.on(WebcastEvent.MEMBER, (data) => {
+  connection.on(WebcastEvent.MEMBER, (data) => {
+    if (!isCurrentConnection()) return;
     const { user, uniqueId, avatar } = extractUserFromEvent(data);
     recordDevotee(user, uniqueId, avatar, 1, 0, 0, 'Đã vào Chánh Điện lễ Phật');
     broadcastNotification('temple.state', getPublicState());
   });
 
-  tiktokConn.on(WebcastEvent.CHAT, (data) => {
+  connection.on(WebcastEvent.CHAT, (data) => {
+    if (!isCurrentConnection()) return;
     const { user, uniqueId, avatar } = extractUserFromEvent(data);
     const commentText = data?.content || data?.comment || '';
     console.log(`[TikTok Chat] ${user}: ${commentText}`);
     parseViewerComment(commentText, user, uniqueId, avatar);
   });
 
-  tiktokConn.on(WebcastEvent.LIKE, (data) => {
+  connection.on(WebcastEvent.LIKE, (data) => {
+    if (!isCurrentConnection()) return;
     const { user, uniqueId, avatar } = extractUserFromEvent(data);
     const likeCount = Math.min(15, Math.max(1, Number(data?.count ?? data?.likeCount ?? 1)));
     Rituals.strikeWoodenFish({ user, uniqueId, avatar, count: likeCount });
   });
 
   const handleSocialEvent = (data) => {
+    if (!isCurrentConnection()) return;
     const { user, uniqueId, avatar } = extractUserFromEvent(data);
     Rituals.ringBell({
       user,
@@ -919,9 +945,10 @@ async function connectTikTokLive(usernameOrUrl) {
       readTts: false
     });
   };
-  tiktokConn.on(WebcastEvent.FOLLOW, handleSocialEvent);
-  tiktokConn.on(WebcastEvent.SHARE, handleSocialEvent);
-  tiktokConn.on(WebcastEvent.SOCIAL, (data) => {
+  connection.on(WebcastEvent.FOLLOW, handleSocialEvent);
+  connection.on(WebcastEvent.SHARE, handleSocialEvent);
+  connection.on(WebcastEvent.SOCIAL, (data) => {
+    if (!isCurrentConnection()) return;
     const action = String(data?.action || '');
     const disp = String(data?.common?.displayText?.displayType || data?.displayType || '').toLowerCase();
     if (action === '1' || action === '3' || disp.includes('follow') || disp.includes('share')) {
@@ -929,55 +956,74 @@ async function connectTikTokLive(usernameOrUrl) {
     }
   });
 
-  tiktokConn.on(WebcastEvent.GIFT, (data) => {
+  connection.on(WebcastEvent.GIFT, (data) => {
+    if (!isCurrentConnection()) return;
     const { user, uniqueId, avatar } = extractUserFromEvent(data);
-    const giftObj = data?.gift || data?.giftDetails || {};
-    const giftId = String(data?.giftId || giftObj?.id || 'rose');
-    const groupId = String(data?.groupId || `${uniqueId}_${giftId}`);
-    const repeatCount = Math.max(1, Number(data?.repeatCount || data?.comboCount || 1));
+    const giftPayload = normalizeGiftPayload(data, uniqueId);
+    const {
+      giftId, giftName: rawGiftName, diamondCount, repeatCount, repeatEnd, groupId
+    } = giftPayload;
 
-    const prevCount = giftComboTracker.get(groupId) || 0;
-    if (repeatCount <= prevCount && data?.repeatEnd) {
-      giftComboTracker.delete(groupId);
+    const deltaCount = getGiftComboDelta(giftComboTracker, giftPayload);
+    if (deltaCount <= 0) {
+      // A duplicate final frame still closes the browser-side visual streak,
+      // even though it must not create another reward or ritual event.
+      if (repeatEnd && groupId) {
+        broadcastNotification('temple.gift-streak-end', { groupId });
+      }
       return;
     }
-    const deltaCount = Math.max(1, repeatCount - prevCount);
-    giftComboTracker.set(groupId, repeatCount);
-    if (giftComboTracker.size > 500) {
-      const firstKey = giftComboTracker.keys().next().value;
-      giftComboTracker.delete(firstKey);
-    }
 
-    const diamondCount = Math.max(1, Number(giftObj?.diamondCount || data?.diamondCount || 1));
     const totalCoins = diamondCount * deltaCount;
-    const rawGiftName = giftObj?.name || data?.giftName || giftObj?.describe || 'Hoa Hồng Tâm Thành';
-    const displayGiftName = deltaCount > 1 ? `${deltaCount}x ${rawGiftName}` : rawGiftName;
+    const displayGiftName = rawGiftName
+      ? (deltaCount > 1 ? `${deltaCount}x ${rawGiftName}` : rawGiftName)
+      : '';
 
-    console.log(`[TikTok Gift] ${user} gửi ${displayGiftName} (${totalCoins} xu)`);
+    console.log(`[TikTok Gift] ${user} gửi ${displayGiftName || 'quà chưa rõ tên'} (${totalCoins} xu)`);
+    console.log('[TikTok Gift Payload]', {
+      giftId: giftId || null,
+      giftName: rawGiftName || null,
+      diamondCount,
+      repeatCount,
+      repeatEnd,
+      comboDelta: deltaCount,
+      groupId
+    });
 
     Rituals.offerGift({
       user,
       uniqueId,
       avatar,
+      giftId,
       coins: totalCoins,
       giftName: displayGiftName,
-      wish: `Thành tâm dâng ${displayGiftName} kính lễ Đức Phật A Di Đà`
+      giftGroupId: groupId,
+      giftComboDelta: deltaCount,
+      giftRepeatCount: repeatCount,
+      giftRepeatEnd: repeatEnd,
+      giftStreakable: giftPayload.streakable,
+      wish: `Thành tâm dâng ${displayGiftName || 'lễ vật'} kính lễ Đức Phật A Di Đà`
     });
   });
 
   try {
-    const roomState = await tiktokConn.connect();
+    const roomState = await connection.connect();
+    if (!isCurrentConnection()) return state.tiktok;
     state.tiktok.connected = true;
     state.tiktok.connecting = false;
     state.tiktok.roomId = roomState?.roomId || tiktokConn?.roomId || null;
     broadcastNotification('temple.state', getPublicState());
     return state.tiktok;
   } catch (err) {
-    state.tiktok.connected = false;
-    state.tiktok.connecting = false;
-    state.tiktok.lastError = err?.message || 'Không thể kết nối phòng Live (kiểm tra tài khoản đang phát Live chưa)';
-    broadcastNotification('temple.state', getPublicState());
-    throw new Error(state.tiktok.lastError);
+    const message = err?.message || 'Không thể kết nối phòng Live (kiểm tra tài khoản đang phát Live chưa)';
+    if (isCurrentConnection()) {
+      giftComboTracker.clear();
+      state.tiktok.connected = false;
+      state.tiktok.connecting = false;
+      state.tiktok.lastError = message;
+      broadcastNotification('temple.state', getPublicState());
+    }
+    throw new Error(message);
   }
 }
 
@@ -988,6 +1034,7 @@ function disconnectTikTokLive() {
     } catch (_) {}
     tiktokConn = null;
   }
+  giftComboTracker.clear();
   state.tiktok.connected = false;
   state.tiktok.connecting = false;
   state.tiktok.viewerCount = 0;
@@ -1212,11 +1259,14 @@ server.listen(PORT, () => {
   console.log(`🔌 JSON-RPC 2.0 Endpoint   : http://localhost:${PORT}/rpc (ws://localhost:${PORT}/ws)`);
   console.log(`============================================================`);
 
-  // Tự động kết nối tới @zenfacts_vn ngay khi khởi động server
-  const defaultChannel = process.env.TIKTOK_USER || state.tiktok?.username || 'zenfacts_vn';
-  if (defaultChannel) {
-    connectTikTokLive(defaultChannel).catch((err) => {
-      console.warn(`[Auto-Connect @${defaultChannel}] Chưa kết nối được ngay:`, err.message);
-    });
+  // Visual/browser audits can opt out of external live connections.
+  if (process.env.DISABLE_TIKTOK_AUTOCONNECT !== '1') {
+    // Tự động kết nối tới @zenfacts_vn ngay khi khởi động server
+    const defaultChannel = process.env.TIKTOK_USER || state.tiktok?.username || 'zenfacts_vn';
+    if (defaultChannel) {
+      connectTikTokLive(defaultChannel).catch((err) => {
+        console.warn(`[Auto-Connect @${defaultChannel}] Chưa kết nối được ngay:`, err.message);
+      });
+    }
   }
 });

@@ -1,0 +1,164 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  character-state-machine:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+      - name: Run unit tests
+        run: bun test
+      - name: Check browser entrypoints and JavaScript syntax
+        run: >-
+          grep -Fq '<script type="module" src="/js/live.js"></script>' public/index.html &&
+          grep -Fq '<link rel="icon" type="image/svg+xml" href="/favicon.svg" />' public/index.html &&
+          test -f public/favicon.svg &&
+          ! grep -R -Fq '/assets/bg_chant.m4a' public/js &&
+          ! grep -Fq '<script src="/js/live.js"></script>' public/index.html &&
+          node --check server.js &&
+          node --check lib/tiktok-gift-payload.cjs &&
+          node --check public/js/audio.js &&
+          node --input-type=module --check < public/js/gift-sfx-dispatcher.js &&
+          node --input-type=module --check < public/js/gift-action-engine.js &&
+          node --input-type=module --check < public/js/live.js &&
+          grep -Fq 'Full 3D temple world' public/js/temple-3d.js &&
+          grep -Fq 'Seated stone Buddha statue' public/js/temple-3d.js &&
+          grep -Fq 'new THREE.InstancedMesh(tileGeometry' public/js/temple-3d.js &&
+          grep -Fq 'Carved red-and-gold altar screen' public/js/temple-3d.js &&
+          grep -Fq 'Foreground offering table' public/js/temple-3d.js &&
+          grep -Fq 'Central bronze incense vessel' public/js/temple-3d.js &&
+          grep -Fq 'Paired bronze vases with lotus stems' public/js/temple-3d.js &&
+          grep -Fq 'Layered altar lighting' public/js/temple-3d.js &&
+          grep -Fq 'Repeating carved flame leaves' public/js/temple-3d.js &&
+          grep -Fq 'new THREE.ShapeGeometry(flameShape)' public/js/temple-3d.js &&
+          grep -Fq 'new THREE.SpotLight' public/js/temple-3d.js &&
+          grep -Fq 'offeringFlames.forEach' public/js/temple-3d.js &&
+          grep -Fq 'function playWorldGiftAction(action)' public/js/temple-3d.js &&
+          grep -Fq 'function makeHumanAvatar(height = 1.55)' public/js/temple-3d.js &&
+          grep -Fq 'Upper body pivots at the waist' public/js/temple-3d.js &&
+          grep -Fq 'The altar is at -Z' public/js/temple-3d.js &&
+          grep -Fq 'root.rotation.y = Math.PI' public/js/temple-3d.js &&
+          grep -Fq 'getRitualPoseState({' public/js/temple-3d.js && grep -Fq 'mainHuman.kneelBlend = ritualPose.kneelBlend;' public/js/temple-3d.js &&
+          grep -Fq 'function applyHumanBow(avatar, amount, kneelBlend = 0)' public/js/temple-3d.js &&
+          grep -Fq 'avatar.leftArm.rotation.x = upperPose.armReach' public/js/temple-3d.js &&
+          grep -Fq 'for(let finger=0;finger<4;finger++)' public/js/temple-3d.js && grep -Fq 'avatar.leftHand.rotation.z = -upperPose.armOpen * 0.18' public/js/temple-3d.js &&
+          grep -Fq 'const blinkCycle = ((time * 0.001 + avatar.phase * 0.17) % 4.6 + 4.6) % 4.6;' public/js/temple-3d.js && grep -Fq 'avatar.eyeWhites[index].scale.y = eyeOpen' public/js/temple-3d.js &&
+          grep -Fq 'avatar.torso.scale.y = 1 + breath * 0.012' public/js/temple-3d.js && grep -Fq 'avatar.head.rotation.x = Math.sin(time*0.00082+avatar.phase*0.7)*0.012 - giftReaction * 0.045' public/js/temple-3d.js &&
+          grep -Fq 'for (const { mesh, side } of avatar.eyebrows)' public/js/temple-3d.js &&
+          grep -Fq 'giftReaction * (index === 0 ? 0.009 : -0.009)' public/js/temple-3d.js &&
+          grep -Fq 'getAvatarGiftReactionBlend(avatar, time)' public/js/temple-3d.js && grep -Fq 'avatar.giftReactionStartedAt = now + (phase / (Math.PI * 2)) * 420' public/js/temple-3d.js && grep -Fq 'avatar.upperBody.rotation.x = upperPose.torsoLean - blend * profile.bowAmount' public/js/temple-3d.js && grep -Fq 'avatar.root.rotation.y = Math.PI * (1 - giftReaction)' public/js/temple-3d.js && grep -Fq 'avatar.smile.scale.x = 1 + giftReaction * 0.2' public/js/temple-3d.js &&
+          grep -Fq "avatar.giftReactionProfile?.tier === 'special' ? getAvatarGiftReactionBlend(avatar, now) : 0" public/js/temple-3d.js &&
+          grep -Fq 'haloGiftAuraMaterial.opacity = auraPulse * 0.42' public/js/temple-3d.js &&
+          grep -Fq 'lotusGiftAuraMaterial.opacity = auraPulse * 0.34' public/js/temple-3d.js &&
+          grep -Fq 'const lotusPetalRings = []' public/js/temple-3d.js &&
+          grep -Fq 'lotusPetalRings.push(ring)' public/js/temple-3d.js &&
+          grep -Fq 'ring.scale.set(1 + opening, 1, 1 + opening)' public/js/temple-3d.js &&
+          grep -Fq 'const lotusSparkCount = 32' public/js/temple-3d.js &&
+          grep -Fq 'lotusSparkMaterial.opacity = auraPulse * 0.88' public/js/temple-3d.js &&
+          grep -Fq 'lotusSparkGeometry.attributes.position.needsUpdate = true' public/js/temple-3d.js &&
+          grep -Fq 'const statueRimLight = new THREE.DirectionalLight(0xffc982, 0.82)' public/js/temple-3d.js &&
+          grep -Fq 'statueRimLight.intensity = 0.82 + auraPulse * 1.1' public/js/temple-3d.js &&
+          grep -Fq 'mats.goldBright.emissiveIntensity = 0.25 + auraPulse * 0.38' public/js/temple-3d.js &&
+          grep -Fq "const woodRoughness = makeRoughnessTexture('wood')" public/js/temple-3d.js &&
+          grep -Fq "const lacquerRoughness = makeRoughnessTexture('lacquer')" public/js/temple-3d.js &&
+          grep -Fq "const goldRoughness = makeRoughnessTexture('gold')" public/js/temple-3d.js &&
+          grep -Fq 'redBright: new THREE.MeshPhysicalMaterial' public/js/temple-3d.js &&
+          grep -Fq 'const panelRosetteGeometry = new THREE.TorusGeometry(0.085, 0.012, 6, 20)' public/js/temple-3d.js &&
+          grep -Fq 'new THREE.InstancedMesh(panelRosetteGeometry, mats.goldBright, 10)' public/js/temple-3d.js &&
+          grep -Fq 'world.add(panelRosettes, panelGems)' public/js/temple-3d.js &&
+          grep -Fq 'const columnPlaqueGeometry = new THREE.BoxGeometry(0.16, 0.16, 0.035)' public/js/temple-3d.js &&
+          grep -Fq 'new THREE.InstancedMesh(columnPlaqueGeometry, mats.goldBright, 10 * 3)' public/js/temple-3d.js &&
+          grep -Fq 'new THREE.InstancedMesh(columnPlaqueGemGeometry, mats.redBright, 10 * 3)' public/js/temple-3d.js &&
+          grep -Fq 'world.add(columnPlaques, columnPlaqueGems)' public/js/temple-3d.js &&
+          grep -Fq 'const pedestalPlaqueXs = [-1.35, -0.9, -0.45, 0, 0.45, 0.9, 1.35]' public/js/temple-3d.js &&
+          grep -Fq 'Math.sqrt(1.94 * 1.94 - x * x)' public/js/temple-3d.js &&
+          grep -Fq 'world.add(pedestalPlaques, pedestalGems)' public/js/temple-3d.js &&
+          grep -Fq 'const statueBaseBandPoints = []' public/js/temple-3d.js &&
+          grep -Fq 'const statueBaseHighlightPoints = []' public/js/temple-3d.js &&
+          grep -Fq 'statue.add(statueBaseBand, statueBaseHighlight)' public/js/temple-3d.js &&
+          grep -Fq 'const lapFoldHighlight = new THREE.CatmullRomCurve3' public/js/temple-3d.js &&
+          grep -Fq 'const lapFoldGroove = new THREE.CatmullRomCurve3' public/js/temple-3d.js &&
+          grep -Fq 'statue.add(highlightMesh, grooveMesh)' public/js/temple-3d.js &&
+          grep -Fq 'const templeCurlCount = 8' public/js/temple-3d.js &&
+          grep -Fq 'new THREE.InstancedMesh(hairCurlGeometry, mats.statueShadow, templeCurlCount)' public/js/temple-3d.js &&
+          grep -Fq 'statue.add(templeCurls)' public/js/temple-3d.js &&
+          grep -Fq 'Refine the nose wings and philtrum' public/js/temple-3d.js &&
+          grep -Fq 'Fine upper-lid folds and outer eye corners' public/js/temple-3d.js &&
+          grep -Fq 'Soft cheekbone highlights and jaw transitions' public/js/temple-3d.js &&
+          grep -Fq 'Subtle neck tendons and shoulder drape creases' public/js/temple-3d.js &&
+          grep -Fq 'Fine upper-chest pleats carry the robe' public/js/temple-3d.js &&
+          grep -Fq 'upperChestPleatRidgeMesh' public/js/temple-3d.js &&
+          grep -Fq 'A short side-torso pleat and lower elbow fold' public/js/temple-3d.js &&
+          grep -Fq 'sideTorsoPleatRidgeMesh' public/js/temple-3d.js &&
+          grep -Fq 'elbowLowerFoldMesh' public/js/temple-3d.js &&
+          grep -Fq 'Fine wrist transitions and palm creases' public/js/temple-3d.js &&
+          grep -Fq "else if (kind === 'stone') value = 222 + grain * 7 + noise * 10;" public/js/temple-3d.js &&
+          grep -Fq "const stoneRoughness = makeRoughnessTexture('stone');" public/js/temple-3d.js &&
+          grep -Fq 'material.roughnessMap = stoneRoughness' public/js/temple-3d.js &&
+          grep -Fq '[side * 0.31, 2.69, 0.82]' public/js/temple-3d.js &&
+          grep -Fq '[side * 0.105, 2.655, 0.795]' public/js/temple-3d.js &&
+          grep -Fq 'new THREE.Vector3(side * 0.22, 4.2, 0.235)' public/js/temple-3d.js &&
+          grep -Fq 'shoulderDrapeHighlightMesh' public/js/temple-3d.js &&
+          grep -Fq '[side * 0.37, 4.565, 0.635]' public/js/temple-3d.js &&
+          grep -Fq '[side * 0.34, 4.245, 0.625]' public/js/temple-3d.js &&
+          grep -Fq '[side * 0.31, 4.81, 0.665]' public/js/temple-3d.js &&
+          grep -Fq '[side * 0.53, 4.745, 0.52]' public/js/temple-3d.js &&
+          grep -Fq '[side * 0.105, 4.425, 0.704]' public/js/temple-3d.js &&
+          grep -Fq '[side * 0.055, 4.405, 0.718]' public/js/temple-3d.js &&
+          grep -Fq 'const lotusVeinGeometry = new THREE.TubeGeometry(lotusVeinCurve, 16, 0.009, 5, false)' public/js/temple-3d.js &&
+          grep -Fq 'const petalVeins = new THREE.InstancedMesh(lotusVeinGeometry, mats.goldBright, count)' public/js/temple-3d.js &&
+          grep -Fq 'ring.add(redPetals, goldPetals, petalVeins)' public/js/temple-3d.js &&
+          grep -Fq 'function getAvatarGiftReactionBlend(avatar, time)' public/js/temple-3d.js &&
+          grep -Fq 'avatar.giftReactionUntil = avatar.giftReactionStartedAt + resolved.durationMs' public/js/temple-3d.js &&
+          grep -Fq 'congregationGiftGlow * 4.5' public/js/temple-3d.js &&
+          grep -Fq 'function applyGiftThankYouGesture(avatar, time)' public/js/temple-3d.js && grep -Fq 'avatar.leftArm.rotation.z = upperPose.armOpen + thankYouLift' public/js/temple-3d.js && grep -Fq 'avatar.rightArm.rotation.z = -upperPose.armOpen - thankYouLift' public/js/temple-3d.js &&
+          grep -Fq 'if (avatar.gltfActions?.bow) return;' public/js/temple-3d.js &&
+          grep -Fq "three/addons/utils/SkeletonUtils.js" public/js/temple-3d.js &&
+          grep -Fq 'upperBody.position.y = 0.48' public/js/temple-3d.js &&
+          grep -Fq 'avatar.upperBody.rotation.x = upperPose.torsoLean' public/js/temple-3d.js &&
+          grep -Fq 'mainHuman.upperBody.rotation.x = 0' public/js/temple-3d.js &&
+          grep -Fq 'function animateHuman(avatar, time, walking = false, walkPhase = null)' public/js/temple-3d.js &&
+          grep -Fq 'const mainHuman=makeHumanAvatar(1.72)' public/js/temple-3d.js &&
+          ! grep -Fq 'GLTFLoader' public/js/temple-3d.js &&
+          ! grep -Fq '/assets/animals/' public/js/temple-3d.js &&
+          grep -Fq 'Keep the central sightline to the Buddha open' public/js/temple-3d.js &&
+          grep -Fq 'mats.statueStone' public/js/temple-3d.js &&
+          grep -Fq 'PointLight(0xffd1a0, 15, 18, 2)' public/js/temple-3d.js &&
+          grep -Fq 'Long back hair and shoulder-length side locks' public/js/temple-3d.js &&
+          grep -Fq 'three/addons/' public/index.html &&
+          grep -Fq "action === 'rocket'" public/js/temple-3d.js &&
+          grep -Fq "action === 'dragon'" public/js/temple-3d.js &&
+          grep -Fq "action === 'donut'" public/js/temple-3d.js &&
+          grep -Fq "action === 'rose'" public/js/temple-3d.js &&
+          grep -Fq "temple:character-interrupted" public/js/gift-action-engine.js &&
+          grep -Fq "temple:gift-action" public/js/gift-action-engine.js && grep -Fq 'resolveGiftReactionProfile(giftEvent || {})' public/js/gift-action-engine.js && grep -Fq 'beginEffect(action, event)' public/js/gift-action-engine.js && grep -Fq "temple:gift-reaction" public/js/gift-action-engine.js && grep -Fq "temple:gift-reaction" public/js/temple-3d.js &&
+          grep -Fq "temple:gift-action" public/js/temple-3d.js &&
+          grep -Fq 'Open-air sanctuary: keep the upper sightline clear' public/js/temple-3d.js &&
+          ! grep -Eq 'makeCurvedRoofSide|roofTile|roofTrim|roofStartZ|const ridge =' public/js/temple-3d.js &&
+          grep -Fq 'new THREE.PerspectiveCamera' public/js/temple-3d.js &&
+          grep -Fq 'temple-3d-mode' public/js/temple-3d.js &&
+          grep -Fq '.stage-9x16.temple-3d-mode .sanctuary-bg-img' public/css/live.css &&
+          grep -Fq '.stage-9x16.temple-3d-mode .bottom-hud-bar' public/css/live.css &&
+          grep -Fq '3D SANCTUARY' public/css/live.css &&
+          grep -Fq 'Clean livestream HUD refresh' public/css/live.css &&
+          grep -Fq 'Final visual pass — 3D livestream HUD' public/css/live.css &&
+          grep -Fq 'height: 166px' public/css/live.css &&
+          grep -Fq 'height: 142px' public/css/live.css &&
+          grep -Fq 'grid-template-columns: minmax(0, 1.45fr) minmax(0, .82fr)' public/css/live.css &&
+          grep -Fq 'display: none;' public/css/live.css &&
+          node --input-type=module --check < public/js/temple-3d.js &&
+          node --input-type=module --check < public/js/camera-controller.js &&
+          node --input-type=module --check < public/js/three-resource-utils.js

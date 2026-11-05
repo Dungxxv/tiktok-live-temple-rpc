@@ -1,3 +1,4 @@
+import { dispatchGiftSfx } from './gift-sfx-dispatcher.js';
 /**
  * Live 9:16 Client Controller — Chánh Điện Đức Phật A Di Đà & Đạo Tràng Phật Tử Quỳ Lễ
  * - Hiển thị 6 Đệm Quỳ VIP (Top 6 Bảng Vàng Công Đức)
@@ -28,6 +29,12 @@
   const canvas = document.getElementById('templeCanvas');
   const particles = new window.TempleParticleEngine(canvas);
   const audio = new window.TempleAudioEngine();
+
+  // Gift-specific SFX are routed through the shared audio engine so the
+  // browser's user-gesture unlock and master SFX toggle remain authoritative.
+  window.addEventListener('temple:gift-sfx', (event) => {
+    dispatchGiftSfx(audio, event.detail?.type, event.detail?.effectId);
+  });
 
   function unlockAudioOnce() {
     audio.ensureContext();
@@ -465,13 +472,54 @@
   }
 
   // 7. Xử lý hiệu ứng khi có Nghi Thức mới
+
+  function playFortuneSequence(ev) {
+    audio.playFortuneShake();
+    updateCentralWorshipper(
+      ev.user,
+      ev.avatar,
+      '🎋 Đang xin xăm...',
+      `Thí chủ ${ev.user} đang thành tâm xin quẻ...`,
+      false
+    );
+    audio.enqueueTts(ev.ttsText || '', {
+      voice: ev.ttsVoice || 'maichi',
+      onStart: () => {
+        audio.playIncenseChime();
+        showFortuneModal(ev.user, ev.fortune);
+        updateCentralWorshipper(
+          ev.user,
+          ev.avatar,
+          `🎋 Quẻ số ${ev.fortune?.number} (${ev.fortune?.rank})`,
+          ev.fortune?.meaning || '',
+          true
+        );
+      },
+      onEnd: () => {
+        clearTimeout(fortuneTimer);
+        fortuneTimer = setTimeout(() => {
+          document.getElementById('fortuneModal')?.classList.remove('visible');
+        }, 1800);
+      }
+    });
+  }
+
   let fortuneTimer = null;
   let grandTimer = null;
 
   function triggerRitualVisuals(ev) {
     if (!ev) return;
+    const giftActionResult = window.TempleGiftActionEngine?.handle(ev) || { allowWalker: ['burnIncense', 'sendPrayer', 'offerGift', 'grandCeremony', 'ringBell', 'drawFortune'].includes(ev.type), interruptsRitual: false };
+    // Keep optional 3D effects in sync with the 2D combo coalescer. Each streak
+    // still updates server rewards/merit, but repeated frames do not replay 3D VFX.
+    if (!giftActionResult.coalescedCombo) {
+      window.dispatchEvent(new CustomEvent("temple:ritual", { detail: ev }));
+    }
+    // The character-interrupted event already cancels ritual pose timers and
+    // establishes the neutral kneeling pose. Do not overwrite it here: gift
+    // choreography now owns the central sprite until the effect cooldown ends.
 
-    if (ev.ttsText && ev.type !== 'drawFortune') {
+    if (ev.ttsText && ev.type !== 'drawFortune' && !giftActionResult.coalescedCombo) {
       audio.enqueueTts(ev.ttsText, { voice: ev.ttsVoice || 'maichi' });
     }
 
@@ -480,7 +528,9 @@
         audio.playIncenseChime();
         particles.spawnIncenseBurst(540, 895);
         particles.spawnFloatingMerit(`+${ev.merit} Công Đức`, 540, 860, '#ffe082');
-        animateWalkerOnCarpet(ev.user, ev.avatar, `🔥 Dâng ${ev.count} nén hương (+${ev.merit} CĐ)`, ev.wish);
+        if (giftActionResult.allowWalker) {
+          animateWalkerOnCarpet(ev.user, ev.avatar, `🔥 Dâng ${ev.count} nén hương (+${ev.merit} CĐ)`, ev.wish);
+        }
         break;
       }
 
@@ -496,7 +546,9 @@
         pulseHallBowing();
         particles.spawnBellWave(540, 510, 4);
         particles.spawnFloatingMerit(`+${ev.merit} Công Đức`, 190, 935, '#fff3b0');
-        updateCentralWorshipper(ev.user, ev.avatar, `🔔 Thỉnh Đại Hồng Chung (+${ev.merit} CĐ)`, ev.wish);
+        if (giftActionResult.allowWalker) {
+          updateCentralWorshipper(ev.user, ev.avatar, `🔔 Thỉnh Đại Hồng Chung (+${ev.merit} CĐ)`, ev.wish);
+        }
         break;
       }
 
@@ -504,63 +556,84 @@
         audio.playIncenseChime();
         spawnSkyLantern(ev.user, ev.wish);
         particles.spawnFloatingMerit(`+${ev.merit} Công Đức`, 540, 920, '#ffb74d');
-        animateWalkerOnCarpet(ev.user, ev.avatar, `🏮 Cầu phúc (+${ev.merit} CĐ)`, ev.wish);
+        if (giftActionResult.allowWalker) {
+          animateWalkerOnCarpet(ev.user, ev.avatar, `🏮 Cầu phúc (+${ev.merit} CĐ)`, ev.wish);
+        }
         break;
       }
 
       case 'offerGift': {
-        audio.playIncenseChime();
-        audio.playTempleBell(0.85);
-        particles.spawnIncenseBurst(540, 895);
+        if (!giftActionResult.coalescedCombo) {
+          if (!giftActionResult.action) {
+            audio.playIncenseChime();
+            audio.playTempleBell(0.85);
+          }
+          particles.spawnIncenseBurst(540, 895);
+        }
         particles.spawnFloatingMerit(`+${ev.merit} Công Đức`, 540, 840, '#fff3b0');
-        animateWalkerOnCarpet(ev.user, ev.avatar, `🪷 Dâng ${ev.giftName} (+${ev.merit} CĐ)`, ev.wish);
+        if (giftActionResult.allowWalker) {
+          animateWalkerOnCarpet(ev.user, ev.avatar, `🪷 Dâng ${ev.giftName} (+${ev.merit} CĐ)`, ev.wish);
+        }
         break;
       }
 
       case 'grandCeremony': {
-        audio.playTempleBell(1.2);
-        setTimeout(() => audio.playTempleBell(1.1), 900);
-        particles.spawnGrandCeremonyRain();
-        pulseHallBowing();
-        showGrandCeremonyBanner(ev.user, ev.giftName, ev.merit);
-        animateWalkerOnCarpet(ev.user, ev.avatar, `🐉 ${ev.giftName} (+${ev.merit} CĐ)`, ev.wish);
+        if (!giftActionResult.coalescedCombo) {
+          // Special gift actions own their sound design; keep the generic
+          // double-bell cue only for ceremonies without a mapped gift action.
+          if (!giftActionResult.action) {
+            audio.playTempleBell(1.2);
+            setTimeout(() => audio.playTempleBell(1.1), 900);
+          }
+          particles.spawnGrandCeremonyRain();
+          pulseHallBowing();
+          showGrandCeremonyBanner(ev.user, ev.giftName, ev.merit);
+        }
+        if (giftActionResult.allowWalker) {
+          animateWalkerOnCarpet(ev.user, ev.avatar, `🐉 ${ev.giftName} (+${ev.merit} CĐ)`, ev.wish);
+        }
         break;
       }
 
       case 'drawFortune': {
-        audio.playFortuneShake();
-        updateCentralWorshipper(
-          ev.user,
-          ev.avatar,
-          `🎋 Đang xin xăm...`,
-          `Thí chủ ${ev.user} đang thành tâm xin quẻ...`,
-          false
-        );
-        // Chỉ hiển thị tờ Quẻ Xăm đúng thời điểm giọng đọc bắt đầu vang lên!
-        audio.enqueueTts(ev.ttsText || '', {
-          voice: ev.ttsVoice || 'maichi',
-          onStart: () => {
-            audio.playIncenseChime();
-            showFortuneModal(ev.user, ev.fortune);
-            updateCentralWorshipper(
-              ev.user,
-              ev.avatar,
-              `🎋 Quẻ số ${ev.fortune?.number} (${ev.fortune?.rank})`,
-              ev.fortune?.meaning || '',
-              true
-            );
-          },
-          onEnd: () => {
-            clearTimeout(fortuneTimer);
-            fortuneTimer = setTimeout(() => {
-              document.getElementById('fortuneModal')?.classList.remove('visible');
-            }, 1800);
-          }
-        });
+        if (giftActionResult.allowWalker) playFortuneSequence(ev);
         break;
       }
     }
   }
+
+
+  // A gift interruption takes ownership of the central sprite immediately.
+  // Cancel the previous devotee's scheduled bow frames so stale timers cannot
+  // change the pose underneath Rocket/Dragon/Donut/Rose choreography.
+  window.addEventListener('temple:character-interrupted', () => {
+    clearProstrationTimers();
+    const centralEl = document.getElementById('centralWorshipper');
+    centralEl?.classList.remove('walking-up');
+    setCentralPose('kneel');
+  });
+
+  // Queued devotees take ownership of the same central character after the
+  // current bow sequence or gift interruption cooldown finishes.
+  window.addEventListener('temple:character-start', (event) => {
+    const ev = event.detail;
+    if (!ev) return;
+    if (ev.type === 'ringBell') {
+      updateCentralWorshipper(ev.user, ev.avatar, `🔔 Thỉnh Đại Hồng Chung (+${ev.merit} CĐ)`, ev.wish);
+      return;
+    }
+    if (ev.type === 'drawFortune') {
+      playFortuneSequence(ev);
+      return;
+    }
+    const labels = {
+      burnIncense: `🔥 Dâng ${ev.count} nén hương (+${ev.merit} CĐ)`,
+      sendPrayer: `🏮 Cầu phúc (+${ev.merit} CĐ)`,
+      offerGift: `🪷 Dâng ${ev.giftName} (+${ev.merit} CĐ)`,
+      grandCeremony: `🐉 ${ev.giftName} (+${ev.merit} CĐ)`
+    };
+    animateWalkerOnCarpet(ev.user, ev.avatar, labels[ev.type] || '✨ Tham gia nghi lễ', ev.wish);
+  });
 
   function spawnSkyLantern(user, wish) {
     const layer = document.getElementById('skyLanternsLayer');
@@ -613,6 +686,7 @@
   // 8. Kết nối JSON-RPC 2.0 WebSocket & Gửi Lệnh RPC
   let ws = null;
   let rpcId = 1;
+  let lastTikTokConnected = null;
 
   function connectWebSocket() {
     const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -622,7 +696,14 @@
       try {
         const msg = JSON.parse(event.data);
         if (msg.method === 'temple.state') {
+          const connected = msg.params?.tiktok?.connected;
+          if (typeof connected === 'boolean' && connected !== lastTikTokConnected) {
+            window.TempleGiftActionEngine?.resetStreaks?.();
+            lastTikTokConnected = connected;
+          }
           updateUIState(msg.params);
+        } else if (msg.method === 'temple.gift-streak-end') {
+          window.TempleGiftActionEngine?.clearStreak?.(msg.params?.groupId);
         } else if (msg.method === 'temple.event') {
           if (msg.params?.state) updateUIState(msg.params.state);
           if (msg.params?.event) triggerRitualVisuals(msg.params.event);
@@ -782,6 +863,13 @@
     btn.classList.toggle('active-toggle', audio.ttsEnabled);
   });
 
+  document.getElementById('btnToggleSfx')?.addEventListener('click', (e) => {
+    audio.setSfxEnabled(!audio.sfxEnabled);
+    const btn = e.currentTarget;
+    btn.textContent = `✨ Hiệu Ứng: ${audio.sfxEnabled ? 'BẬT' : 'TẮT'}`;
+    btn.classList.toggle('active-toggle', audio.sfxEnabled);
+  });
+
   document.getElementById('btnToggleMusic')?.addEventListener('click', (e) => {
     audio.bgMusicEnabled = !audio.bgMusicEnabled;
     if (audio.bgMusicEnabled) {
@@ -827,6 +915,25 @@
     sliderTtsVol.addEventListener('change', (e) => {
       const pct = Number(e.target.value);
       callRpc('temple.updateSettings', { ttsVolume: +(pct / 100).toFixed(2) });
+    });
+  }
+
+  const btnToggleSfx = document.getElementById('btnToggleSfx');
+  if (btnToggleSfx) {
+    btnToggleSfx.textContent = `✨ Hiệu Ứng: ${audio.sfxEnabled ? 'BẬT' : 'TẮT'}`;
+    btnToggleSfx.classList.toggle('active-toggle', audio.sfxEnabled);
+  }
+
+  const sliderSfxVol = document.getElementById('sliderSfxVol');
+  const valSfxVol = document.getElementById('valSfxVol');
+  if (sliderSfxVol && valSfxVol) {
+    const initialSfxPct = Math.round(audio.sfxVolume * 100);
+    sliderSfxVol.value = String(initialSfxPct);
+    valSfxVol.textContent = `${initialSfxPct}%`;
+    sliderSfxVol.addEventListener('input', (e) => {
+      const pct = Number(e.target.value);
+      valSfxVol.textContent = `${pct}%`;
+      audio.setSfxVolume(pct / 100);
     });
   }
 

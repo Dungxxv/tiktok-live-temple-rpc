@@ -7,7 +7,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Noto+Serif:wght@700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/live.css" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="/css/live.css?v=3d-ritual-console-20261101-7" />
 </head>
 <body>
   <div class="app-workspace">
@@ -117,13 +126,17 @@
         <!-- 8. ĐÈN HOA ĐĂNG / SỚ CẦU NGUYỆN BAY LÊN -->
         <div class="sky-lanterns-layer" id="skyLanternsLayer"></div>
 
-        <!-- 9. LỚP CANVAS HIỆU ỨNG KHÓI HƯƠNG, HOA SEN RƠI & SÓNG ÂM -->
+        <!-- 9. THẾ GIỚI CHÙA 3D TÙY CHỌN (?3d=1); thay thế toàn bộ phối cảnh 2D khi hoạt động -->
+        <canvas id="temple3dCanvas" hidden aria-hidden="true"></canvas>
+
+        <!-- 10. LỚP CANVAS HIỆU ỨNG KHÓI HƯƠNG, HOA SEN RƠI & SÓNG ÂM -->
         <canvas id="templeCanvas"></canvas>
 
         <!-- 10. THANH HUD GỌN GÀNG DƯỚI ĐÁY (GIỐNG MẪU THAM CHIẾU) -->
         <footer class="bottom-hud-bar">
           <!-- Bên trái: Thông báo hành lễ + 3 ô hướng dẫn tương tác -->
           <div class="hud-left-col">
+            <div class="hud-panel-kicker"><span>NGHI LỄ • CÚNG DƯỜNG</span><span>SANCTUARY INTERACTION</span></div>
             <div class="hud-active-notice" id="hudActiveNotice">
               <span class="flower-bullet">💮</span>
               <strong id="devoteeNameLine">Thí Chủ Minh Tâm</strong>
@@ -202,6 +215,7 @@
         <div class="dock-grid-2">
           <button class="dock-btn active-toggle" id="btnToggleTts">🎙️ Giọng Đọc: BẬT</button>
           <button class="dock-btn active-toggle" id="btnToggleMusic">🎵 Nhạc Nền: BẬT</button>
+          <button class="dock-btn active-toggle" id="btnToggleSfx">✨ Hiệu Ứng: BẬT</button>
         </div>
         <div class="volume-control-row">
           <div class="volume-label-line">
@@ -217,10 +231,17 @@
           </div>
           <input type="range" id="sliderTtsVol" class="volume-slider" min="0" max="100" value="95" />
         </div>
+        <div class="volume-control-row">
+          <div class="volume-label-line">
+            <span>✨ Âm lượng Hiệu ứng</span>
+            <strong id="valSfxVol">80%</strong>
+          </div>
+          <input type="range" id="sliderSfxVol" class="volume-slider" min="0" max="100" value="80" />
+        </div>
       </div>
 
       <div class="dock-section">
-        <div class="dock-section-title">📡 Kết Nối Phòng TikTok Live</div>
+        <div class="dock-section-title">📡 Kết Nối PHÒNG TIKTOK LIVE</div>
         <div class="dock-input-row">
           <input type="text" id="inputTikTokUser" class="dock-input" value="@zenfacts_vn" placeholder="Nhập @username hoặc link TikTok Live..." />
           <button class="dock-btn gold" id="btnConnectTikTok">Kết Nối</button>
@@ -257,6 +278,9 @@
 
   <script src="/js/audio.js"></script>
   <script src="/js/particles.js"></script>
-  <script src="/js/live.js"></script>
+  <script type="module" src="/js/live.js"></script>
+  <script type="module" src="/js/temple-3d.js"></script>
+  <script type="module" src="/js/camera-controller.js"></script>
+  <script type="module" src="/js/gift-action-engine.js"></script>
 </body>
 </html>

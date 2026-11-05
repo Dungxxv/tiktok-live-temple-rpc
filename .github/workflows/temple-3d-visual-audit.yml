@@ -1,0 +1,78 @@
+name: Temple 3D visual audit
+
+on:
+  push:
+    branches:
+      - "**"
+    paths:
+      - "public/**"
+      - "scripts/capture-temple-3d-visual.mjs"
+      - ".github/workflows/temple-3d-visual-audit.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "public/**"
+      - "scripts/capture-temple-3d-visual.mjs"
+      - ".github/workflows/temple-3d-visual-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  capture-temple:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install application dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Start application server
+        run: |
+          DISABLE_TIKTOK_AUTOCONNECT=1 DISABLE_ZEROTTS_WORKER=1 PORT=3000 bun run server.js > /tmp/temple-server.log 2>&1 &
+          echo $! > /tmp/temple-server.pid
+          for attempt in $(seq 1 45); do
+            if curl --fail --silent http://127.0.0.1:3000/ > /dev/null; then
+              echo "Temple server is ready."
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/temple-server.log
+          exit 1
+
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save --no-package-lock playwright@1.56.1
+          npx playwright install --with-deps chromium
+
+      - name: Capture the 9:16 3D scene
+        run: node scripts/capture-temple-3d-visual.mjs
+
+      - name: Upload visual audit artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: temple-3d-visual-audit
+          path: |
+            artifacts/temple-3d-portrait.png
+            artifacts/temple-3d-full-page.png
+            artifacts/temple-3d-low.png
+            artifacts/temple-3d-medium.png
+            artifacts/temple-3d-high.png
+            artifacts/temple-3d-visual-report.json
+            /tmp/temple-server.log
+          if-no-files-found: warn
+          retention-days: 7
