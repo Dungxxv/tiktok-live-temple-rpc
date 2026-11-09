@@ -1,0 +1,42 @@
+{
+  "_note": "Tọa độ theo khung thiết kế Figma 900x1600 (file 0e69GOa9amHiipgNdqC7vq, node 3:7849). Hiệu chuẩn bằng /tarot?calibrate=1 rồi xuất lại file này.",
+  "canvas": { "width": 900, "height": 1600 },
+  "title": { "text": "Phòng TAROT", "x": 0, "y": 24, "w": 900, "h": 74 },
+  "video": { "x": 0, "y": 0, "w": 659.3, "h": 636 },
+  "table": { "x": 0, "y": 636, "w": 659.3, "h": 381 },
+  "bubble": { "x": 436, "y": 149, "w": 260, "h": 169 },
+  "cardSlots": [
+    { "x": 110, "y": 391, "w": 128.7, "h": 212 },
+    { "x": 288.7, "y": 391, "w": 128.7, "h": 212 },
+    { "x": 467.4, "y": 391, "w": 128.7, "h": 212 }
+  ],
+  "tableScene": { "perspective": 900, "originX": 330, "originY": 300, "tiltDeg": 60 },
+  "deck": { "x": 330, "y": 712 },
+  "arc": { "cx": 330, "cy": 790, "rx": 270, "ry": 84, "fromDeg": -72, "toDeg": 72, "fanDeg": 0.55, "count": 17, "cardW": 60, "cardH": 99 },
+  "seat": { "x": 239, "y": 769, "w": 200, "h": 250, "scale": 0.85 },
+  "giftMenu": {
+    "x": 749.39,
+    "items": [
+      { "y": 177.86, "icon": "gift-1.png", "label": "+10" },
+      { "y": 317, "icon": "gift-2.png", "label": "+10" },
+      { "y": 461, "icon": "gift-3.png", "label": "+10" },
+      { "y": 603, "icon": "gift-4.png", "label": "+50" },
+      { "y": 766, "icon": "gift-5.png", "label": "+50" },
+      { "y": 943, "icon": "gift-6.png", "label": "+990" }
+    ]
+  },
+  "queue": {
+    "label": { "x": 48, "y": 1087, "w": 112, "h": 33 },
+    "panel": { "x": 0, "y": 1123, "w": 900, "h": 862 },
+    "grid": { "x": 44, "y": 40, "cols": 7, "count": 21, "colStep": 124.6, "rowStep": 132, "slotW": 92.377, "slotH": 170.934, "scale": 0.74 },
+    "marquee": { "x": 178, "y": 1083, "w": 722, "h": 38, "text": "✦ Bình luận câu hỏi để vào hàng, nhận ngay 1⭐ ✦ Tặng quà được cộng thêm ⭐ như bảng bên phải ✦ Ai nhiều ⭐ hơn được xem trước, bằng ⭐ thì ai đến trước xem trước" },
+    "more": { "x": 560, "y": 1566, "w": 320, "h": 28 }
+  },
+  "toast": { "x": 150, "y": 104, "w": 600, "h": 40 },
+  "disclaimer": { "x": 20, "y": 1566, "w": 400, "h": 28 },
+  "tiktokOverlays": [
+    { "name": "Thông tin chủ phòng (ước lượng)", "x": 0, "y": 0, "w": 900, "h": 133 },
+    { "name": "Nút bên phải (ước lượng)", "x": 800, "y": 750, "w": 100, "h": 583 },
+    { "name": "Khung bình luận (ước lượng)", "x": 0, "y": 1208, "w": 633, "h": 392 }
+  ]
+}

@@ -1,0 +1,2255 @@
+{
+  "_note": "Sinh bởi scripts/build-tarot-cards.mjs. Ẩn phụ ghép theo mẫu, cần người duyệt trước khi live thật.",
+  "cards": [
+    {
+      "id": "major-00",
+      "arcana": "major",
+      "suit": null,
+      "number": 0,
+      "name_vi": "Chàng Khờ",
+      "name_en": "The Fool",
+      "keywords_up": [
+        "khởi đầu mới",
+        "tự do",
+        "tin tưởng"
+      ],
+      "keywords_rev": [
+        "liều lĩnh",
+        "thiếu cân nhắc"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Một khởi đầu mới đang chờ bạn phía trước.",
+            "Đôi khi chỉ cần một bước nhẹ nhàng và một trái tim cởi mở.",
+            "Hãy tin vào sự tò mò của chính mình."
+          ],
+          "rev": [
+            "Bạn đang muốn lao đi thật nhanh.",
+            "Một chút cân nhắc sẽ giúp bước chân vững hơn.",
+            "Hãy nhìn đường trước khi nhảy."
+          ]
+        }
+      }
+    },
+    {
+      "id": "major-01",
+      "arcana": "major",
+      "suit": null,
+      "number": 1,
+      "name_vi": "Nhà Ảo Thuật",
+      "name_en": "The Magician",
+      "keywords_up": [
+        "khả năng",
+        "tập trung",
+        "sáng tạo"
+      ],
+      "keywords_rev": [
+        "phân tán",
+        "chưa dùng hết sức"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Bạn đang có đủ những gì cần thiết trong tay.",
+            "Sự tập trung sẽ biến ý tưởng thành điều có thật.",
+            "Hãy bắt đầu từ việc nhỏ nhất."
+          ],
+          "rev": [
+            "Có thể bạn đang chia sức vào quá nhiều nơi.",
+            "Thử chọn một điều quan trọng nhất để làm trước.",
+            "Một việc làm trọn vẹn đáng giá hơn nhiều việc dang dở."
+          ]
+        }
+      }
+    },
+    {
+      "id": "major-02",
+      "arcana": "major",
+      "suit": null,
+      "number": 2,
+      "name_vi": "Nữ Tư Tế",
+      "name_en": "The High Priestess",
+      "keywords_up": [
+        "trực giác",
+        "tĩnh lặng",
+        "bí ẩn"
+      ],
+      "keywords_rev": [
+        "bỏ qua trực giác",
+        "ồn ào"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Câu trả lời đang nằm sâu trong sự tĩnh lặng của bạn.",
+            "Hãy lắng nghe cảm giác đầu tiên của mình.",
+            "Không phải điều gì cũng cần nói ra ngay."
+          ],
+          "rev": [
+            "Tiếng ồn xung quanh có thể che mất tiếng lòng bạn.",
+            "Dành một chút thời gian yên tĩnh cho riêng mình.",
+            "Câu trả lời sẽ rõ hơn khi tâm bạn lắng xuống."
+          ]
+        }
+      }
+    },
+    {
+      "id": "major-03",
+      "arcana": "major",
+      "suit": null,
+      "number": 3,
+      "name_vi": "Nữ Hoàng",
+      "name_en": "The Empress",
+      "keywords_up": [
+        "nuôi dưỡng",
+        "dồi dào",
+        "dịu dàng"
+      ],
+      "keywords_rev": [
+        "chăm sóc quá mức",
+        "trì trệ"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Sự dịu dàng và chăm sóc đang nở hoa quanh bạn.",
+            "Hãy tận hưởng những điều đẹp đẽ đang có.",
+            "Bạn xứng đáng được nuôi dưỡng như cách bạn nuôi dưỡng người khác."
+          ],
+          "rev": [
+            "Bạn đang dành nhiều cho người khác hơn cho mình.",
+            "Hãy nhớ chăm sóc bản thân trước tiên.",
+            "Nghỉ ngơi cũng là một cách yêu thương."
+          ]
+        }
+      }
+    },
+    {
+      "id": "major-04",
+      "arcana": "major",
+      "suit": null,
+      "number": 4,
+      "name_vi": "Hoàng Đế",
+      "name_en": "The Emperor",
+      "keywords_up": [
+        "vững vàng",
+        "trật tự",
+        "trách nhiệm"
+      ],
+      "keywords_rev": [
+        "cứng nhắc",
+        "kiểm soát"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Một nền tảng vững chắc đang giúp bạn đứng vững.",
+            "Sự rõ ràng và kỷ luật sẽ mang lại cảm giác an tâm.",
+            "Hãy đặt ra vài quy tắc nhỏ cho riêng mình."
+          ],
+          "rev": [
+            "Bạn có thể đang muốn kiểm soát mọi thứ chặt quá.",
+            "Thử nới lỏng một chút để mọi việc thở được.",
+            "Sự mềm mỏng cũng là một loại sức mạnh."
+          ]
+        }
+      }
+    },
+    {
+      "id": "major-05",
+      "arcana": "major",
+      "suit": null,
+      "number": 5,
+      "name_vi": "Giáo Hoàng",
+      "name_en": "The Hierophant",
+      "keywords_up": [
+        "truyền thống",
+        "học hỏi",
+        "cố vấn"
+      ],
+      "keywords_rev": [
+        "phá lệ",
+        "tự tìm lối riêng"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Lời khuyên từ người có kinh nghiệm có thể giúp ích cho bạn.",
+            "Những điều đã được kiểm chứng đáng để tham khảo.",
+            "Hãy học hỏi với tinh thần cởi mở."
+          ],
+          "rev": [
+            "Có lẽ bạn đang muốn tự tìm một lối đi riêng.",
+            "Điều đó cũng ổn, miễn là bạn tự hiểu lý do của mình.",
+            "Hãy chọn cách phù hợp với giá trị của bạn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "major-06",
+      "arcana": "major",
+      "suit": null,
+      "number": 6,
+      "name_vi": "Đôi Tình Nhân",
+      "name_en": "The Lovers",
+      "keywords_up": [
+        "lựa chọn",
+        "hòa hợp",
+        "giá trị"
+      ],
+      "keywords_rev": [
+        "phân vân",
+        "lệch nhịp"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Bạn đang đứng trước một lựa chọn theo trái tim.",
+            "Hãy chọn điều hợp với giá trị thật của mình.",
+            "Sự chân thành luôn là điểm khởi đầu tốt."
+          ],
+          "rev": [
+            "Có chút lệch nhịp giữa điều bạn nghĩ và điều bạn cảm.",
+            "Hãy trò chuyện thật lòng, trước hết là với chính mình.",
+            "Khi rõ ràng, lựa chọn sẽ đến nhẹ nhàng hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "major-07",
+      "arcana": "major",
+      "suit": null,
+      "number": 7,
+      "name_vi": "Cỗ Xe",
+      "name_en": "The Chariot",
+      "keywords_up": [
+        "quyết tâm",
+        "tiến lên",
+        "làm chủ"
+      ],
+      "keywords_rev": [
+        "mất hướng",
+        "vội vã"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Bạn có đủ quyết tâm để tiến về phía trước.",
+            "Giữ vững hướng đi và đừng để mình bị xao nhãng.",
+            "Một bước tiến đều đặn sẽ đưa bạn tới nơi."
+          ],
+          "rev": [
+            "Bạn có thể đang bị kéo về nhiều hướng cùng lúc.",
+            "Dừng lại một nhịp để chọn lại hướng đi.",
+            "Cầm lại dây cương bằng sự bình tĩnh."
+          ]
+        }
+      }
+    },
+    {
+      "id": "major-08",
+      "arcana": "major",
+      "suit": null,
+      "number": 8,
+      "name_vi": "Sức Mạnh",
+      "name_en": "Strength",
+      "keywords_up": [
+        "kiên nhẫn",
+        "dịu dàng",
+        "can đảm"
+      ],
+      "keywords_rev": [
+        "nghi ngờ bản thân",
+        "mệt mỏi"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Sức mạnh thật sự của bạn nằm ở sự dịu dàng và kiên nhẫn.",
+            "Bạn mạnh mẽ hơn bạn nghĩ.",
+            "Hãy đối xử ôn hòa với chính mình."
+          ],
+          "rev": [
+            "Bạn có thể đang tự nghi ngờ bản thân hơi nhiều.",
+            "Hãy nhớ lại những lần bạn đã vượt qua.",
+            "Một lời động viên nhẹ nhàng sẽ giúp bạn đứng dậy."
+          ]
+        }
+      }
+    },
+    {
+      "id": "major-09",
+      "arcana": "major",
+      "suit": null,
+      "number": 9,
+      "name_vi": "Ẩn Sĩ",
+      "name_en": "The Hermit",
+      "keywords_up": [
+        "nhìn vào bên trong",
+        "trầm lắng",
+        "sáng suốt"
+      ],
+      "keywords_rev": [
+        "cô lập",
+        "khép mình"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Đây là lúc thích hợp để lắng lại và nhìn vào bên trong.",
+            "Một ngọn đèn nhỏ cũng đủ soi đường cho bạn.",
+            "Thời gian một mình có thể mang lại sự sáng rõ."
+          ],
+          "rev": [
+            "Bạn đang ở một mình hơi lâu.",
+            "Thử chia sẻ với một người bạn tin tưởng.",
+            "Ánh sáng đôi khi đến từ một cuộc trò chuyện."
+          ]
+        }
+      }
+    },
+    {
+      "id": "major-10",
+      "arcana": "major",
+      "suit": null,
+      "number": 10,
+      "name_vi": "Bánh Xe Vận Mệnh",
+      "name_en": "Wheel of Fortune",
+      "keywords_up": [
+        "chuyển biến",
+        "chu kỳ",
+        "cơ hội"
+      ],
+      "keywords_rev": [
+        "trì hoãn",
+        "chưa đúng lúc"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Mọi thứ đang chuyển động và có một cơ hội mới đang xoay tới.",
+            "Mọi chu kỳ đều có lúc lên lúc xuống.",
+            "Hãy giữ lòng cởi mở trước sự thay đổi."
+          ],
+          "rev": [
+            "Thời điểm có vẻ chưa hoàn toàn khớp.",
+            "Đừng vội, bánh xe vẫn đang quay.",
+            "Chuẩn bị tốt sẽ giúp bạn đón lấy cơ hội kế tiếp."
+          ]
+        }
+      }
+    },
+    {
+      "id": "major-11",
+      "arcana": "major",
+      "suit": null,
+      "number": 11,
+      "name_vi": "Công Lý",
+      "name_en": "Justice",
+      "keywords_up": [
+        "cân bằng",
+        "công bằng",
+        "rõ ràng"
+      ],
+      "keywords_rev": [
+        "thiên lệch",
+        "né tránh"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Sự cân bằng và trung thực đang là chìa khóa.",
+            "Hãy nhìn mọi việc bằng con mắt công tâm.",
+            "Điều bạn gieo bằng sự chân thành sẽ trở lại với bạn."
+          ],
+          "rev": [
+            "Có điều gì đó chưa thật cân bằng trong cách bạn nhìn nhận.",
+            "Thử nhìn sự việc từ một góc độ khác.",
+            "Sự thành thật với bản thân sẽ giúp bạn nhẹ lòng."
+          ]
+        }
+      }
+    },
+    {
+      "id": "major-12",
+      "arcana": "major",
+      "suit": null,
+      "number": 12,
+      "name_vi": "Người Treo Ngược",
+      "name_en": "The Hanged Man",
+      "keywords_up": [
+        "góc nhìn mới",
+        "chờ đợi",
+        "buông bỏ"
+      ],
+      "keywords_rev": [
+        "bế tắc",
+        "níu giữ"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Đôi khi dừng lại để thấy mọi thứ từ một góc nhìn mới.",
+            "Sự chờ đợi lúc này không phải là lãng phí.",
+            "Hãy thử buông bớt điều bạn đang nắm chặt."
+          ],
+          "rev": [
+            "Có cảm giác mắc kẹt, và có thể bạn đang níu giữ quá nhiều.",
+            "Chọn một điều nhỏ để thay đổi.",
+            "Chỉ một chút xoay chuyển cũng đủ mở lối."
+          ]
+        }
+      }
+    },
+    {
+      "id": "major-13",
+      "arcana": "major",
+      "suit": null,
+      "number": 13,
+      "name_vi": "Kết Thúc & Tái Sinh",
+      "name_en": "Death",
+      "keywords_up": [
+        "kết thúc",
+        "chuyển hóa",
+        "làm mới"
+      ],
+      "keywords_rev": [
+        "níu kéo",
+        "khó buông"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Một chương cũ khép lại để chương mới được mở ra.",
+            "Sự thay đổi nào cũng cần một chút can đảm.",
+            "Bạn đang được làm mới theo cách nhẹ nhàng."
+          ],
+          "rev": [
+            "Bạn đang giữ lại điều đã đến lúc nên khép lại.",
+            "Cho phép mình nói lời tạm biệt nhẹ nhàng.",
+            "Khoảng trống sẽ sớm có điều mới đến lấp đầy."
+          ]
+        }
+      }
+    },
+    {
+      "id": "major-14",
+      "arcana": "major",
+      "suit": null,
+      "number": 14,
+      "name_vi": "Sự Điều Hòa",
+      "name_en": "Temperance",
+      "keywords_up": [
+        "cân bằng",
+        "kiên nhẫn",
+        "hài hòa"
+      ],
+      "keywords_rev": [
+        "quá đà",
+        "mất nhịp"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Hãy pha trộn mọi thứ vừa phải, mỗi điều một chút.",
+            "Sự kiên nhẫn đang giúp mọi thứ hòa hợp.",
+            "Bạn đang tìm được nhịp riêng của mình."
+          ],
+          "rev": [
+            "Có thể bạn đang làm một điều gì đó hơi quá đà.",
+            "Hãy tìm lại nhịp điệu vừa sức.",
+            "Đều đặn và nhẹ nhàng thường bền hơn dồn dập."
+          ]
+        }
+      }
+    },
+    {
+      "id": "major-15",
+      "arcana": "major",
+      "suit": null,
+      "number": 15,
+      "name_vi": "Cám Dỗ",
+      "name_en": "The Devil",
+      "keywords_up": [
+        "ràng buộc",
+        "thói quen",
+        "ham muốn"
+      ],
+      "keywords_rev": [
+        "tự do",
+        "thoát khỏi thói quen"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Có thể bạn đang gắn bó với một thói quen khó rời.",
+            "Nhận ra nó là bước đầu để bạn nhẹ lòng hơn.",
+            "Bạn luôn có quyền chọn lại."
+          ],
+          "rev": [
+            "Bạn đang dần thoát khỏi một ràng buộc cũ.",
+            "Hãy tiếp tục từng bước nhỏ.",
+            "Sự nhẹ nhõm đang ở rất gần."
+          ]
+        }
+      }
+    },
+    {
+      "id": "major-16",
+      "arcana": "major",
+      "suit": null,
+      "number": 16,
+      "name_vi": "Tòa Tháp",
+      "name_en": "The Tower",
+      "keywords_up": [
+        "bất ngờ",
+        "thay đổi lớn",
+        "bừng tỉnh"
+      ],
+      "keywords_rev": [
+        "sợ thay đổi",
+        "trì hoãn"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Một điều bất ngờ có thể làm xáo trộn nhịp quen thuộc.",
+            "Từ đó, bạn có thể thấy điều thật sự quan trọng.",
+            "Hãy giữ bình tĩnh và xây lại thật vững."
+          ],
+          "rev": [
+            "Bạn đang lo lắng về một thay đổi sắp tới.",
+            "Việc chuẩn bị tinh thần sẽ giúp bạn nhẹ nhàng hơn.",
+            "Mỗi thay đổi đều chứa một cơ hội để bắt đầu lại."
+          ]
+        }
+      }
+    },
+    {
+      "id": "major-17",
+      "arcana": "major",
+      "suit": null,
+      "number": 17,
+      "name_vi": "Ngôi Sao",
+      "name_en": "The Star",
+      "keywords_up": [
+        "hy vọng",
+        "chữa lành",
+        "niềm tin"
+      ],
+      "keywords_rev": [
+        "mất niềm tin",
+        "mệt mỏi"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Hy vọng đang sáng lên như một ngôi sao trong đêm.",
+            "Bạn đang dần lấy lại sự bình yên trong lòng.",
+            "Hãy tin vào điều tốt đẹp đang đến."
+          ],
+          "rev": [
+            "Có lúc bạn thấy hy vọng hơi mờ.",
+            "Hãy làm một điều nhỏ khiến bạn thấy dễ chịu.",
+            "Ánh sáng nhỏ nhất cũng đủ để bạn đi tiếp."
+          ]
+        }
+      }
+    },
+    {
+      "id": "major-18",
+      "arcana": "major",
+      "suit": null,
+      "number": 18,
+      "name_vi": "Mặt Trăng",
+      "name_en": "The Moon",
+      "keywords_up": [
+        "mơ hồ",
+        "cảm xúc",
+        "trực giác"
+      ],
+      "keywords_rev": [
+        "sáng tỏ dần",
+        "bớt lo âu"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Mọi thứ có thể chưa thật rõ ràng, và điều đó bình thường.",
+            "Hãy đi chậm và tin vào trực giác của mình.",
+            "Sự mơ hồ sẽ dần tan khi trời sáng."
+          ],
+          "rev": [
+            "Mọi thứ đang dần sáng tỏ hơn.",
+            "Những lo lắng cũng nhẹ đi theo từng ngày.",
+            "Hãy cho mình thêm một chút thời gian."
+          ]
+        }
+      }
+    },
+    {
+      "id": "major-19",
+      "arcana": "major",
+      "suit": null,
+      "number": 19,
+      "name_vi": "Mặt Trời",
+      "name_en": "The Sun",
+      "keywords_up": [
+        "niềm vui",
+        "rạng rỡ",
+        "tích cực"
+      ],
+      "keywords_rev": [
+        "niềm vui tạm lắng",
+        "cần thời gian"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Niềm vui và sự rạng rỡ đang chiếu vào bạn.",
+            "Hãy chia sẻ nụ cười của mình với người xung quanh.",
+            "Một ngày nhiều ánh sáng đang đến."
+          ],
+          "rev": [
+            "Niềm vui của bạn đang tạm lắng xuống một chút.",
+            "Hãy làm điều đơn giản khiến bạn mỉm cười.",
+            "Ánh nắng vẫn ở đó, chỉ là chờ mây tan."
+          ]
+        }
+      }
+    },
+    {
+      "id": "major-20",
+      "arcana": "major",
+      "suit": null,
+      "number": 20,
+      "name_vi": "Tiếng Gọi Thức Tỉnh",
+      "name_en": "Judgement",
+      "keywords_up": [
+        "nhìn lại",
+        "tha thứ",
+        "bước sang trang"
+      ],
+      "keywords_rev": [
+        "do dự",
+        "tự trách"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Đây là lúc nhìn lại chặng đường đã qua với lòng biết ơn.",
+            "Bạn đã học được nhiều điều đáng quý.",
+            "Hãy sẵn sàng bước sang một trang mới."
+          ],
+          "rev": [
+            "Bạn có thể đang hơi khắt khe với chính mình.",
+            "Hãy tha thứ cho những điều đã qua.",
+            "Bạn xứng đáng có một khởi đầu nhẹ nhõm hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "major-21",
+      "arcana": "major",
+      "suit": null,
+      "number": 21,
+      "name_vi": "Thế Giới",
+      "name_en": "The World",
+      "keywords_up": [
+        "trọn vẹn",
+        "hoàn thành",
+        "thành tựu"
+      ],
+      "keywords_rev": [
+        "gần xong",
+        "bước cuối"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Một chặng đường đang đi đến độ trọn vẹn.",
+            "Hãy tự hào về những gì bạn đã làm được.",
+            "Sau niềm vui hoàn thành, một hành trình mới sẽ mở ra."
+          ],
+          "rev": [
+            "Bạn đang ở gần đích rồi.",
+            "Chỉ cần một chút chăm chút ở bước cuối.",
+            "Đừng bỏ qua việc ăn mừng những điều nhỏ."
+          ]
+        }
+      }
+    },
+    {
+      "id": "wands-01",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 1,
+      "name_vi": "Át Gậy",
+      "name_en": "Ace of Wands",
+      "keywords_up": [
+        "khởi đầu",
+        "hạt giống"
+      ],
+      "keywords_rev": [
+        "chậm trễ",
+        "chưa rõ"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Một khởi đầu mới đang mở ra trong hành động và đam mê của bạn.",
+            "Hãy giữ ngọn lửa nhiệt huyết, và nhớ nghỉ ngơi khi cần."
+          ],
+          "rev": [
+            "Khởi đầu còn chậm hoặc chưa rõ ràng trong hành động và đam mê của bạn.",
+            "Hãy chọn một việc nhỏ để bắt đầu thay vì làm tất cả cùng lúc."
+          ]
+        }
+      }
+    },
+    {
+      "id": "wands-02",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 2,
+      "name_vi": "Hai Gậy",
+      "name_en": "Two of Wands",
+      "keywords_up": [
+        "lựa chọn",
+        "cân bằng"
+      ],
+      "keywords_rev": [
+        "phân vân",
+        "lưỡng lự"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Bạn đang cân nhắc giữa hai hướng đi trong hành động và đam mê của bạn.",
+            "Hãy giữ ngọn lửa nhiệt huyết, và nhớ nghỉ ngơi khi cần."
+          ],
+          "rev": [
+            "Sự phân vân kéo dài trong hành động và đam mê của bạn có thể làm bạn mệt.",
+            "Hãy chọn một việc nhỏ để bắt đầu thay vì làm tất cả cùng lúc."
+          ]
+        }
+      }
+    },
+    {
+      "id": "wands-03",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 3,
+      "name_vi": "Ba Gậy",
+      "name_en": "Three of Wands",
+      "keywords_up": [
+        "phát triển",
+        "hợp tác"
+      ],
+      "keywords_rev": [
+        "lệch nhịp",
+        "thiếu phối hợp"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Có sự phát triển và hợp tác tốt đẹp trong hành động và đam mê của bạn.",
+            "Hãy giữ ngọn lửa nhiệt huyết, và nhớ nghỉ ngơi khi cần."
+          ],
+          "rev": [
+            "Mọi thứ trong hành động và đam mê của bạn chưa thật khớp nhịp với nhau.",
+            "Hãy chọn một việc nhỏ để bắt đầu thay vì làm tất cả cùng lúc."
+          ]
+        }
+      }
+    },
+    {
+      "id": "wands-04",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 4,
+      "name_vi": "Bốn Gậy",
+      "name_en": "Four of Wands",
+      "keywords_up": [
+        "ổn định",
+        "nghỉ ngơi"
+      ],
+      "keywords_rev": [
+        "trì trệ",
+        "bám víu"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Đây là lúc ổn định và nghỉ ngơi trong hành động và đam mê của bạn.",
+            "Hãy giữ ngọn lửa nhiệt huyết, và nhớ nghỉ ngơi khi cần."
+          ],
+          "rev": [
+            "Bạn có thể đang bám quá chặt vào sự quen thuộc trong hành động và đam mê của bạn.",
+            "Hãy chọn một việc nhỏ để bắt đầu thay vì làm tất cả cùng lúc."
+          ]
+        }
+      }
+    },
+    {
+      "id": "wands-05",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 5,
+      "name_vi": "Năm Gậy",
+      "name_en": "Five of Wands",
+      "keywords_up": [
+        "thử thách",
+        "học hỏi"
+      ],
+      "keywords_rev": [
+        "dịu lại",
+        "hòa giải"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Có chút va chạm hoặc thử thách trong hành động và đam mê của bạn, nhưng đều giúp bạn học hỏi.",
+            "Hãy giữ ngọn lửa nhiệt huyết, và nhớ nghỉ ngơi khi cần."
+          ],
+          "rev": [
+            "Căng thẳng trong hành động và đam mê của bạn đang dịu dần nếu bạn chịu lắng nghe.",
+            "Hãy chọn một việc nhỏ để bắt đầu thay vì làm tất cả cùng lúc."
+          ]
+        }
+      }
+    },
+    {
+      "id": "wands-06",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 6,
+      "name_vi": "Sáu Gậy",
+      "name_en": "Six of Wands",
+      "keywords_up": [
+        "hài hòa",
+        "tiến về phía trước"
+      ],
+      "keywords_rev": [
+        "buông cái cũ",
+        "chưa trôi chảy"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Mọi thứ trong hành động và đam mê của bạn đang dần hài hòa và tiến về phía trước.",
+            "Hãy giữ ngọn lửa nhiệt huyết, và nhớ nghỉ ngơi khi cần."
+          ],
+          "rev": [
+            "Bạn có thể cần buông một điều cũ trong hành động và đam mê của bạn để đi tiếp.",
+            "Hãy chọn một việc nhỏ để bắt đầu thay vì làm tất cả cùng lúc."
+          ]
+        }
+      }
+    },
+    {
+      "id": "wands-07",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 7,
+      "name_vi": "Bảy Gậy",
+      "name_en": "Seven of Wands",
+      "keywords_up": [
+        "kiên trì",
+        "giữ vững"
+      ],
+      "keywords_rev": [
+        "nghi ngờ",
+        "chùn bước"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Bạn đang cần kiên trì và giữ vững lập trường trong hành động và đam mê của bạn.",
+            "Hãy giữ ngọn lửa nhiệt huyết, và nhớ nghỉ ngơi khi cần."
+          ],
+          "rev": [
+            "Đừng để sự nghi ngờ làm bạn chùn bước trong hành động và đam mê của bạn.",
+            "Hãy chọn một việc nhỏ để bắt đầu thay vì làm tất cả cùng lúc."
+          ]
+        }
+      }
+    },
+    {
+      "id": "wands-08",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 8,
+      "name_vi": "Tám Gậy",
+      "name_en": "Eight of Wands",
+      "keywords_up": [
+        "chuyển động",
+        "tiến triển"
+      ],
+      "keywords_rev": [
+        "quá vội",
+        "cần chăm chút"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Mọi việc trong hành động và đam mê của bạn đang chuyển động nhanh và có tiến triển.",
+            "Hãy giữ ngọn lửa nhiệt huyết, và nhớ nghỉ ngơi khi cần."
+          ],
+          "rev": [
+            "Hãy chậm lại một chút, vì hành động và đam mê của bạn cần được chăm chút kỹ hơn.",
+            "Hãy chọn một việc nhỏ để bắt đầu thay vì làm tất cả cùng lúc."
+          ]
+        }
+      }
+    },
+    {
+      "id": "wands-09",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 9,
+      "name_vi": "Chín Gậy",
+      "name_en": "Nine of Wands",
+      "keywords_up": [
+        "gần thành quả",
+        "bền bỉ"
+      ],
+      "keywords_rev": [
+        "áp lực",
+        "tự đòi hỏi"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Bạn đã đi được một chặng dài trong hành động và đam mê của bạn, thành quả đang ở gần.",
+            "Hãy giữ ngọn lửa nhiệt huyết, và nhớ nghỉ ngơi khi cần."
+          ],
+          "rev": [
+            "Bạn có thể đang tự đặt áp lực quá nhiều lên hành động và đam mê của bạn.",
+            "Hãy chọn một việc nhỏ để bắt đầu thay vì làm tất cả cùng lúc."
+          ]
+        }
+      }
+    },
+    {
+      "id": "wands-10",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 10,
+      "name_vi": "Mười Gậy",
+      "name_en": "Ten of Wands",
+      "keywords_up": [
+        "trọn vẹn",
+        "hoàn tất chu kỳ"
+      ],
+      "keywords_rev": [
+        "gánh nặng",
+        "chia sẻ bớt"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Một chu kỳ trong hành động và đam mê của bạn đang đi đến độ trọn vẹn.",
+            "Hãy giữ ngọn lửa nhiệt huyết, và nhớ nghỉ ngơi khi cần."
+          ],
+          "rev": [
+            "Bạn đang mang nhiều hơn mức cần thiết trong hành động và đam mê của bạn, hãy chia sẻ bớt.",
+            "Hãy chọn một việc nhỏ để bắt đầu thay vì làm tất cả cùng lúc."
+          ]
+        }
+      }
+    },
+    {
+      "id": "wands-11",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 11,
+      "name_vi": "Thị Đồng Gậy",
+      "name_en": "Page of Wands",
+      "keywords_up": [
+        "tò mò",
+        "tin mới"
+      ],
+      "keywords_rev": [
+        "non nớt",
+        "kiên nhẫn"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Một ý tưởng hoặc tin mới đáng để bạn tò mò trong hành động và đam mê của bạn.",
+            "Hãy giữ ngọn lửa nhiệt huyết, và nhớ nghỉ ngơi khi cần."
+          ],
+          "rev": [
+            "Hãy kiên nhẫn hơn với những điều còn non nớt trong hành động và đam mê của bạn.",
+            "Hãy chọn một việc nhỏ để bắt đầu thay vì làm tất cả cùng lúc."
+          ]
+        }
+      }
+    },
+    {
+      "id": "wands-12",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 12,
+      "name_vi": "Kỵ Sĩ Gậy",
+      "name_en": "Knight of Wands",
+      "keywords_up": [
+        "năng lượng",
+        "tiến tới"
+      ],
+      "keywords_rev": [
+        "vội vàng",
+        "cân nhắc"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Bạn đang đầy năng lượng để tiến tới trong hành động và đam mê của bạn.",
+            "Hãy giữ ngọn lửa nhiệt huyết, và nhớ nghỉ ngơi khi cần."
+          ],
+          "rev": [
+            "Đừng vội vàng, hãy cân nhắc kỹ hơn trong hành động và đam mê của bạn.",
+            "Hãy chọn một việc nhỏ để bắt đầu thay vì làm tất cả cùng lúc."
+          ]
+        }
+      }
+    },
+    {
+      "id": "wands-13",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 13,
+      "name_vi": "Nữ Hoàng Gậy",
+      "name_en": "Queen of Wands",
+      "keywords_up": [
+        "dịu dàng",
+        "trưởng thành"
+      ],
+      "keywords_rev": [
+        "chăm sóc bản thân",
+        "nuôi dưỡng"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Sự dịu dàng và trưởng thành đang dẫn lối bạn trong hành động và đam mê của bạn.",
+            "Hãy giữ ngọn lửa nhiệt huyết, và nhớ nghỉ ngơi khi cần."
+          ],
+          "rev": [
+            "Hãy dành thời gian chăm sóc bản thân trước khi lo cho hành động và đam mê của bạn.",
+            "Hãy chọn một việc nhỏ để bắt đầu thay vì làm tất cả cùng lúc."
+          ]
+        }
+      }
+    },
+    {
+      "id": "wands-14",
+      "arcana": "minor",
+      "suit": "wands",
+      "number": 14,
+      "name_vi": "Vua Gậy",
+      "name_en": "King of Wands",
+      "keywords_up": [
+        "chủ động",
+        "vững vàng"
+      ],
+      "keywords_rev": [
+        "mềm mỏng",
+        "bớt cứng nhắc"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Bạn có thể chủ động và vững vàng dẫn dắt hành động và đam mê của bạn.",
+            "Hãy giữ ngọn lửa nhiệt huyết, và nhớ nghỉ ngơi khi cần."
+          ],
+          "rev": [
+            "Mềm mỏng hơn một chút sẽ giúp hành động và đam mê của bạn thuận lợi hơn.",
+            "Hãy chọn một việc nhỏ để bắt đầu thay vì làm tất cả cùng lúc."
+          ]
+        }
+      }
+    },
+    {
+      "id": "cups-01",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 1,
+      "name_vi": "Át Cốc",
+      "name_en": "Ace of Cups",
+      "keywords_up": [
+        "khởi đầu",
+        "hạt giống"
+      ],
+      "keywords_rev": [
+        "chậm trễ",
+        "chưa rõ"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Một khởi đầu mới đang mở ra trong cảm xúc và các mối quan hệ của bạn.",
+            "Hãy lắng nghe trái tim mình và nói ra điều bạn cảm nhận."
+          ],
+          "rev": [
+            "Khởi đầu còn chậm hoặc chưa rõ ràng trong cảm xúc và các mối quan hệ của bạn.",
+            "Dành cho mình một khoảng lặng để cảm xúc được nghỉ ngơi."
+          ]
+        }
+      }
+    },
+    {
+      "id": "cups-02",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 2,
+      "name_vi": "Hai Cốc",
+      "name_en": "Two of Cups",
+      "keywords_up": [
+        "lựa chọn",
+        "cân bằng"
+      ],
+      "keywords_rev": [
+        "phân vân",
+        "lưỡng lự"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Bạn đang cân nhắc giữa hai hướng đi trong cảm xúc và các mối quan hệ của bạn.",
+            "Hãy lắng nghe trái tim mình và nói ra điều bạn cảm nhận."
+          ],
+          "rev": [
+            "Sự phân vân kéo dài trong cảm xúc và các mối quan hệ của bạn có thể làm bạn mệt.",
+            "Dành cho mình một khoảng lặng để cảm xúc được nghỉ ngơi."
+          ]
+        }
+      }
+    },
+    {
+      "id": "cups-03",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 3,
+      "name_vi": "Ba Cốc",
+      "name_en": "Three of Cups",
+      "keywords_up": [
+        "phát triển",
+        "hợp tác"
+      ],
+      "keywords_rev": [
+        "lệch nhịp",
+        "thiếu phối hợp"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Có sự phát triển và hợp tác tốt đẹp trong cảm xúc và các mối quan hệ của bạn.",
+            "Hãy lắng nghe trái tim mình và nói ra điều bạn cảm nhận."
+          ],
+          "rev": [
+            "Mọi thứ trong cảm xúc và các mối quan hệ của bạn chưa thật khớp nhịp với nhau.",
+            "Dành cho mình một khoảng lặng để cảm xúc được nghỉ ngơi."
+          ]
+        }
+      }
+    },
+    {
+      "id": "cups-04",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 4,
+      "name_vi": "Bốn Cốc",
+      "name_en": "Four of Cups",
+      "keywords_up": [
+        "ổn định",
+        "nghỉ ngơi"
+      ],
+      "keywords_rev": [
+        "trì trệ",
+        "bám víu"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Đây là lúc ổn định và nghỉ ngơi trong cảm xúc và các mối quan hệ của bạn.",
+            "Hãy lắng nghe trái tim mình và nói ra điều bạn cảm nhận."
+          ],
+          "rev": [
+            "Bạn có thể đang bám quá chặt vào sự quen thuộc trong cảm xúc và các mối quan hệ của bạn.",
+            "Dành cho mình một khoảng lặng để cảm xúc được nghỉ ngơi."
+          ]
+        }
+      }
+    },
+    {
+      "id": "cups-05",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 5,
+      "name_vi": "Năm Cốc",
+      "name_en": "Five of Cups",
+      "keywords_up": [
+        "thử thách",
+        "học hỏi"
+      ],
+      "keywords_rev": [
+        "dịu lại",
+        "hòa giải"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Có chút va chạm hoặc thử thách trong cảm xúc và các mối quan hệ của bạn, nhưng đều giúp bạn học hỏi.",
+            "Hãy lắng nghe trái tim mình và nói ra điều bạn cảm nhận."
+          ],
+          "rev": [
+            "Căng thẳng trong cảm xúc và các mối quan hệ của bạn đang dịu dần nếu bạn chịu lắng nghe.",
+            "Dành cho mình một khoảng lặng để cảm xúc được nghỉ ngơi."
+          ]
+        }
+      }
+    },
+    {
+      "id": "cups-06",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 6,
+      "name_vi": "Sáu Cốc",
+      "name_en": "Six of Cups",
+      "keywords_up": [
+        "hài hòa",
+        "tiến về phía trước"
+      ],
+      "keywords_rev": [
+        "buông cái cũ",
+        "chưa trôi chảy"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Mọi thứ trong cảm xúc và các mối quan hệ của bạn đang dần hài hòa và tiến về phía trước.",
+            "Hãy lắng nghe trái tim mình và nói ra điều bạn cảm nhận."
+          ],
+          "rev": [
+            "Bạn có thể cần buông một điều cũ trong cảm xúc và các mối quan hệ của bạn để đi tiếp.",
+            "Dành cho mình một khoảng lặng để cảm xúc được nghỉ ngơi."
+          ]
+        }
+      }
+    },
+    {
+      "id": "cups-07",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 7,
+      "name_vi": "Bảy Cốc",
+      "name_en": "Seven of Cups",
+      "keywords_up": [
+        "kiên trì",
+        "giữ vững"
+      ],
+      "keywords_rev": [
+        "nghi ngờ",
+        "chùn bước"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Bạn đang cần kiên trì và giữ vững lập trường trong cảm xúc và các mối quan hệ của bạn.",
+            "Hãy lắng nghe trái tim mình và nói ra điều bạn cảm nhận."
+          ],
+          "rev": [
+            "Đừng để sự nghi ngờ làm bạn chùn bước trong cảm xúc và các mối quan hệ của bạn.",
+            "Dành cho mình một khoảng lặng để cảm xúc được nghỉ ngơi."
+          ]
+        }
+      }
+    },
+    {
+      "id": "cups-08",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 8,
+      "name_vi": "Tám Cốc",
+      "name_en": "Eight of Cups",
+      "keywords_up": [
+        "chuyển động",
+        "tiến triển"
+      ],
+      "keywords_rev": [
+        "quá vội",
+        "cần chăm chút"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Mọi việc trong cảm xúc và các mối quan hệ của bạn đang chuyển động nhanh và có tiến triển.",
+            "Hãy lắng nghe trái tim mình và nói ra điều bạn cảm nhận."
+          ],
+          "rev": [
+            "Hãy chậm lại một chút, vì cảm xúc và các mối quan hệ của bạn cần được chăm chút kỹ hơn.",
+            "Dành cho mình một khoảng lặng để cảm xúc được nghỉ ngơi."
+          ]
+        }
+      }
+    },
+    {
+      "id": "cups-09",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 9,
+      "name_vi": "Chín Cốc",
+      "name_en": "Nine of Cups",
+      "keywords_up": [
+        "gần thành quả",
+        "bền bỉ"
+      ],
+      "keywords_rev": [
+        "áp lực",
+        "tự đòi hỏi"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Bạn đã đi được một chặng dài trong cảm xúc và các mối quan hệ của bạn, thành quả đang ở gần.",
+            "Hãy lắng nghe trái tim mình và nói ra điều bạn cảm nhận."
+          ],
+          "rev": [
+            "Bạn có thể đang tự đặt áp lực quá nhiều lên cảm xúc và các mối quan hệ của bạn.",
+            "Dành cho mình một khoảng lặng để cảm xúc được nghỉ ngơi."
+          ]
+        }
+      }
+    },
+    {
+      "id": "cups-10",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 10,
+      "name_vi": "Mười Cốc",
+      "name_en": "Ten of Cups",
+      "keywords_up": [
+        "trọn vẹn",
+        "hoàn tất chu kỳ"
+      ],
+      "keywords_rev": [
+        "gánh nặng",
+        "chia sẻ bớt"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Một chu kỳ trong cảm xúc và các mối quan hệ của bạn đang đi đến độ trọn vẹn.",
+            "Hãy lắng nghe trái tim mình và nói ra điều bạn cảm nhận."
+          ],
+          "rev": [
+            "Bạn đang mang nhiều hơn mức cần thiết trong cảm xúc và các mối quan hệ của bạn, hãy chia sẻ bớt.",
+            "Dành cho mình một khoảng lặng để cảm xúc được nghỉ ngơi."
+          ]
+        }
+      }
+    },
+    {
+      "id": "cups-11",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 11,
+      "name_vi": "Thị Đồng Cốc",
+      "name_en": "Page of Cups",
+      "keywords_up": [
+        "tò mò",
+        "tin mới"
+      ],
+      "keywords_rev": [
+        "non nớt",
+        "kiên nhẫn"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Một ý tưởng hoặc tin mới đáng để bạn tò mò trong cảm xúc và các mối quan hệ của bạn.",
+            "Hãy lắng nghe trái tim mình và nói ra điều bạn cảm nhận."
+          ],
+          "rev": [
+            "Hãy kiên nhẫn hơn với những điều còn non nớt trong cảm xúc và các mối quan hệ của bạn.",
+            "Dành cho mình một khoảng lặng để cảm xúc được nghỉ ngơi."
+          ]
+        }
+      }
+    },
+    {
+      "id": "cups-12",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 12,
+      "name_vi": "Kỵ Sĩ Cốc",
+      "name_en": "Knight of Cups",
+      "keywords_up": [
+        "năng lượng",
+        "tiến tới"
+      ],
+      "keywords_rev": [
+        "vội vàng",
+        "cân nhắc"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Bạn đang đầy năng lượng để tiến tới trong cảm xúc và các mối quan hệ của bạn.",
+            "Hãy lắng nghe trái tim mình và nói ra điều bạn cảm nhận."
+          ],
+          "rev": [
+            "Đừng vội vàng, hãy cân nhắc kỹ hơn trong cảm xúc và các mối quan hệ của bạn.",
+            "Dành cho mình một khoảng lặng để cảm xúc được nghỉ ngơi."
+          ]
+        }
+      }
+    },
+    {
+      "id": "cups-13",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 13,
+      "name_vi": "Nữ Hoàng Cốc",
+      "name_en": "Queen of Cups",
+      "keywords_up": [
+        "dịu dàng",
+        "trưởng thành"
+      ],
+      "keywords_rev": [
+        "chăm sóc bản thân",
+        "nuôi dưỡng"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Sự dịu dàng và trưởng thành đang dẫn lối bạn trong cảm xúc và các mối quan hệ của bạn.",
+            "Hãy lắng nghe trái tim mình và nói ra điều bạn cảm nhận."
+          ],
+          "rev": [
+            "Hãy dành thời gian chăm sóc bản thân trước khi lo cho cảm xúc và các mối quan hệ của bạn.",
+            "Dành cho mình một khoảng lặng để cảm xúc được nghỉ ngơi."
+          ]
+        }
+      }
+    },
+    {
+      "id": "cups-14",
+      "arcana": "minor",
+      "suit": "cups",
+      "number": 14,
+      "name_vi": "Vua Cốc",
+      "name_en": "King of Cups",
+      "keywords_up": [
+        "chủ động",
+        "vững vàng"
+      ],
+      "keywords_rev": [
+        "mềm mỏng",
+        "bớt cứng nhắc"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Bạn có thể chủ động và vững vàng dẫn dắt cảm xúc và các mối quan hệ của bạn.",
+            "Hãy lắng nghe trái tim mình và nói ra điều bạn cảm nhận."
+          ],
+          "rev": [
+            "Mềm mỏng hơn một chút sẽ giúp cảm xúc và các mối quan hệ của bạn thuận lợi hơn.",
+            "Dành cho mình một khoảng lặng để cảm xúc được nghỉ ngơi."
+          ]
+        }
+      }
+    },
+    {
+      "id": "swords-01",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 1,
+      "name_vi": "Át Kiếm",
+      "name_en": "Ace of Swords",
+      "keywords_up": [
+        "khởi đầu",
+        "hạt giống"
+      ],
+      "keywords_rev": [
+        "chậm trễ",
+        "chưa rõ"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Một khởi đầu mới đang mở ra trong suy nghĩ và cách bạn trò chuyện.",
+            "Hãy chọn lời nói nhẹ nhàng và rõ ràng với chính mình lẫn người khác."
+          ],
+          "rev": [
+            "Khởi đầu còn chậm hoặc chưa rõ ràng trong suy nghĩ và cách bạn trò chuyện.",
+            "Thử viết ra những suy nghĩ rối để mọi thứ sáng rõ hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "swords-02",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 2,
+      "name_vi": "Hai Kiếm",
+      "name_en": "Two of Swords",
+      "keywords_up": [
+        "lựa chọn",
+        "cân bằng"
+      ],
+      "keywords_rev": [
+        "phân vân",
+        "lưỡng lự"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Bạn đang cân nhắc giữa hai hướng đi trong suy nghĩ và cách bạn trò chuyện.",
+            "Hãy chọn lời nói nhẹ nhàng và rõ ràng với chính mình lẫn người khác."
+          ],
+          "rev": [
+            "Sự phân vân kéo dài trong suy nghĩ và cách bạn trò chuyện có thể làm bạn mệt.",
+            "Thử viết ra những suy nghĩ rối để mọi thứ sáng rõ hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "swords-03",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 3,
+      "name_vi": "Ba Kiếm",
+      "name_en": "Three of Swords",
+      "keywords_up": [
+        "phát triển",
+        "hợp tác"
+      ],
+      "keywords_rev": [
+        "lệch nhịp",
+        "thiếu phối hợp"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Có sự phát triển và hợp tác tốt đẹp trong suy nghĩ và cách bạn trò chuyện.",
+            "Hãy chọn lời nói nhẹ nhàng và rõ ràng với chính mình lẫn người khác."
+          ],
+          "rev": [
+            "Mọi thứ trong suy nghĩ và cách bạn trò chuyện chưa thật khớp nhịp với nhau.",
+            "Thử viết ra những suy nghĩ rối để mọi thứ sáng rõ hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "swords-04",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 4,
+      "name_vi": "Bốn Kiếm",
+      "name_en": "Four of Swords",
+      "keywords_up": [
+        "ổn định",
+        "nghỉ ngơi"
+      ],
+      "keywords_rev": [
+        "trì trệ",
+        "bám víu"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Đây là lúc ổn định và nghỉ ngơi trong suy nghĩ và cách bạn trò chuyện.",
+            "Hãy chọn lời nói nhẹ nhàng và rõ ràng với chính mình lẫn người khác."
+          ],
+          "rev": [
+            "Bạn có thể đang bám quá chặt vào sự quen thuộc trong suy nghĩ và cách bạn trò chuyện.",
+            "Thử viết ra những suy nghĩ rối để mọi thứ sáng rõ hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "swords-05",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 5,
+      "name_vi": "Năm Kiếm",
+      "name_en": "Five of Swords",
+      "keywords_up": [
+        "thử thách",
+        "học hỏi"
+      ],
+      "keywords_rev": [
+        "dịu lại",
+        "hòa giải"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Có chút va chạm hoặc thử thách trong suy nghĩ và cách bạn trò chuyện, nhưng đều giúp bạn học hỏi.",
+            "Hãy chọn lời nói nhẹ nhàng và rõ ràng với chính mình lẫn người khác."
+          ],
+          "rev": [
+            "Căng thẳng trong suy nghĩ và cách bạn trò chuyện đang dịu dần nếu bạn chịu lắng nghe.",
+            "Thử viết ra những suy nghĩ rối để mọi thứ sáng rõ hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "swords-06",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 6,
+      "name_vi": "Sáu Kiếm",
+      "name_en": "Six of Swords",
+      "keywords_up": [
+        "hài hòa",
+        "tiến về phía trước"
+      ],
+      "keywords_rev": [
+        "buông cái cũ",
+        "chưa trôi chảy"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Mọi thứ trong suy nghĩ và cách bạn trò chuyện đang dần hài hòa và tiến về phía trước.",
+            "Hãy chọn lời nói nhẹ nhàng và rõ ràng với chính mình lẫn người khác."
+          ],
+          "rev": [
+            "Bạn có thể cần buông một điều cũ trong suy nghĩ và cách bạn trò chuyện để đi tiếp.",
+            "Thử viết ra những suy nghĩ rối để mọi thứ sáng rõ hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "swords-07",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 7,
+      "name_vi": "Bảy Kiếm",
+      "name_en": "Seven of Swords",
+      "keywords_up": [
+        "kiên trì",
+        "giữ vững"
+      ],
+      "keywords_rev": [
+        "nghi ngờ",
+        "chùn bước"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Bạn đang cần kiên trì và giữ vững lập trường trong suy nghĩ và cách bạn trò chuyện.",
+            "Hãy chọn lời nói nhẹ nhàng và rõ ràng với chính mình lẫn người khác."
+          ],
+          "rev": [
+            "Đừng để sự nghi ngờ làm bạn chùn bước trong suy nghĩ và cách bạn trò chuyện.",
+            "Thử viết ra những suy nghĩ rối để mọi thứ sáng rõ hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "swords-08",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 8,
+      "name_vi": "Tám Kiếm",
+      "name_en": "Eight of Swords",
+      "keywords_up": [
+        "chuyển động",
+        "tiến triển"
+      ],
+      "keywords_rev": [
+        "quá vội",
+        "cần chăm chút"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Mọi việc trong suy nghĩ và cách bạn trò chuyện đang chuyển động nhanh và có tiến triển.",
+            "Hãy chọn lời nói nhẹ nhàng và rõ ràng với chính mình lẫn người khác."
+          ],
+          "rev": [
+            "Hãy chậm lại một chút, vì suy nghĩ và cách bạn trò chuyện cần được chăm chút kỹ hơn.",
+            "Thử viết ra những suy nghĩ rối để mọi thứ sáng rõ hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "swords-09",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 9,
+      "name_vi": "Chín Kiếm",
+      "name_en": "Nine of Swords",
+      "keywords_up": [
+        "gần thành quả",
+        "bền bỉ"
+      ],
+      "keywords_rev": [
+        "áp lực",
+        "tự đòi hỏi"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Bạn đã đi được một chặng dài trong suy nghĩ và cách bạn trò chuyện, thành quả đang ở gần.",
+            "Hãy chọn lời nói nhẹ nhàng và rõ ràng với chính mình lẫn người khác."
+          ],
+          "rev": [
+            "Bạn có thể đang tự đặt áp lực quá nhiều lên suy nghĩ và cách bạn trò chuyện.",
+            "Thử viết ra những suy nghĩ rối để mọi thứ sáng rõ hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "swords-10",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 10,
+      "name_vi": "Mười Kiếm",
+      "name_en": "Ten of Swords",
+      "keywords_up": [
+        "trọn vẹn",
+        "hoàn tất chu kỳ"
+      ],
+      "keywords_rev": [
+        "gánh nặng",
+        "chia sẻ bớt"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Một chu kỳ trong suy nghĩ và cách bạn trò chuyện đang đi đến độ trọn vẹn.",
+            "Hãy chọn lời nói nhẹ nhàng và rõ ràng với chính mình lẫn người khác."
+          ],
+          "rev": [
+            "Bạn đang mang nhiều hơn mức cần thiết trong suy nghĩ và cách bạn trò chuyện, hãy chia sẻ bớt.",
+            "Thử viết ra những suy nghĩ rối để mọi thứ sáng rõ hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "swords-11",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 11,
+      "name_vi": "Thị Đồng Kiếm",
+      "name_en": "Page of Swords",
+      "keywords_up": [
+        "tò mò",
+        "tin mới"
+      ],
+      "keywords_rev": [
+        "non nớt",
+        "kiên nhẫn"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Một ý tưởng hoặc tin mới đáng để bạn tò mò trong suy nghĩ và cách bạn trò chuyện.",
+            "Hãy chọn lời nói nhẹ nhàng và rõ ràng với chính mình lẫn người khác."
+          ],
+          "rev": [
+            "Hãy kiên nhẫn hơn với những điều còn non nớt trong suy nghĩ và cách bạn trò chuyện.",
+            "Thử viết ra những suy nghĩ rối để mọi thứ sáng rõ hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "swords-12",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 12,
+      "name_vi": "Kỵ Sĩ Kiếm",
+      "name_en": "Knight of Swords",
+      "keywords_up": [
+        "năng lượng",
+        "tiến tới"
+      ],
+      "keywords_rev": [
+        "vội vàng",
+        "cân nhắc"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Bạn đang đầy năng lượng để tiến tới trong suy nghĩ và cách bạn trò chuyện.",
+            "Hãy chọn lời nói nhẹ nhàng và rõ ràng với chính mình lẫn người khác."
+          ],
+          "rev": [
+            "Đừng vội vàng, hãy cân nhắc kỹ hơn trong suy nghĩ và cách bạn trò chuyện.",
+            "Thử viết ra những suy nghĩ rối để mọi thứ sáng rõ hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "swords-13",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 13,
+      "name_vi": "Nữ Hoàng Kiếm",
+      "name_en": "Queen of Swords",
+      "keywords_up": [
+        "dịu dàng",
+        "trưởng thành"
+      ],
+      "keywords_rev": [
+        "chăm sóc bản thân",
+        "nuôi dưỡng"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Sự dịu dàng và trưởng thành đang dẫn lối bạn trong suy nghĩ và cách bạn trò chuyện.",
+            "Hãy chọn lời nói nhẹ nhàng và rõ ràng với chính mình lẫn người khác."
+          ],
+          "rev": [
+            "Hãy dành thời gian chăm sóc bản thân trước khi lo cho suy nghĩ và cách bạn trò chuyện.",
+            "Thử viết ra những suy nghĩ rối để mọi thứ sáng rõ hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "swords-14",
+      "arcana": "minor",
+      "suit": "swords",
+      "number": 14,
+      "name_vi": "Vua Kiếm",
+      "name_en": "King of Swords",
+      "keywords_up": [
+        "chủ động",
+        "vững vàng"
+      ],
+      "keywords_rev": [
+        "mềm mỏng",
+        "bớt cứng nhắc"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Bạn có thể chủ động và vững vàng dẫn dắt suy nghĩ và cách bạn trò chuyện.",
+            "Hãy chọn lời nói nhẹ nhàng và rõ ràng với chính mình lẫn người khác."
+          ],
+          "rev": [
+            "Mềm mỏng hơn một chút sẽ giúp suy nghĩ và cách bạn trò chuyện thuận lợi hơn.",
+            "Thử viết ra những suy nghĩ rối để mọi thứ sáng rõ hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pentacles-01",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 1,
+      "name_vi": "Át Tiền Xu",
+      "name_en": "Ace of Pentacles",
+      "keywords_up": [
+        "khởi đầu",
+        "hạt giống"
+      ],
+      "keywords_rev": [
+        "chậm trễ",
+        "chưa rõ"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Một khởi đầu mới đang mở ra trong công việc và những thói quen hằng ngày.",
+            "Từng bước nhỏ và đều đặn sẽ giúp bạn đi xa."
+          ],
+          "rev": [
+            "Khởi đầu còn chậm hoặc chưa rõ ràng trong công việc và những thói quen hằng ngày.",
+            "Hãy sắp xếp lại thói quen để bạn đỡ mệt hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pentacles-02",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 2,
+      "name_vi": "Hai Tiền Xu",
+      "name_en": "Two of Pentacles",
+      "keywords_up": [
+        "lựa chọn",
+        "cân bằng"
+      ],
+      "keywords_rev": [
+        "phân vân",
+        "lưỡng lự"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Bạn đang cân nhắc giữa hai hướng đi trong công việc và những thói quen hằng ngày.",
+            "Từng bước nhỏ và đều đặn sẽ giúp bạn đi xa."
+          ],
+          "rev": [
+            "Sự phân vân kéo dài trong công việc và những thói quen hằng ngày có thể làm bạn mệt.",
+            "Hãy sắp xếp lại thói quen để bạn đỡ mệt hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pentacles-03",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 3,
+      "name_vi": "Ba Tiền Xu",
+      "name_en": "Three of Pentacles",
+      "keywords_up": [
+        "phát triển",
+        "hợp tác"
+      ],
+      "keywords_rev": [
+        "lệch nhịp",
+        "thiếu phối hợp"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Có sự phát triển và hợp tác tốt đẹp trong công việc và những thói quen hằng ngày.",
+            "Từng bước nhỏ và đều đặn sẽ giúp bạn đi xa."
+          ],
+          "rev": [
+            "Mọi thứ trong công việc và những thói quen hằng ngày chưa thật khớp nhịp với nhau.",
+            "Hãy sắp xếp lại thói quen để bạn đỡ mệt hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pentacles-04",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 4,
+      "name_vi": "Bốn Tiền Xu",
+      "name_en": "Four of Pentacles",
+      "keywords_up": [
+        "ổn định",
+        "nghỉ ngơi"
+      ],
+      "keywords_rev": [
+        "trì trệ",
+        "bám víu"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Đây là lúc ổn định và nghỉ ngơi trong công việc và những thói quen hằng ngày.",
+            "Từng bước nhỏ và đều đặn sẽ giúp bạn đi xa."
+          ],
+          "rev": [
+            "Bạn có thể đang bám quá chặt vào sự quen thuộc trong công việc và những thói quen hằng ngày.",
+            "Hãy sắp xếp lại thói quen để bạn đỡ mệt hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pentacles-05",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 5,
+      "name_vi": "Năm Tiền Xu",
+      "name_en": "Five of Pentacles",
+      "keywords_up": [
+        "thử thách",
+        "học hỏi"
+      ],
+      "keywords_rev": [
+        "dịu lại",
+        "hòa giải"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Có chút va chạm hoặc thử thách trong công việc và những thói quen hằng ngày, nhưng đều giúp bạn học hỏi.",
+            "Từng bước nhỏ và đều đặn sẽ giúp bạn đi xa."
+          ],
+          "rev": [
+            "Căng thẳng trong công việc và những thói quen hằng ngày đang dịu dần nếu bạn chịu lắng nghe.",
+            "Hãy sắp xếp lại thói quen để bạn đỡ mệt hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pentacles-06",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 6,
+      "name_vi": "Sáu Tiền Xu",
+      "name_en": "Six of Pentacles",
+      "keywords_up": [
+        "hài hòa",
+        "tiến về phía trước"
+      ],
+      "keywords_rev": [
+        "buông cái cũ",
+        "chưa trôi chảy"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Mọi thứ trong công việc và những thói quen hằng ngày đang dần hài hòa và tiến về phía trước.",
+            "Từng bước nhỏ và đều đặn sẽ giúp bạn đi xa."
+          ],
+          "rev": [
+            "Bạn có thể cần buông một điều cũ trong công việc và những thói quen hằng ngày để đi tiếp.",
+            "Hãy sắp xếp lại thói quen để bạn đỡ mệt hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pentacles-07",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 7,
+      "name_vi": "Bảy Tiền Xu",
+      "name_en": "Seven of Pentacles",
+      "keywords_up": [
+        "kiên trì",
+        "giữ vững"
+      ],
+      "keywords_rev": [
+        "nghi ngờ",
+        "chùn bước"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Bạn đang cần kiên trì và giữ vững lập trường trong công việc và những thói quen hằng ngày.",
+            "Từng bước nhỏ và đều đặn sẽ giúp bạn đi xa."
+          ],
+          "rev": [
+            "Đừng để sự nghi ngờ làm bạn chùn bước trong công việc và những thói quen hằng ngày.",
+            "Hãy sắp xếp lại thói quen để bạn đỡ mệt hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pentacles-08",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 8,
+      "name_vi": "Tám Tiền Xu",
+      "name_en": "Eight of Pentacles",
+      "keywords_up": [
+        "chuyển động",
+        "tiến triển"
+      ],
+      "keywords_rev": [
+        "quá vội",
+        "cần chăm chút"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Mọi việc trong công việc và những thói quen hằng ngày đang chuyển động nhanh và có tiến triển.",
+            "Từng bước nhỏ và đều đặn sẽ giúp bạn đi xa."
+          ],
+          "rev": [
+            "Hãy chậm lại một chút, vì công việc và những thói quen hằng ngày cần được chăm chút kỹ hơn.",
+            "Hãy sắp xếp lại thói quen để bạn đỡ mệt hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pentacles-09",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 9,
+      "name_vi": "Chín Tiền Xu",
+      "name_en": "Nine of Pentacles",
+      "keywords_up": [
+        "gần thành quả",
+        "bền bỉ"
+      ],
+      "keywords_rev": [
+        "áp lực",
+        "tự đòi hỏi"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Bạn đã đi được một chặng dài trong công việc và những thói quen hằng ngày, thành quả đang ở gần.",
+            "Từng bước nhỏ và đều đặn sẽ giúp bạn đi xa."
+          ],
+          "rev": [
+            "Bạn có thể đang tự đặt áp lực quá nhiều lên công việc và những thói quen hằng ngày.",
+            "Hãy sắp xếp lại thói quen để bạn đỡ mệt hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pentacles-10",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 10,
+      "name_vi": "Mười Tiền Xu",
+      "name_en": "Ten of Pentacles",
+      "keywords_up": [
+        "trọn vẹn",
+        "hoàn tất chu kỳ"
+      ],
+      "keywords_rev": [
+        "gánh nặng",
+        "chia sẻ bớt"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Một chu kỳ trong công việc và những thói quen hằng ngày đang đi đến độ trọn vẹn.",
+            "Từng bước nhỏ và đều đặn sẽ giúp bạn đi xa."
+          ],
+          "rev": [
+            "Bạn đang mang nhiều hơn mức cần thiết trong công việc và những thói quen hằng ngày, hãy chia sẻ bớt.",
+            "Hãy sắp xếp lại thói quen để bạn đỡ mệt hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pentacles-11",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 11,
+      "name_vi": "Thị Đồng Tiền Xu",
+      "name_en": "Page of Pentacles",
+      "keywords_up": [
+        "tò mò",
+        "tin mới"
+      ],
+      "keywords_rev": [
+        "non nớt",
+        "kiên nhẫn"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Một ý tưởng hoặc tin mới đáng để bạn tò mò trong công việc và những thói quen hằng ngày.",
+            "Từng bước nhỏ và đều đặn sẽ giúp bạn đi xa."
+          ],
+          "rev": [
+            "Hãy kiên nhẫn hơn với những điều còn non nớt trong công việc và những thói quen hằng ngày.",
+            "Hãy sắp xếp lại thói quen để bạn đỡ mệt hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pentacles-12",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 12,
+      "name_vi": "Kỵ Sĩ Tiền Xu",
+      "name_en": "Knight of Pentacles",
+      "keywords_up": [
+        "năng lượng",
+        "tiến tới"
+      ],
+      "keywords_rev": [
+        "vội vàng",
+        "cân nhắc"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Bạn đang đầy năng lượng để tiến tới trong công việc và những thói quen hằng ngày.",
+            "Từng bước nhỏ và đều đặn sẽ giúp bạn đi xa."
+          ],
+          "rev": [
+            "Đừng vội vàng, hãy cân nhắc kỹ hơn trong công việc và những thói quen hằng ngày.",
+            "Hãy sắp xếp lại thói quen để bạn đỡ mệt hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pentacles-13",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 13,
+      "name_vi": "Nữ Hoàng Tiền Xu",
+      "name_en": "Queen of Pentacles",
+      "keywords_up": [
+        "dịu dàng",
+        "trưởng thành"
+      ],
+      "keywords_rev": [
+        "chăm sóc bản thân",
+        "nuôi dưỡng"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Sự dịu dàng và trưởng thành đang dẫn lối bạn trong công việc và những thói quen hằng ngày.",
+            "Từng bước nhỏ và đều đặn sẽ giúp bạn đi xa."
+          ],
+          "rev": [
+            "Hãy dành thời gian chăm sóc bản thân trước khi lo cho công việc và những thói quen hằng ngày.",
+            "Hãy sắp xếp lại thói quen để bạn đỡ mệt hơn."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pentacles-14",
+      "arcana": "minor",
+      "suit": "pentacles",
+      "number": 14,
+      "name_vi": "Vua Tiền Xu",
+      "name_en": "King of Pentacles",
+      "keywords_up": [
+        "chủ động",
+        "vững vàng"
+      ],
+      "keywords_rev": [
+        "mềm mỏng",
+        "bớt cứng nhắc"
+      ],
+      "readings": {
+        "general": {
+          "up": [
+            "Bạn có thể chủ động và vững vàng dẫn dắt công việc và những thói quen hằng ngày.",
+            "Từng bước nhỏ và đều đặn sẽ giúp bạn đi xa."
+          ],
+          "rev": [
+            "Mềm mỏng hơn một chút sẽ giúp công việc và những thói quen hằng ngày thuận lợi hơn.",
+            "Hãy sắp xếp lại thói quen để bạn đỡ mệt hơn."
+          ]
+        }
+      }
+    }
+  ]
+}

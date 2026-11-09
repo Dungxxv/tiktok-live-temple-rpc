@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Điều khiển Tarot</title>
+<link rel="icon" href="/favicon.svg">
+<style>
+  :root {
+    --bg: #0e0718; --panel: #1a0f2b; --panel-2: #241539; --line: #3a2656; --text: #f1eafb; --muted: #a99bc0;
+    --gold: #ffd987; --violet: #9b6bff; --ok: #5fd39a; --warn: #ffb44d; --bad: #ff6b7d; --radius: 12px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.45 "Segoe UI", system-ui, sans-serif; }
+  header { position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 10px 16px;
+    background: rgba(14, 7, 24, .92); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
+  header h1 { margin: 0; font-size: 18px; color: var(--gold); font-weight: 700; }
+  header .links { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+  a { color: var(--gold); }
+  main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 300px; gap: 14px; padding: 14px 16px 40px; max-width: 1500px; margin: 0 auto; }
+  @media (max-width: 1150px) { main { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .preview-col { grid-column: 1 / -1; } }
+  @media (max-width: 760px) { main { grid-template-columns: minmax(0, 1fr); padding: 10px; } }
+  section { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; min-width: 0; }
+  section + section { margin-top: 14px; }
+  h2 { margin: 0 0 10px; font-size: 14px; letter-spacing: .02em; color: var(--gold); display: flex; align-items: center; gap: 8px; }
+  h2 .sub { color: var(--muted); font-weight: 400; font-size: 12px; margin-left: auto; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; background: var(--panel-2); border: 1px solid var(--line); font-size: 12px; white-space: nowrap; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+  .dot.ok { background: var(--ok); box-shadow: 0 0 8px var(--ok); } .dot.warn { background: var(--warn); } .dot.bad { background: var(--bad); }
+  button { font: inherit; color: var(--text); background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 7px 12px; cursor: pointer; }
+  button:hover { border-color: var(--violet); }
+  button.primary { background: #5b2fb3; border-color: #7b4fe0; }
+  button.gold { background: #6a4a10; border-color: #b6862e; color: #ffe9b8; }
+  button.danger { background: #5a1825; border-color: #a33a4c; }
+  button.small { padding: 3px 8px; font-size: 12px; }
+  button:disabled { opacity: .45; cursor: default; }
+  input, select { font: inherit; color: var(--text); background: #120a20; border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; min-width: 0; }
+  input:focus, select:focus { outline: 2px solid var(--violet); outline-offset: 0; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .row > input { flex: 1 1 120px; }
+  .muted { color: var(--muted); }
+  .small-text { font-size: 12px; }
+
+  /* Phiên */
+  .phase { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .phase b { font-size: 20px; color: var(--gold); }
+  .bar { height: 6px; border-radius: 3px; background: var(--panel-2); overflow: hidden; flex: 1; }
+  .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--violet), var(--gold)); transition: width .2s linear; }
+  .timeline { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 12px; }
+  .timeline span { font-size: 11px; padding: 2px 7px; border-radius: 6px; background: var(--panel-2); color: var(--muted); border: 1px solid transparent; }
+  .timeline span.on { color: #1a0f2b; background: var(--gold); font-weight: 700; }
+  .seat { display: flex; gap: 12px; align-items: center; padding: 10px; background: var(--panel-2); border-radius: 10px; margin-bottom: 10px; }
+  .av { width: 48px; height: 48px; border-radius: 50%; overflow: hidden; flex: none; display: grid; place-items: center; background: #3b1d73; color: var(--gold); font-weight: 700; font-size: 18px; border: 2px solid #b6862e; }
+  .av img { width: 100%; height: 100%; object-fit: cover; }
+  .av.sm { width: 32px; height: 32px; font-size: 13px; border-width: 1px; }
+  .cards { display: flex; gap: 10px; flex-wrap: wrap; }
+  .card { width: 76px; text-align: center; font-size: 11px; color: var(--muted); }
+  .card img { width: 76px; height: 126px; object-fit: cover; border-radius: 6px; border: 1px solid var(--gold); background: #fff; display: block; }
+  .card.rev img { transform: rotate(180deg); }
+  .reading { margin-top: 10px; padding: 8px 10px; border-left: 3px solid var(--gold); background: rgba(255, 217, 135, .06); border-radius: 0 8px 8px 0; min-height: 22px; }
+
+  /* Hàng chờ */
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 6px 6px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  th { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+  td.rank { width: 30px; color: var(--gold); font-weight: 700; }
+  td.name { max-width: 0; width: 100%; }
+  td.name div { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  td.name span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  td.stars { white-space: nowrap; font-weight: 700; color: var(--gold); }
+  td.act { white-space: nowrap; text-align: right; }
+  tr.locked td { background: rgba(255, 217, 135, .08); }
+  .tag { font-size: 10px; padding: 1px 6px; border-radius: 6px; background: var(--panel-2); color: var(--muted); margin-left: 4px; }
+  .tag.gift { color: #ffe9b8; background: #5a3e0c; } .tag.lock { color: #1a0f2b; background: var(--gold); }
+  .queue-wrap { max-height: 520px; overflow: auto; }
+  .empty { padding: 18px; text-align: center; color: var(--muted); }
+
+  /* Giả lập */
+  .gifts { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 6px; margin: 8px 0; }
+  .gifts button { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px; }
+  .gifts img { width: 34px; height: 34px; object-fit: contain; }
+  .gifts small { color: var(--gold); }
+  .cfg { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
+  .cfg label { display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--muted); }
+
+  /* Xem trước + nhật ký */
+  .preview { position: relative; width: 100%; aspect-ratio: 9 / 16; border-radius: 10px; overflow: hidden; background: #000; border: 1px solid var(--line); }
+  .preview iframe { position: absolute; left: 0; top: 0; width: 900px; height: 1600px; border: 0; transform-origin: 0 0; pointer-events: none; }
+  .log { max-height: 300px; overflow: auto; font-size: 12px; font-family: Consolas, monospace; }
+  .log div { padding: 3px 0; border-bottom: 1px dashed var(--line); }
+  .log time { color: var(--muted); margin-right: 6px; }
+  #toast { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); background: #2b1a45; border: 1px solid var(--violet); padding: 8px 14px; border-radius: 10px; opacity: 0; transition: opacity .25s; pointer-events: none; max-width: calc(100vw - 32px); }
+  #toast.show { opacity: 1; } #toast.err { border-color: var(--bad); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Điều khiển Phòng Tarot</h1>
+  <span class="pill"><span class="dot" id="wsDot"></span><span id="wsText">Đang kết nối…</span></span>
+  <span class="pill"><span class="dot" id="ttDot"></span><span id="ttText">TikTok: chưa nối</span></span>
+  <div class="links">
+    <a href="/tarot" target="_blank" rel="noopener">Mở màn live ↗</a>
+    <a href="/tarot?calibrate=1" target="_blank" rel="noopener">Hiệu chuẩn ↗</a>
+  </div>
+</header>
+
+<main>
+  <div>
+    <section>
+      <h2>Kết nối TikTok Live</h2>
+      <div class="row">
+        <input id="ttUser" placeholder="@kênh hoặc link live" autocomplete="off">
+        <button class="primary" id="ttConnect">Kết nối</button>
+        <button id="ttDisconnect">Ngắt</button>
+      </div>
+      <p class="muted small-text" id="ttInfo" style="margin:8px 0 0">Bình luận chứa “bói / tarot / xem bài” sẽ tự vào hàng; quà TikTok tự cộng sao.</p>
+    </section>
+
+    <section>
+      <h2>Phiên đang bói <span class="sub" id="enabledText"></span></h2>
+      <div class="phase"><b id="phaseName">—</b><div class="bar"><i id="phaseBar"></i></div><span class="muted" id="phaseLeft"></span></div>
+      <div class="timeline" id="timeline"></div>
+      <div class="seat" id="seatBox"><span class="muted">Ghế đang trống</span></div>
+      <div class="cards" id="cards"></div>
+      <div class="reading muted" id="reading"></div>
+      <div class="row" style="margin-top:12px">
+        <button class="primary" id="btnStart">Bật nhận khách</button>
+        <button id="btnStop">Tạm dừng</button>
+        <button class="danger" id="btnSkip">Bỏ qua phiên này</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Giả lập (thử khi chưa live)</h2>
+      <div class="row">
+        <input id="simName" placeholder="Tên khách" value="">
+        <input id="simText" placeholder="Bình luận" value="bói tình yêu">
+        <button class="primary" id="simComment">Bình luận</button>
+      </div>
+      <div class="gifts" id="giftButtons"></div>
+      <div class="row">
+        <input id="simCoins" type="number" min="1" placeholder="Số xu tùy ý" style="max-width:130px">
+        <button class="gold" id="simCustomGift">Tặng số xu này</button>
+        <span class="muted small-text">Quà tặng cho tên ở ô “Tên khách”.</span>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button id="bulkComments">+5 khách bình luận</button>
+        <button id="bulkGifts">+3 quà ngẫu nhiên</button>
+      </div>
+    </section>
+  </div>
+
+  <div>
+    <section>
+      <h2>Hàng chờ <span class="sub" id="queueCount"></span></h2>
+      <div class="queue-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Khách</th><th>Sao</th><th></th></tr></thead>
+          <tbody id="queueBody"></tbody>
+        </table>
+        <div class="empty" id="queueEmpty">Chưa có ai. Khách bình luận “bói …” để vào hàng.</div>
+      </div>
+      <p class="muted small-text" style="margin:8px 0 0">Luật: bình luận +1⭐, quà 1 xu = 10⭐ (chỉnh ở dưới). Nhiều sao xếp trước, bằng sao ai vào trước xếp trước. Người có <span class="tag lock">sắp vào</span> đã được khóa, không ai chen được.</p>
+    </section>
+
+    <section>
+      <h2>Cấu hình nhanh <span class="sub">áp dụng ngay, mất khi khởi động lại server</span></h2>
+      <div class="cfg" id="cfgForm"></div>
+      <div class="row" style="margin-top:10px">
+        <button class="primary" id="cfgSave">Áp dụng</button>
+        <span class="muted small-text">Muốn giữ lâu dài: sửa <code>data/tarot/config.json</code>.</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>Mã quản trị</h2>
+      <div class="row">
+        <input id="adminToken" type="password" placeholder="ADMIN_TOKEN (để trống nếu server chưa đặt)" autocomplete="off">
+        <button id="tokenSave">Lưu</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="preview-col">
+    <section>
+      <h2>Màn live <span class="sub"><a href="/tarot?obs=1" target="_blank" rel="noopener">URL cho OBS ↗</a></span></h2>
+      <div class="preview" id="preview"><iframe src="/tarot?obs=1" title="Xem trước màn live" loading="lazy"></iframe></div>
+    </section>
+    <section>
+      <h2>Nhật ký</h2>
+      <div class="log" id="log"></div>
+    </section>
+  </div>
+</main>
+<div id="toast"></div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const PHASES = ['IDLE', 'CALLING', 'SHUFFLING', 'DRAWING', 'REVEALING', 'READING', 'FAREWELL', 'INTERMISSION'];
+  const PHASE_VI = { IDLE: 'Chờ khách', CALLING: 'Mời khách', SHUFFLING: 'Xào bài', DRAWING: 'Rút bài', REVEALING: 'Lật bài', READING: 'Đọc lời giải', FAREWELL: 'Tạm biệt', INTERMISSION: 'Chuyển khách' };
+  // Quà trên cột phải của màn live (tên TikTok + số xu). Tên quà thứ 5 chưa rõ, tạm để "Perfume".
+  const GIFTS = [
+    { name: 'Rose', vi: 'Hoa hồng', coins: 1, icon: 'gift-1.png' },
+    { name: 'Ice Cream Cone', vi: 'Kem', coins: 1, icon: 'gift-2.png' },
+    { name: 'Heart Me', vi: 'Tim', coins: 1, icon: 'gift-3.png' },
+    { name: 'Finger Heart', vi: 'Bắn tim', coins: 5, icon: 'gift-4.png' },
+    { name: 'Perfume', vi: 'Nước hoa', coins: 5, icon: 'gift-5.png' },
+    { name: 'Cap', vi: 'Mũ', coins: 99, icon: 'gift-6.png' }
+  ];
+  const NAMES = ['Lan Anh', 'Minh Thư', 'Quốc Bảo', 'Hà My', 'Tuấn Kiệt', 'Ngọc Hân', 'Đức Huy', 'Thu Trang', 'Gia Bảo', 'Khánh Linh', 'Phương Vy', 'Hoàng Nam'];
+  const TOPICS = ['bói tình yêu', 'bói công việc', 'xem bài tài lộc', 'tarot', 'bói giúp em với'];
+
+  let state = null; let offset = 0; let cfg = null; let rpcId = 0;
+  let token = ''; try { token = localStorage.getItem('tarotAdminToken') || ''; } catch (_) {}
+  $('adminToken').value = token;
+
+  function toast(msg, err = false) {
+    const t = $('toast'); t.textContent = msg; t.className = 'show' + (err ? ' err' : '');
+    clearTimeout(toast.t); toast.t = setTimeout(() => (t.className = ''), 2600);
+  }
+  function log(msg) {
+    const d = document.createElement('div');
+    const time = document.createElement('time'); time.textContent = new Date().toLocaleTimeString('vi-VN');
+    d.append(time, document.createTextNode(msg));
+    $('log').prepend(d);
+    while ($('log').children.length > 120) $('log').lastChild.remove();
+  }
+  async function rpc(method, params = {}) {
+    const res = await fetch('/rpc', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: ++rpcId, method, params: token ? { ...params, token } : params }) });
+    const body = await res.json();
+    if (body.error) throw new Error(body.error.message);
+    return body.result;
+  }
+  const run = (fn) => async (...a) => { try { await fn(...a); } catch (e) { toast(e.message, true); } };
+  function avatar(p, cls = 'av') {
+    const d = document.createElement('div'); d.className = cls;
+    const ini = (Array.from(p?.name || '?')[0] || '?').toUpperCase();
+    if (p?.avatar) { const i = document.createElement('img'); i.alt = ''; i.referrerPolicy = 'no-referrer'; i.src = p.avatar; i.onerror = () => { i.remove(); d.textContent = ini; }; d.append(i); }
+    else d.textContent = ini;
+    return d;
+  }
+  const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  // ---- Hiển thị trạng thái ----
+  function renderState() {
+    if (!state) return;
+    $('phaseName').textContent = PHASE_VI[state.phase] || state.phase;
+    $('enabledText').textContent = state.enabled ? 'đang nhận khách' : 'đang TẠM DỪNG';
+    $('enabledText').style.color = state.enabled ? 'var(--ok)' : 'var(--warn)';
+    $('btnStart').disabled = state.enabled; $('btnStop').disabled = !state.enabled; $('btnSkip').disabled = !state.seat;
+    $('timeline').innerHTML = PHASES.map((p) => `<span class="${p === state.phase ? 'on' : ''}">${PHASE_VI[p]}</span>`).join('');
+
+    const seat = $('seatBox'); seat.innerHTML = '';
+    if (state.seat) {
+      const info = document.createElement('div');
+      info.innerHTML = `<b>${esc(state.seat.name)}</b><div class="muted small-text">Chủ đề: ${esc(state.seat.topic)} · ${state.seat.cardsPlanned} lá</div>`;
+      seat.append(avatar(state.seat), info);
+    } else seat.innerHTML = '<span class="muted">Ghế đang trống</span>';
+
+    $('cards').innerHTML = (state.cards || []).map((c) =>
+      `<div class="card ${c.reversed ? 'rev' : ''}"><img src="/assets/tarot/cards/${esc(c.id)}.jpg" alt=""><div>${esc(c.name)}${c.reversed ? ' (ngược)' : ''}</div></div>`).join('');
+
+    const q = state.queue || [];
+    $('queueCount').textContent = `${state.queueTotal ?? q.length} người` + ((state.queueTotal ?? 0) > q.length ? ` · hiện ${q.length} người đầu` : '');
+    $('queueEmpty').style.display = q.length ? 'none' : '';
+    const body = $('queueBody'); body.innerHTML = '';
+    q.forEach((e, i) => {
+      const tr = document.createElement('tr'); if (e.locked) tr.className = 'locked';
+      const nameTd = document.createElement('td'); nameTd.className = 'name';
+      const wrap = document.createElement('div');
+      const nm = document.createElement('span'); nm.textContent = e.name;
+      wrap.append(avatar(e, 'av sm'), nm);
+      if (e.lane === 'gift') wrap.insertAdjacentHTML('beforeend', `<span class="tag gift">${e.coins || 0} xu</span>`);
+      if (e.locked) wrap.insertAdjacentHTML('beforeend', '<span class="tag lock">sắp vào</span>');
+      nameTd.append(wrap);
+      tr.innerHTML = `<td class="rank">${i + 1}</td>`;
+      tr.append(nameTd);
+      tr.insertAdjacentHTML('beforeend', `<td class="stars">${e.stars ?? 0}⭐</td>`);
+      const act = document.createElement('td'); act.className = 'act';
+      const plus = document.createElement('button'); plus.className = 'small gold'; plus.textContent = '+10⭐'; plus.title = 'Giả lập tặng 1 hoa hồng';
+      plus.onclick = run(async () => { await rpc('tarot.simulateGift', { viewerId: e.viewerId, name: e.name, coins: 1, giftName: 'Rose' }); });
+      const del = document.createElement('button'); del.className = 'small danger'; del.textContent = 'Xóa';
+      del.onclick = run(async () => { if (confirm(`Xóa ${e.name} khỏi hàng chờ?`)) { await rpc('tarot.remove', { viewerId: e.viewerId }); toast(`Đã xóa ${e.name}`); } });
+      act.append(plus, document.createTextNode(' '), del);
+      tr.append(act);
+      body.append(tr);
+    });
+  }
+  // Thanh thời gian + câu đang đọc chạy theo giờ server
+  setInterval(() => {
+    if (!state) return;
+    const now = Date.now() + offset;
+    if (state.phaseEndsAt) {
+      const total = state.phaseEndsAt - state.phaseStartedAt; const left = Math.max(0, state.phaseEndsAt - now);
+      $('phaseBar').style.width = `${Math.min(100, (1 - left / total) * 100)}%`;
+      $('phaseLeft').textContent = `${Math.ceil(left / 1000)}s`;
+    } else { $('phaseBar').style.width = '0'; $('phaseLeft').textContent = ''; }
+    const r = state.reading;
+    if (state.phase === 'READING' && r?.lines?.length) {
+      const durs = r.durations?.length === r.lines.length ? r.durations : r.lines.map((l) => Math.max(1, l.length / 13));
+      let el = (now - state.phaseStartedAt) / 1000; let i = 0;
+      while (i < durs.length - 1 && el >= durs[i]) { el -= durs[i]; i++; }
+      $('reading').textContent = `“${r.lines[i]}”  (${i + 1}/${r.lines.length})`;
+    } else if (r?.lines?.length) $('reading').textContent = `Lời giải ${r.lines.length} câu, ~${Math.round(r.totalSec)}s`;
+    else $('reading').textContent = state.cards?.length ? `Lời giải (~${Math.round(r?.totalSec || 0)}s) sẽ hiện khi bắt đầu đọc bài.` : 'Chưa rút bài.';
+  }, 250);
+
+  function renderTikTok(tt) {
+    const on = tt?.connected; const ing = tt?.connecting;
+    $('ttDot').className = 'dot ' + (on ? 'ok' : ing ? 'warn' : tt?.lastError ? 'bad' : '');
+    $('ttText').textContent = on ? `TikTok: @${tt.username} · ${tt.viewerCount || 0} xem` : ing ? `TikTok: đang nối @${tt.username}…` : 'TikTok: chưa nối';
+    $('ttInfo').textContent = tt?.lastError ? `Lỗi: ${tt.lastError}` : on ? `Đang nhận bình luận và quà từ @${tt.username}.` : 'Bình luận chứa “bói / tarot / xem bài” sẽ tự vào hàng; quà TikTok tự cộng sao.';
+    if (tt?.username && !$('ttUser').value) $('ttUser').value = '@' + tt.username;
+  }
+
+  // ---- Cấu hình nhanh ----
+  const CFG_FIELDS = [
+    ['phaseSec.CALLING', 'Mời khách (s)'], ['phaseSec.SHUFFLING', 'Xào bài (s)'], ['phaseSec.DRAWING', 'Rút bài (s)'],
+    ['phaseSec.REVEALING', 'Lật bài (s)'], ['phaseSec.FAREWELL', 'Tạm biệt (s)'], ['phaseSec.INTERMISSION', 'Đếm ngược (s)'],
+    ['readingMaxSec', 'Đọc tối đa (s)'], ['commentStars', 'Sao khi bình luận'], ['starsPerCoin', 'Sao mỗi xu'], ['defaultCards', 'Số lá mỗi phiên']
+  ];
+  const getPath = (o, p) => p.split('.').reduce((x, k) => x?.[k], o);
+  function renderCfg() {
+    $('cfgForm').innerHTML = CFG_FIELDS.map(([k, label]) => `<label>${label}<input type="number" min="0" step="1" data-k="${k}" value="${getPath(cfg, k) ?? ''}"></label>`).join('');
+  }
+  $('cfgSave').onclick = run(async () => {
+    const patch = {};
+    document.querySelectorAll('#cfgForm input').forEach((inp) => {
+      if (inp.value === '') return;
+      const [a, b] = inp.dataset.k.split('.');
+      if (b) (patch[a] ||= {})[b] = Number(inp.value); else patch[a] = Number(inp.value);
+    });
+    const r = await rpc('tarot.setConfig', { config: patch });
+    cfg = r.config; renderCfg(); toast('Đã áp dụng cấu hình');
+  });
+
+  // ---- Nút điều khiển ----
+  $('btnStart').onclick = run(async () => { await rpc('tarot.start'); toast('Đã bật nhận khách'); });
+  $('btnStop').onclick = run(async () => { await rpc('tarot.stop'); toast('Đã tạm dừng (phiên đang bói vẫn chạy nốt)'); });
+  $('btnSkip').onclick = run(async () => { if (confirm('Kết thúc ngay phiên đang bói?')) { await rpc('tarot.skip'); toast('Đã bỏ qua phiên'); } });
+  $('ttConnect').onclick = run(async () => {
+    const u = $('ttUser').value.trim(); if (!u) return toast('Nhập @kênh TikTok', true);
+    toast('Đang kết nối…'); await rpc('live.connect', { username: u });
+  });
+  $('ttDisconnect').onclick = run(async () => { await rpc('live.disconnect'); toast('Đã ngắt TikTok'); });
+  $('tokenSave').onclick = () => { token = $('adminToken').value.trim(); try { localStorage.setItem('tarotAdminToken', token); } catch (_) {} toast('Đã lưu mã quản trị'); };
+
+  const pick = (a) => a[Math.floor(Math.random() * a.length)];
+  const simName = () => $('simName').value.trim() || pick(NAMES) + ' ' + Math.floor(Math.random() * 90 + 10);
+  $('simComment').onclick = run(async () => {
+    const name = simName(); const r = await rpc('tarot.simulateComment', { name, text: $('simText').value || 'bói' });
+    toast(r.joined ? `${name} vào hàng (vị trí ${r.position})` : `${name}: ${r.reason}`);
+  });
+  $('giftButtons').innerHTML = GIFTS.map((g, i) => `<button data-i="${i}" title="${g.name} – ${g.coins} xu"><img src="/assets/tarot/ui/${g.icon}" alt=""><span>${g.vi}</span><small>${g.coins} xu</small></button>`).join('');
+  $('giftButtons').onclick = run(async (ev) => {
+    const b = ev.target.closest('button'); if (!b) return;
+    const g = GIFTS[b.dataset.i]; const name = simName();
+    const r = await rpc('tarot.simulateGift', { name, coins: g.coins, giftName: g.name });
+    toast(r.seated ? `${name} đang ngồi ghế, quà không đổi thứ tự` : `${name} tặng ${g.vi}: +${r.stars ?? '?'}⭐`);
+  });
+  $('simCustomGift').onclick = run(async () => {
+    const coins = Number($('simCoins').value); if (!(coins >= 1)) return toast('Nhập số xu ≥ 1', true);
+    const name = simName(); const r = await rpc('tarot.simulateGift', { name, coins, giftName: 'Gift' });
+    toast(`${name} tặng ${coins} xu: +${r.stars ?? '?'}⭐`);
+  });
+  $('bulkComments').onclick = run(async () => { for (let i = 0; i < 5; i++) await rpc('tarot.simulateComment', { name: pick(NAMES) + ' ' + Math.floor(Math.random() * 90 + 10), text: pick(TOPICS) }); toast('Đã thêm 5 khách'); });
+  $('bulkGifts').onclick = run(async () => {
+    for (let i = 0; i < 3; i++) { const g = pick(GIFTS); await rpc('tarot.simulateGift', { name: pick(NAMES) + ' ' + Math.floor(Math.random() * 90 + 10), coins: g.coins, giftName: g.name }); }
+    toast('Đã thêm 3 quà');
+  });
+
+  // ---- Xem trước co theo khung ----
+  const fitPreview = () => { const box = $('preview'); box.firstElementChild.style.transform = `scale(${box.clientWidth / 900})`; };
+  new ResizeObserver(fitPreview).observe($('preview'));
+
+  // ---- WebSocket: nhận trạng thái trực tiếp ----
+  let lastPhase = null;
+  function connect(attempt = 0) {
+    const ws = new WebSocket(`${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/ws`);
+    ws.onopen = () => { $('wsDot').className = 'dot ok'; $('wsText').textContent = 'Đã nối server'; attempt = 0; };
+    ws.onclose = () => { $('wsDot').className = 'dot bad'; $('wsText').textContent = 'Mất kết nối, đang nối lại…'; setTimeout(() => connect(attempt + 1), Math.min(8000, 500 * 2 ** attempt)); };
+    ws.onerror = () => ws.close();
+    ws.onmessage = (ev) => {
+      let m; try { m = JSON.parse(ev.data); } catch { return; }
+      const p = m.params;
+      if (m.method === 'tarot.state') {
+        state = p; offset = p.serverTime - Date.now(); renderState();
+        if (p.phase !== lastPhase) { if (lastPhase) log(`Pha: ${PHASE_VI[p.phase] || p.phase}${p.seat ? ' – ' + p.seat.name : ''}`); lastPhase = p.phase; }
+      } else if (m.method === 'tarot.queue') {
+        const who = p.name || p.viewerId || '';
+        if (p.reason === 'join') log(`➕ ${who} vào hàng`);
+        else if (String(p.reason).startsWith('gift')) log(`🎁 ${who} tặng ${p.reason.slice(5)}${p.stars ? ` +${p.stars}⭐` : ''}${p.jumped ? `, lên ${p.jumped} bậc` : ''}`);
+        else if (p.reason === 'remove') log(`➖ Xóa ${who} khỏi hàng`);
+      } else if (m.method === 'tarot.reaction') {
+        log(`✨ ${p.name} tặng ${p.giftName || 'quà'} (${p.coins} xu)`);
+      } else if (m.method === 'temple.state') renderTikTok(p.tiktok);
+    };
+  }
+
+  // Nạp ban đầu
+  run(async () => {
+    state = await rpc('tarot.getState'); offset = state.serverTime - Date.now(); renderState();
+    try { cfg = (await rpc('tarot.setConfig', { config: {} })).config; renderCfg(); } catch (e) { $('cfgForm').innerHTML = `<span class="muted">Cần mã quản trị để xem cấu hình (${esc(e.message)})</span>`; }
+    try { renderTikTok((await rpc('temple.getState')).tiktok); } catch (_) {}
+  })();
+  connect();
+})();
+</script>
+</body>
+</html>

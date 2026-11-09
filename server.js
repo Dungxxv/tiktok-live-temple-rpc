@@ -7,11 +7,18 @@ const cors = require('cors');
 const { WebSocketServer } = require('ws');
 const { TikTokLiveConnection, WebcastEvent, ControlEvent } = require('tiktok-live-connector');
 const { normalizeGiftPayload, getGiftComboDelta } = require('./lib/tiktok-gift-payload.cjs');
+const { createTarotService } = require('./lib/tarot-rpc');
+const { loadConfig: loadTarotConfig } = require('./lib/tarot-config');
+const { loadDeck: loadTarotDeck } = require('./lib/tarot-deck');
+const { createTtsProvider: createTarotTts } = require('./lib/tarot-tts');
 
 const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(__dirname, 'data');
 const TTS_CACHE_DIR = path.join(DATA_DIR, 'tts-cache');
 const STATE_FILE = path.join(DATA_DIR, 'merit-state.json');
+// APP_MODE: temple (mặc định) | tarot | both. Chỉ tarot/both mới nhận bình luận và quà TikTok thật cho Tarot.
+const APP_MODE = process.env.APP_MODE || 'temple';
+const TAROT_ON = APP_MODE === 'tarot' || APP_MODE === 'both';
 
 fs.mkdirSync(TTS_CACHE_DIR, { recursive: true });
 
@@ -124,9 +131,12 @@ class ZeroTTSManager {
   }
 
   resolvePythonBin() {
-    const venvPy = path.join(__dirname, '.venv', 'bin', 'python');
+    const isWin = process.platform === 'win32';
+    const venvPy = isWin
+      ? path.join(__dirname, '.venv', 'Scripts', 'python.exe')
+      : path.join(__dirname, '.venv', 'bin', 'python');
     if (fs.existsSync(venvPy)) return venvPy;
-    return 'python3';
+    return isWin ? 'python' : 'python3';
   }
 
   startWorker() {
@@ -138,6 +148,13 @@ class ZeroTTSManager {
     this.proc = spawn(pyBin, [scriptPath], {
       cwd: __dirname,
       stdio: ['pipe', 'pipe', 'pipe']
+    });
+
+    // Không tìm thấy Python hoặc không chạy được: ghi nhận lỗi thay vì làm sập cả server.
+    this.proc.on('error', (err) => {
+      console.error(`[ZeroTTS] Không chạy được worker (${pyBin}): ${err.message}`);
+      this.ready = false;
+      this.status = 'error';
     });
 
     this.proc.stdout.on('data', (chunk) => {
@@ -274,7 +291,7 @@ const DEFAULT_STATE = {
   tiktok: {
     connected: false,
     connecting: false,
-    username: 'zenfacts_vn',
+    username: 'dungxxv',
     roomId: null,
     viewerCount: 0,
     lastError: null
@@ -914,6 +931,7 @@ async function connectTikTokLive(usernameOrUrl) {
   connection.on(WebcastEvent.MEMBER, (data) => {
     if (!isCurrentConnection()) return;
     const { user, uniqueId, avatar } = extractUserFromEvent(data);
+    if (TAROT_ON) tarot.noteActivity({ name: user, uniqueId, avatar });
     recordDevotee(user, uniqueId, avatar, 1, 0, 0, 'Đã vào Chánh Điện lễ Phật');
     broadcastNotification('temple.state', getPublicState());
   });
@@ -923,7 +941,8 @@ async function connectTikTokLive(usernameOrUrl) {
     const { user, uniqueId, avatar } = extractUserFromEvent(data);
     const commentText = data?.content || data?.comment || '';
     console.log(`[TikTok Chat] ${user}: ${commentText}`);
-    parseViewerComment(commentText, user, uniqueId, avatar);
+    if (TAROT_ON) tarot.onComment({ name: user, uniqueId, avatar, text: commentText });
+    if (APP_MODE !== 'tarot') parseViewerComment(commentText, user, uniqueId, avatar);
   });
 
   connection.on(WebcastEvent.LIKE, (data) => {
@@ -989,6 +1008,9 @@ async function connectTikTokLive(usernameOrUrl) {
       comboDelta: deltaCount,
       groupId
     });
+
+    if (TAROT_ON) tarot.onGift({ name: user, uniqueId, avatar, coins: totalCoins, giftName: rawGiftName });
+    if (APP_MODE === 'tarot') return;
 
     Rituals.offerGift({
       user,
@@ -1087,6 +1109,7 @@ function configureAutoSim(enabled) {
 // 7. JSON-RPC 2.0 DISPATCHER
 // ============================================================================
 async function handleRpcCall(method, params = {}) {
+  if (method.startsWith('tarot.')) return tarot.rpc(method, params);
   switch (method) {
     case 'temple.getState':
       return getPublicState();
@@ -1145,6 +1168,17 @@ app.use(cors());
 app.use(express.json({ limit: '2mb' }));
 app.use('/tts-cache', express.static(TTS_CACHE_DIR, { maxAge: '7d' }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Chế độ Tarot (M0): trang live và tọa độ bố cục. Logic nằm ở lib/ và public/js/tarot/.
+app.get('/tarot', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'tarot.html'));
+});
+app.get('/tarot/admin', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'tarot-admin.html'));
+});
+app.get('/tarot/layout.json', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'data', 'tarot', 'layout.json'));
+});
 
 app.get('/admin', (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
@@ -1208,6 +1242,7 @@ function broadcastNotification(method, params) {
 }
 
 wss.on('connection', (ws) => {
+  ws.send(JSON.stringify({ jsonrpc: '2.0', method: 'tarot.state', params: tarot.getState() }));
   ws.send(
     JSON.stringify({
       jsonrpc: '2.0',
@@ -1251,6 +1286,23 @@ wss.on('connection', (ws) => {
 
 const zeroTts = new ZeroTTSManager();
 
+// Chế độ Tarot: toàn bộ logic nằm ở lib/tarot-*.js; ở đây chỉ nối phụ thuộc (broadcast, TTS, lưu file).
+const TAROT_STATE_FILE = path.join(DATA_DIR, 'tarot-state.json');
+const tarot = createTarotService({
+  config: loadTarotConfig(path.join(DATA_DIR, 'tarot', 'config.json')),
+  deck: loadTarotDeck(path.join(DATA_DIR, 'tarot', 'cards.json')),
+  clock: { now: () => Date.now(), setTimeout: (fn, ms) => setTimeout(fn, ms), clearTimeout: (h) => clearTimeout(h) },
+  broadcast: broadcastNotification,
+  sanitizeUserName,
+  isBlocked: isBlockedSpamOrToxic,
+  tts: createTarotTts({ synthesize: (text, voice) => zeroTts.synthesize(text, voice), cacheDir: TTS_CACHE_DIR, log: console.log }),
+  persist: (s) => fs.promises.writeFile(TAROT_STATE_FILE, JSON.stringify(s), 'utf8').catch((e) => console.error('[Tarot] Lỗi lưu:', e.message)),
+  loadSaved: () => (fs.existsSync(TAROT_STATE_FILE) ? JSON.parse(fs.readFileSync(TAROT_STATE_FILE, 'utf8')) : null),
+  log: console.log,
+  env: { ADMIN_TOKEN: process.env.ADMIN_TOKEN, NODE_ENV: process.env.NODE_ENV }
+});
+tarot.boot();
+
 server.listen(PORT, () => {
   console.log(`============================================================`);
   console.log(`🪷 CHÙA ONLINE TIKTOK LIVE RPC ĐÃ KHỞI ĐỘNG`);
@@ -1261,8 +1313,8 @@ server.listen(PORT, () => {
 
   // Visual/browser audits can opt out of external live connections.
   if (process.env.DISABLE_TIKTOK_AUTOCONNECT !== '1') {
-    // Tự động kết nối tới @zenfacts_vn ngay khi khởi động server
-    const defaultChannel = process.env.TIKTOK_USER || state.tiktok?.username || 'zenfacts_vn';
+    // Tự động kết nối tới @dungxxv ngay khi khởi động server
+    const defaultChannel = process.env.TIKTOK_USER || state.tiktok?.username || 'dungxxv';
     if (defaultChannel) {
       connectTikTokLive(defaultChannel).catch((err) => {
         console.warn(`[Auto-Connect @${defaultChannel}] Chưa kết nối được ngay:`, err.message);

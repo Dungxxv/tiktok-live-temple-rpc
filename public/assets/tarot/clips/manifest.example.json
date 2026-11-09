@@ -1,0 +1,78 @@
+{
+  "video": {
+    "width": 1280,
+    "height": 1234,
+    "fps": 30,
+    "format": "mp4"
+  },
+  "base": "idle_wait",
+  "clips": {
+    "idle_wait": {
+      "file": "idle_wait.mp4",
+      "loop": true,
+      "duration": 4.133
+    },
+    "invite": {
+      "file": "idle_wait.mp4",
+      "loop": true,
+      "duration": 4.133,
+      "borrowedFrom": "idle_wait"
+    },
+    "call_name": {
+      "file": "call_name.mp4",
+      "loop": false,
+      "duration": 3.2
+    },
+    "shuffle": {
+      "file": "talk.mp4",
+      "loop": false,
+      "duration": 5.066,
+      "borrowedFrom": "talk"
+    },
+    "draw_card": {
+      "file": "draw_card.mp4",
+      "loop": false,
+      "duration": 4.467,
+      "cues": {
+        "touch": 1.5
+      }
+    },
+    "reveal": {
+      "file": "talk.mp4",
+      "loop": false,
+      "duration": 5.066,
+      "cues": {
+        "point": 2.467
+      },
+      "borrowedFrom": "talk"
+    },
+    "talk_a": {
+      "file": "talk.mp4",
+      "loop": true,
+      "duration": 5.066,
+      "borrowedFrom": "talk"
+    },
+    "talk_b": {
+      "file": "talk.mp4",
+      "loop": true,
+      "duration": 5.066,
+      "borrowedFrom": "talk"
+    },
+    "farewell": {
+      "file": "farewell.mp4",
+      "loop": false,
+      "duration": 6.133
+    },
+    "react_small": {
+      "file": "react_big.mp4",
+      "loop": false,
+      "duration": 5.066,
+      "borrowedFrom": "react_big"
+    },
+    "react_big": {
+      "file": "react_big.mp4",
+      "loop": false,
+      "duration": 5.066
+    }
+  }
+}

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Phòng Tarot</title>
+  <link rel="icon" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:wght@700&family=Inter:wght@400;700;900&family=Lora:wght@700&display=swap">
+  <link rel="stylesheet" href="/css/tarot.css">
+</head>
+<body>
+  <div id="viewport">
+    <div id="stage">
+      <!-- Nền phòng (Figma "image 3") -->
+      <div id="bg"><img src="/assets/tarot/ui/bg.png" alt=""></div>
+      <!-- Vùng video nữ tư tế (Figma "image 3" trong Frame 12). Chưa có clip thì hiện ảnh tĩnh. -->
+      <div id="video"><img class="poster" src="/assets/tarot/ui/priestess.png" alt=""></div>
+      <!-- Mặt bàn (Figma "image 2"): bộ bài 3D nằm úp, xào và trải vòng cung -->
+      <div id="table"><img src="/assets/tarot/ui/table.png" alt=""></div>
+      <div id="arcLayer"></div>
+      <div id="seat">
+        <div class="seat-ring">
+          <div class="seat-face"></div>
+          <img class="seat-frame" src="/assets/tarot/ui/seat-frame.svg" width="200" height="200" alt="">
+        </div>
+        <div id="seatName"></div>
+      </div>
+      <div id="cardLayer"></div>
+      <div id="bubble"><p id="subtitle"></p></div>
+      <div id="title"></div>
+      <div id="giftMenu"></div>
+      <div id="queueLabel">Kế tiếp</div>
+      <div id="marquee"><div class="track"></div></div>
+      <div id="queuePanel">
+        <img class="panel-bg" src="/assets/tarot/ui/queue-panel.svg" alt="">
+        <div id="queueSlots"></div>
+        <div id="queueTokens"></div>
+        <div class="pointer"><img src="/assets/tarot/ui/pointer.svg" alt=""></div>
+      </div>
+      <div id="queueMore"></div>
+      <div id="fxLayer"></div>
+      <div id="toast"></div>
+      <div id="disclaimer">Chỉ mang tính giải trí</div>
+      <div id="conn">Đang kết nối lại…</div>
+      <div id="audioHint">Bấm vào đây để bật âm thanh</div>
+      <div id="stats"></div>
+      <div id="guides"></div>
+    </div>
+  </div>
+  <script type="module" src="/js/tarot/main.js"></script>
+</body>
+</html>

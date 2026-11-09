@@ -1,0 +1,88 @@
+{
+  "_note": "Ghi đè mặc định trong lib/tarot-config.js. Bản theo thiết kế Figma: 3 lá/phiên, có pha xào bài trên bàn, hàng chờ 21 ô, pha dài hơn cho hiệu ứng, đếm ngược 5 giây giữa hai khách (INTERMISSION).",
+  "queueMax": 200,
+  "queueVisible": 21,
+  "rejoinCooldownSec": 600,
+  "lobbyWindowSec": 300,
+  "lobbyMax": 24,
+  "keywords": [
+    "bói",
+    "tarot",
+    "xem bài",
+    "+1"
+  ],
+  "topicKeywords": {
+    "love": [
+      "tình yêu",
+      "người yêu",
+      "crush"
+    ],
+    "career": [
+      "công việc",
+      "sự nghiệp",
+      "việc làm"
+    ],
+    "money": [
+      "tiền",
+      "tài lộc"
+    ]
+  },
+  "giftTiers": [
+    {
+      "name": "small",
+      "minCoins": 1,
+      "maxCoins": 9,
+      "jump": 1
+    },
+    {
+      "name": "medium",
+      "minCoins": 10,
+      "maxCoins": 49,
+      "jump": 3
+    },
+    {
+      "name": "large",
+      "minCoins": 50,
+      "maxCoins": 99,
+      "jump": 5
+    },
+    {
+      "name": "huge",
+      "minCoins": 100,
+      "maxCoins": null,
+      "jump": "second"
+    }
+  ],
+  "_queueOrderNote": "Luật sao: bình luận câu hỏi +1 sao (lần vào hàng); quà + xu x starsPerCoin sao (hoa hồng 1 xu = 10 sao, khớp cột quà trên màn hình); giftStars ghi đè số sao theo tên quà. Nhiều sao xếp trước, bằng sao thì ai vào trước xếp trước.",
+  "queueOrder": "stars",
+  "commentStars": 1,
+  "starsPerCoin": 10,
+  "giftStars": {},
+  "maxJumpPerGift": 5,
+  "maxJumpPer60s": 10,
+  "jumpWindowSec": 60,
+  "secondPosition": 2,
+  "lockBeforeEndSec": 10,
+  "freeReserveEvery": 4,
+  "bigGiftCoins": 100,
+  "bonusCardsOnBigGift": 2,
+  "maxCardsPerSession": 3,
+  "defaultCards": 3,
+  "reversedChance": 0.3,
+  "recentSessionsNoRepeat": 3,
+  "sessionTargetSec": 33,
+  "skipPhases": [],
+  "phaseSec": {
+    "CALLING": 6,
+    "SHUFFLING": 8,
+    "DRAWING": 7,
+    "REVEALING": 8,
+    "FAREWELL": 8,
+    "INTERMISSION": 5
+  },
+  "readingMinSec": 8,
+  "readingMaxSec": 40,
+  "readingBufferSec": 1,
+  "ttsCharsPerSec": 13,
+  "ttsEnabled": true
+}

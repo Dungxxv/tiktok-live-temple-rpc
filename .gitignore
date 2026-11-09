@@ -1,9 +1,14 @@
 node_modules/
 .venv/
-data/
+data/*
+!data/tarot/
 dist/
 embedded-assets.js
 .DS_Store
 *.log
 *.m4a
 public/assets/bg_chant.m4a
+
+# Tarot: clip video nặng và manifest sinh bởi scripts/make-placeholder-clips.mjs; trạng thái chạy
+public/assets/tarot/clips/*.mp4
+public/assets/tarot/clips/manifest.json
