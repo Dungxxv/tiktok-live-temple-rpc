@@ -1,0 +1,63 @@
+{
+  "_note": "Quà → chủ đề (khớp giftId trước, sau đó tên quà khớp CHÍNH XÁC theo biểu thức match, không phân biệt hoa thường). 6 quà theo thứ tự cột quà bên phải màn live (slot 1 = trên cùng), đã đối chiếu biểu tượng với trang streamtoearn.io/gifts?region=VN: Rose, Ice Cream Cone, Wink wink, Finger Heart, Love in Scent, Cap. giftId lấy từ gist alberand/ce890338db1a97af07802d5d59c72309 (bản 2022) và quà thật trên live (Rose = 5655); Wink wink và Love in Scent chưa có mã: điền sau khi có người tặng thật (khung Quà thật đã thấy ở /tarot/admin). Quà không khớp dòng nào → defaultTopic + log unmappedGift. File này chỉ được đọc khi server khởi động.",
+  "defaultTopic": "overview",
+  "topics": {
+    "overview": "Tổng quan",
+    "study": "Học Tập",
+    "career": "Sự Nghiệp",
+    "finance": "Tài chính",
+    "love": "Tình Yêu",
+    "specific": "Hỏi cụ thể"
+  },
+  "unassignedLabel": "Sắp có",
+  "gifts": [
+    {
+      "slot": 1,
+      "giftId": 5655,
+      "name": "Rose",
+      "match": "^rose$",
+      "coins": 1,
+      "topic": "overview"
+    },
+    {
+      "slot": 2,
+      "giftId": 5827,
+      "name": "Ice Cream Cone",
+      "match": "^ice cream cone$",
+      "coins": 1,
+      "topic": "study"
+    },
+    {
+      "slot": 3,
+      "giftId": null,
+      "name": "Wink wink",
+      "match": "^wink wink$",
+      "coins": 1,
+      "topic": "career"
+    },
+    {
+      "slot": 4,
+      "giftId": 5487,
+      "name": "Finger Heart",
+      "match": "^finger heart$",
+      "coins": 5,
+      "topic": "finance"
+    },
+    {
+      "slot": 5,
+      "giftId": null,
+      "name": "Love in Scent",
+      "match": "^love in scent$",
+      "coins": 5,
+      "topic": "love"
+    },
+    {
+      "slot": 6,
+      "giftId": 6104,
+      "name": "Cap",
+      "match": "^cap$",
+      "coins": 99,
+      "topic": "specific"
+    }
+  ]
+}

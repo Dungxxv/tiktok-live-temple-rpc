@@ -27,6 +27,13 @@ from zerotts import ZeroTTS, normalize_vi_text
 from zerotts.chunking import normalize_punctuation
 
 CACHE_DIR = Path(__file__).resolve().parent / "data" / "tts-cache"
+
+# Độ đồng nhất giọng giữa các câu (mỗi câu được tạo riêng nên mặc định của ZeroTTS cho chất giọng dao động).
+# Đo trên 2 bộ câu (MFCC + phổ trung bình dài hạn): cfg_scale 3.0 + audio_temperature 0.6 giảm độ lệch chất giọng
+# giữa các câu ~30–45% so với mặc định (cfg 1.0, temp 0.8), chậm hơn ~0.3–1 giây/câu. cfg_scale > 1 kéo giọng về
+# đúng giọng mẫu (theo tài liệu ZeroTTS). Đổi giá trị thì khóa cache đổi theo → cần đọc lại cache.
+CFG_SCALE = float(os.environ.get("ZEROTTS_CFG_SCALE", "3.0"))
+AUDIO_TEMPERATURE = float(os.environ.get("ZEROTTS_AUDIO_TEMPERATURE", "0.6"))
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 LOCAL_MODEL_CANDIDATES = [
@@ -157,7 +164,7 @@ def main() -> None:
                 emit({"type": "result", "id": req_id, "ok": False, "error": "Filtered empty/spam text"})
                 continue
 
-            cache_key = hashlib.sha1(f"v3::{voice}::{norm_text}".encode("utf-8")).hexdigest()[:20]
+            cache_key = hashlib.sha1(f"v4::{voice}::cfg{CFG_SCALE:g}::t{AUDIO_TEMPERATURE:g}::{norm_text}".encode("utf-8")).hexdigest()[:20]
             out_name = f"{voice}_{cache_key}.wav"
             out_path = CACHE_DIR / out_name
 
@@ -175,7 +182,10 @@ def main() -> None:
                 continue
 
             t_synth = time.time()
-            raw_wav = tts.synthesize(norm_text, voice=voice, eoa_extra_frames=2)
+            # Hạt ngẫu nhiên cố định theo nội dung: cùng một câu luôn ra cùng một giọng (tạo lại cache cũng không đổi).
+            np.random.seed(int(hashlib.sha1(norm_text.encode("utf-8")).hexdigest()[:8], 16))
+            raw_wav = tts.synthesize(norm_text, voice=voice, eoa_extra_frames=2,
+                                     cfg_scale=CFG_SCALE, audio_temperature=AUDIO_TEMPERATURE)
             if raw_wav is None or raw_wav.size == 0:
                 emit({"type": "result", "id": req_id, "ok": False, "error": "No audio generated"})
                 continue

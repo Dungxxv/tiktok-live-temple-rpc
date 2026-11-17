@@ -7,8 +7,9 @@
   <link rel="icon" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:wght@700&family=Inter:wght@400;700;900&family=Lora:wght@700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:wght@700&family=Inter:wght@400;700;900&family=Lora:wght@500;700&display=swap">
   <link rel="stylesheet" href="/css/tarot.css">
+  <link rel="stylesheet" href="/css/tarot-witch.css">
 </head>
 <body>
   <div id="viewport">
@@ -17,19 +18,34 @@
       <div id="bg"><img src="/assets/tarot/ui/bg.png" alt=""></div>
       <!-- Vùng video nữ tư tế (Figma "image 3" trong Frame 12). Chưa có clip thì hiện ảnh tĩnh. -->
       <div id="video"><img class="poster" src="/assets/tarot/ui/priestess.png" alt=""></div>
+      <!-- Lớp chuyển tối ở đáy (Figma "Frame 9"), chỉ hiện ở bố cục phù thủy -->
+      <div id="shade"></div>
       <!-- Mặt bàn (Figma "image 2"): bộ bài 3D nằm úp, xào và trải vòng cung -->
       <div id="table"><img src="/assets/tarot/ui/table.png" alt=""></div>
       <div id="arcLayer"></div>
+      <!-- Khung giấy "Thông điệp nhận được" (pha READING): lời giải hiện trong khung, lá bài và ghế thu nhỏ bên dưới -->
+      <div id="readingPanel"><img class="paper" src="/assets/tarot/ui/w-message.svg" alt=""><div class="ribbon"><img src="/assets/tarot/ui/w-ribbon.svg" alt=""><b>THÔNG ĐIỆP NHẬN ĐƯỢC</b></div></div>
       <div id="seat">
+        <!-- Bệ pha lê + chùm sáng (chỉ hiện ở bố cục phù thủy, layout.seat.face) -->
+        <div class="pedestal"><img class="cone-wide" src="/assets/tarot/ui/w-cone-wide.svg" alt=""><img class="cone" src="/assets/tarot/ui/w-cone.svg" alt=""><div class="stone"><img src="/assets/tarot/ui/w-pedestal.png" alt=""></div></div>
         <div class="seat-ring">
           <div class="seat-face"></div>
           <img class="seat-frame" src="/assets/tarot/ui/seat-frame.svg" width="200" height="200" alt="">
         </div>
+        <!-- Đếm ngược 3-2-1 trước khi khách kế tiếp vào bệ (pha INTERMISSION) -->
+        <div class="seat-count"><i class="ring"></i><b></b></div>
         <div id="seatName"></div>
+        <div id="seatTopic"><span></span></div>
       </div>
+      <!-- Lớp làm tối khi 3 lá bay lên: mọi thứ khác nằm dưới, lá bài (3D + HTML) nằm trên -->
+      <div id="dimmer"></div>
+      <!-- (deck3d.js chèn canvas Three.js "#deck3d" vào đây: bộ bài trên bàn, xáo bài, lá bay lên) -->
       <div id="cardLayer"></div>
       <div id="bubble"><p id="subtitle"></p></div>
+      <div id="bubbleTag"></div>
       <div id="title"></div>
+      <!-- Bảng giấy da trên cùng: lời mời + mã bình luận (dòng chạy) -->
+      <div id="banner"><img class="paper" src="/assets/tarot/ui/w-banner.svg" alt=""><p class="headline"></p><div class="greet"><div class="gav"></div><div class="gtext"><b></b><span>Chào mừng bạn đến phòng Tarot</span></div></div><div class="codes"><b>Mã bình luận</b></div></div>
       <div id="giftMenu"></div>
       <div id="queueLabel">Kế tiếp</div>
       <div id="marquee"><div class="track"></div></div>
@@ -41,12 +57,14 @@
       </div>
       <div id="queueMore"></div>
       <div id="fxLayer"></div>
+      <div id="welcomePopup"><i class="shine"></i><b></b><span>Bình luận để được xem Tarot</span></div>
       <div id="toast"></div>
       <div id="disclaimer">Chỉ mang tính giải trí</div>
       <div id="conn">Đang kết nối lại…</div>
       <div id="audioHint">Bấm vào đây để bật âm thanh</div>
       <div id="stats"></div>
       <div id="guides"></div>
+      <div id="giftFloat"></div>
     </div>
   </div>
   <script type="module" src="/js/tarot/main.js"></script>

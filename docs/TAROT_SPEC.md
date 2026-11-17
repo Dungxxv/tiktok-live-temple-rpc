@@ -299,7 +299,7 @@ tests/tarot-*.test.js
 - Route `GET /tarot` → `public/tarot.html` (cùng cơ chế phục vụ tĩnh hiện có).
 - Trong `handleRpcCall` (khoảng dòng 1089): nhánh `if (method.startsWith('tarot.')) return tarotRpc(method, params, ctx)`.
 - Trong handler `CHAT` và `GIFT` của `connectTikTokLive` (khoảng dòng 844): nếu `APP_MODE` có `tarot`, gọi `tarot.onComment(...)`/`tarot.onGift(...)` (song song hoặc thay cho nhánh chùa, theo cờ).
-- Biến môi trường: `APP_MODE=temple|tarot|both` (mặc định `temple`).
+- Biến môi trường: `APP_MODE=tarot|temple|both` (mặc định `tarot` từ 2026-11-17; cảnh chùa cũ chạy bằng `APP_MODE=temple`).
 
 ### 9.3 RPC (JSON-RPC 2.0, `POST /rpc` hoặc `ws /ws`)
 

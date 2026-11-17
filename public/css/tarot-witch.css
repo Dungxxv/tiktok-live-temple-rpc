@@ -1,0 +1,219 @@
+/* =====================================================================
+   Giao diện phù thủy — Figma 1080x1920 (file 0E7JqA0w6feXaW8XhygqHn, section 39:991).
+   Bật khi layout.json có "banner" (main.js thêm class "witch" cho #stage). Bố cục cũ (layout.classic.json) không bị ảnh hưởng.
+   ===================================================================== */
+#stage.witch { background: #000; }
+/* Không làm mờ mép (clip phủ cả khung). isolation giữ z-index của các thẻ <video> bên trong khung video, không đè lên lớp giao diện. */
+#video.no-mask { -webkit-mask-image: none; mask-image: none; isolation: isolate; }
+
+/* Lớp chuyển tối ở đáy (Figma "Frame 9": trong suốt → đen), nằm trên video, dưới ghế và lá bài */
+#shade { display: none; pointer-events: none; }
+#stage.witch #shade { display: block; background: linear-gradient(to bottom, rgba(0, 0, 0, 0), #000); }
+
+/* ---- Bảng giấy da trên cùng + dải "Mã bình luận" ---- */
+#banner { display: none; pointer-events: none; }
+#stage.witch #banner { display: block; }
+#banner .paper { position: absolute; left: 0; top: 0; width: 719.587px; height: 306.795px; max-width: none; }
+#banner .headline { position: absolute; left: 360.48px; top: 69.12px; width: 682.56px; transform: translateX(-50%);
+  font-family: var(--font-sans); font-weight: 700; font-size: 39.165px; line-height: normal; color: #563107; text-align: center; }
+/* Khách vào phòng: avatar + lời chào thay chỗ dòng mời (main.js thêm class "greeting"), xong thì avatar bay vào hàng chờ. */
+#banner .headline { transition: opacity .35s, transform .35s; }
+#banner.greeting .headline { opacity: 0; transform: translateX(-50%) scale(.94); }
+#banner .greet { position: absolute; left: 24px; top: 46px; width: 672px; height: 140px; display: flex; align-items: center; gap: 26px;
+  opacity: 0; transform: translateY(14px); transition: opacity .35s, transform .35s; }
+#banner.greeting .greet { opacity: 1; transform: none; }
+#banner .gav { flex: 0 0 132px; width: 132px; height: 132px; border-radius: 50%; border: 5px solid #8a4b10; background: #3b1d73;
+  box-shadow: 0 0 0 3px #f3c66b, 0 0 22px 6px rgba(255, 210, 120, .75); overflow: hidden; }
+#banner .gav .av { font-size: 60px; }
+#banner .gav.gone { visibility: hidden; }
+#banner .gtext { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 6px; font-family: var(--font-sans); color: #563107; }
+#banner .gtext b { font-weight: 900; font-size: 42px; line-height: 1.12; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#banner .gtext span { font-weight: 700; font-size: 27px; line-height: 1.2; color: #7a4a12; }
+#banner .codes { position: absolute; left: 5.76px; top: 204.365px; width: 707.52px; height: 55.908px; background: #eee; }
+#banner .codes b { position: absolute; left: 0; top: 0; width: 164.831px; height: 54.944px; background: #6c190b; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-sans); font-weight: 700; font-size: 22.391px; color: #fff; white-space: nowrap; }
+#stage.witch #marquee { border: 0; border-radius: 0; background: #eee; }
+#stage.witch #marquee .track span { padding-right: 57.6px; font-family: var(--font-sans); font-weight: 700; font-size: 26.714px; color: #4c2c05; text-shadow: none; white-space: pre; }
+
+/* ---- Bong bóng lời thoại: viên đen mờ, mũi nhọn chỉ lên nhân vật ---- */
+#stage.witch #bubble { background: rgba(0, 0, 0, .8); border: 0; border-radius: 48px; padding: 9.6px 36.48px; overflow: visible;
+  display: flex; align-items: center; justify-content: center; transform-origin: 30% 0; }
+#stage.witch #bubble::before { content: ""; position: absolute; left: 163.2px; top: -26.4px; width: 52.32px; height: 26.4px;
+  background: url(/assets/tarot/ui/w-bubble-arrow.svg) no-repeat 0 0 / 52.32px 26.4px; }
+#stage.witch #subtitle { font-family: var(--font-serif); font-weight: 700; font-size: 43.44px; line-height: normal; color: #fff; text-align: center; }
+/* Một cỡ chữ cố định; khung bong bóng co giãn theo độ dài câu (ngắn thì hẹp, dài thì rộng tới max rồi xuống dòng). */
+#stage.witch #bubble { width: auto !important; max-width: 700px; min-width: 240px; min-height: 0 !important; padding-top: 14px; padding-bottom: 14px; }
+#stage.witch[data-phase="READING"] #bubble { max-width: none; min-width: 0; padding: 0; }
+#stage.witch #bubble.long { padding-top: 9.6px; }
+#stage.witch #subtitle .said { color: #fff; }
+#stage.witch #subtitle .rest { color: rgba(255, 255, 255, .55); }
+#stage.witch #bubbleTag { padding: 5.76px 19.2px; border-radius: 28.8px; background: rgba(0, 0, 0, .6); color: #ffd987; font-size: 24.96px; line-height: 30.72px; }
+
+/* ---- Khi lá bài đang trên màn (rút / lật / đọc): theo thiết kế không hiện bong bóng ở giữa, hàng chờ mờ đi để không che lá trái ---- */
+#queuePanel, #queueMore { transition: opacity .5s; }
+#stage.witch[data-phase="DRAWING"] #bubble, #stage.witch[data-phase="REVEALING"] #bubble { opacity: 0; }
+#stage.witch[data-phase="DRAWING"] #queuePanel, #stage.witch[data-phase="REVEALING"] #queuePanel,
+#stage.witch[data-phase="DRAWING"] #queueMore, #stage.witch[data-phase="REVEALING"] #queueMore, #stage.witch[data-phase="READING"] #queueMore { opacity: .25; }
+/* ---- 3 lá bay lên (deck3d.js + ui-cards.js): mọi phần khác tối/mờ đi và nằm DƯỚI lớp lá ---- */
+#dimmer { display: none; }
+#stage.witch #dimmer { display: block; position: absolute; inset: 0; z-index: 35; pointer-events: none; opacity: 0; transition: opacity .7s;
+  background: radial-gradient(ellipse at 50% 55%, rgba(8, 4, 20, .45), rgba(4, 2, 12, .78)); }
+#stage.witch.cards-up #dimmer { opacity: 1; }
+#stage.witch #deck3d { z-index: 38; }
+/* avatar trên bệ đá đè lên bộ bài trên bàn; khi 3 lá bay lên bệ đá + khách vẫn nổi trên lớp tối (dưới lớp lá) */
+#stage.witch #seat { z-index: 39; }
+#stage.witch #cardLayer { z-index: 40; }
+#stage.witch #fxLayer { z-index: 45; }
+#stage.witch #toast, #stage.witch #conn, #stage.witch #audioHint, #stage.witch #stats { z-index: 50; }
+/* Quà bay lên liên tục (Figma 58:13): lớp trên cùng, không gì đè, không bắt chuột. */
+#giftFloat { position: absolute; inset: 0; z-index: 9999; pointer-events: none; overflow: hidden; }
+#giftFloat .gfloat { position: absolute; will-change: transform, opacity; filter: drop-shadow(0 6px 10px rgba(0,0,0,.35)); user-select: none; }
+#stage.witch.cards-up #queuePanel, #stage.witch.cards-up #queueMore, #stage.witch.cards-up #queueLabel { opacity: .3; }
+#queueLabel { transition: opacity .5s; }
+/* lá HTML vừa nhận từ lá 3D: lóe sáng */
+.tcard.landed .halo { opacity: 1; animation: cardLand .9s ease-out; }
+@keyframes cardLand { 0% { box-shadow: 0 0 60px 30px rgba(255, 230, 160, .95); } 100% { box-shadow: 0 0 34px 12px rgba(var(--light), .8); } }
+
+/* READING: khung giấy che bảng trên cùng và cột hàng chờ (như thiết kế) */
+#banner, #marquee { transition: opacity .5s; }
+#stage.witch[data-phase="READING"] #queuePanel, #stage.witch[data-phase="READING"] #banner, #stage.witch[data-phase="READING"] #marquee { opacity: 0; }
+
+/* ---- Pha READING: khung "Thông điệp nhận được"; lời giải nằm trong khung, chữ đen ---- */
+#readingPanel { display: none; pointer-events: none; opacity: 0; transition: opacity .6s; }
+#stage.witch #readingPanel { display: block; }
+#stage.witch[data-phase="READING"] #readingPanel { opacity: 1; }
+#readingPanel .paper { position: absolute; left: 0; top: 0; width: 1016.054px; height: 1267.68px; max-width: none; }
+#readingPanel .ribbon { position: absolute; left: 160.512px; top: 124.8px; width: 695.04px; height: 151.461px; }
+#readingPanel .ribbon img { position: absolute; left: 0; top: 0; width: 695.04px; height: 151.461px; }
+#readingPanel .ribbon b { position: absolute; left: 77.059px; top: 47.827px; font-family: var(--font-serif); font-weight: 700; font-size: 45.057px; line-height: normal; color: #641f00; white-space: nowrap; }
+#stage.witch[data-phase="READING"] #bubble { left: var(--rp-text-x) !important; top: var(--rp-text-y) !important; width: var(--rp-text-w) !important; min-height: 0 !important;
+  background: transparent; padding: 0; border-radius: 0; justify-content: flex-start; align-items: flex-start; }
+#stage.witch[data-phase="READING"] #bubble::before { display: none; }
+#stage.witch[data-phase="READING"] #subtitle { font-weight: 500; font-size: 39.002px; line-height: 68.254px; color: #000; text-align: left; }
+#stage.witch[data-phase="READING"] #subtitle .said { color: #000; }
+#stage.witch[data-phase="READING"] #subtitle .rest { color: rgba(0, 0, 0, .45); }
+#stage.witch[data-phase="READING"] #bubbleTag { display: none; }
+
+/* ---- Ghế: avatar tròn trên bệ pha lê + chùm sáng, tên bên dưới ---- */
+#seat { transform: var(--seat-base, none); transition: transform .9s cubic-bezier(.3, 1, .4, 1); }
+#stage.witch[data-phase="READING"] #seat.pedestal { transform: var(--seat-reading, var(--seat-base)); }
+#seat .pedestal { display: none; }
+#seat.pedestal .pedestal { display: block; position: absolute; left: 0; top: 0; width: 338.4px; height: 303.5px; }
+#seat.pedestal .cone { position: absolute; left: 0; top: 0; width: 356px; height: 240.441px; max-width: none; transition: opacity .6s; }
+/* Pha READING: chùm sáng rộng từ ghế lên ba lá bài (ghế thu nhỏ 0.692 nên kích thước chia 0.692) */
+#seat.pedestal .cone-wide { position: absolute; left: -547.104px; top: -482.112px; width: 1503.936px; height: 722.88px; max-width: none; opacity: 0; transition: opacity .6s; }
+#stage.witch[data-phase="READING"] #seat.pedestal .cone-wide { opacity: 1; }
+#stage.witch[data-phase="READING"] #seat.pedestal .cone { opacity: 0; }
+#seat.pedestal .stone { position: absolute; left: 42.643px; top: 106.608px; width: 258.588px; height: 196.889px; overflow: hidden; }
+#seat.pedestal .stone img { position: absolute; left: 0; top: 0; width: 100%; height: 131.34%; max-width: none; }
+#seat.pedestal .seat-ring { left: 73.152px; top: 15.552px; width: 192px; height: 192px; }
+#seat.pedestal .seat-frame { display: none; }
+#seat.pedestal .seat-face { left: 0; top: 0; width: 192px; height: 192px; border: 4.8px solid #fff; background: #2a1650;
+  box-shadow: 0 0 26.88px 7.68px rgba(160, 70, 255, .75), 0 0 57.6px 17.28px rgba(120, 40, 220, .4); }
+#seat.pedestal .seat-face:empty { display: none; }
+/* Khách trên bệ đá: khẽ lơ lửng lên xuống như đang bay trên bệ */
+#seat.pedestal .seat-face { animation: seatFloat 3.4s ease-in-out infinite; }
+@keyframes seatFloat { 0%, 100% { transform: translateY(0) rotate(0deg); } 30% { transform: translateY(-9px) rotate(-1.2deg); } 65% { transform: translateY(-4px) rotate(1deg); } }
+#seat.pedestal #seatName { left: -57.6px; right: -57.6px; top: 321.6px; font-family: var(--font-serif); font-weight: 700; font-size: 48.507px; line-height: normal; }
+#seat.pedestal.empty #seatName { font-size: 38.4px; }
+#seat.pedestal #seatTopic { display: none; }
+
+/* ---- Đếm ngược 3-2-1 trên bệ đá trước khi khách kế tiếp vào (pha INTERMISSION) ---- */
+.seat-count { display: none; }
+#seat.pedestal .seat-count { display: flex; position: absolute; left: 73.152px; top: 15.552px; width: 192px; height: 192px; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity .3s; pointer-events: none; }
+#seat.pedestal .seat-count.show { opacity: 1; }
+#seat.pedestal .seat-count b { position: relative; z-index: 2; font-family: var(--font-serif); font-weight: 700; font-size: 150px; line-height: 1; color: #fff3cf;
+  text-shadow: 0 0 18px rgba(255, 210, 120, .95), 0 0 46px rgba(190, 120, 255, .85), 0 4px 0 #7a4a12; }
+#seat.pedestal .seat-count .ring { position: absolute; inset: 6px; border-radius: 50%; border: 5px solid rgba(255, 225, 150, .9);
+  box-shadow: 0 0 26px 8px rgba(255, 210, 120, .6), inset 0 0 26px rgba(190, 120, 255, .6); }
+#seat.pedestal .seat-count.tick b { animation: countPop .85s cubic-bezier(.2, 1.4, .4, 1); }
+#seat.pedestal .seat-count.tick .ring { animation: countRing .95s ease-out; }
+@keyframes countPop { 0% { transform: scale(2.2); opacity: 0; } 35% { opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes countRing { 0% { transform: scale(.55); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+#seat.pedestal.incoming #seatName { font-size: 48.507px; color: #fff; }
+
+/* ---- Khách bay từ ô 1 hàng chờ vào bệ đá (ui-seat.js flyInMagic) ---- */
+.flyer.magic { overflow: visible; border-radius: 50%; box-shadow: none; will-change: transform, opacity; }
+.flyer.magic .av { position: relative; z-index: 3; border: 4.8px solid #fff; box-sizing: border-box;
+  box-shadow: 0 0 26px 8px rgba(255, 220, 140, .95), 0 0 70px 26px rgba(170, 110, 255, .55); }
+.flyer.magic i { position: absolute; border-radius: 50%; pointer-events: none; }
+.flyer.magic .halo { inset: -70%; z-index: 0; mix-blend-mode: screen;
+  background: radial-gradient(circle, rgba(255, 236, 180, .7) 0%, rgba(200, 140, 255, .35) 38%, rgba(120, 60, 220, 0) 68%);
+  animation: magicHalo .5s ease-in-out infinite alternate; }
+.flyer.magic .aura { inset: -24%; z-index: 2;
+  background: conic-gradient(from 0deg, rgba(255, 225, 150, 0), rgba(255, 225, 150, 1) 12%, rgba(255, 225, 150, 0) 28%,
+    rgba(210, 160, 255, 0) 50%, rgba(210, 160, 255, .95) 62%, rgba(210, 160, 255, 0) 78%);
+  -webkit-mask: radial-gradient(circle, transparent 60%, #000 62%, #000 67%, transparent 70%);
+          mask: radial-gradient(circle, transparent 60%, #000 62%, #000 67%, transparent 70%);
+  animation: magicSpin 1s linear infinite; }
+.flyer.magic .aura2 { inset: -40%; opacity: .75; animation: magicSpin 1.6s linear infinite reverse; }
+@keyframes magicSpin { to { transform: rotate(360deg); } }
+@keyframes magicHalo { from { opacity: .65; transform: scale(.9); } to { opacity: 1; transform: scale(1.12); } }
+.seat-beam { position: absolute; width: 230px; height: 820px; transform-origin: 50% 100%; pointer-events: none; z-index: 29; mix-blend-mode: screen;
+  border-radius: 50% 50% 0 0 / 14% 14% 0 0; filter: blur(5px);
+  background: linear-gradient(to top, rgba(255, 238, 190, 1), rgba(255, 214, 130, .65) 30%, rgba(190, 130, 255, .3) 65%, rgba(190, 130, 255, 0)); }
+.seat-shock { position: absolute; border-radius: 50%; pointer-events: none; z-index: 29;
+  border: 5px solid rgba(255, 228, 160, .95); box-shadow: 0 0 26px 8px rgba(255, 210, 120, .75), inset 0 0 22px rgba(210, 160, 255, .7); }
+
+/* ---- Hàng chờ dọc bên trái: nền tối mờ bo phải; mỗi khách = avatar viền màu chủ đề + huy hiệu sao + tên + nhãn chủ đề xoay dọc ---- */
+#queuePanel.vertical { overflow: hidden; border-radius: 0 30.72px 30.72px 0; background: rgba(5, 6, 15, .8); -webkit-backdrop-filter: blur(2.544px); backdrop-filter: blur(2.544px); }
+#queuePanel.vertical .panel-bg, #queuePanel.vertical .pointer, #queuePanel.vertical .divider { display: none; }
+/* Ô trống (chưa có người): vòng nét đứt cùng màu ô + "N.Trống"; có người vào thì ô trống mờ đi, thẻ khách hiện đè lên */
+.qslot .empty-label { display: none; }
+#queuePanel.vertical .qslot { width: 163.2px; height: 138.24px; gap: 17.28px; --tc: #4cb75f; opacity: .6; transition: opacity .4s; }
+#queuePanel.vertical .qslot.taken { opacity: 0; }
+#queuePanel.vertical .qslot[data-slot="2"] { --tc: #8e48e9; }
+#queuePanel.vertical .qslot[data-slot="3"] { --tc: #d97b3b; }
+#queuePanel.vertical .qslot[data-slot="4"] { --tc: #d0458f; }
+#queuePanel.vertical .qslot .coins, #queuePanel.vertical .qslot .frame > img { display: none; }
+#queuePanel.vertical .qslot .frame { width: 91.2px; height: 91.2px; order: 1; }
+#queuePanel.vertical .qslot .frame .av { left: 0; top: 0; width: 91.2px; height: 91.2px; box-sizing: border-box; border: 3.84px dashed var(--tc);
+  background: radial-gradient(circle, rgba(255, 255, 255, .08), rgba(255, 255, 255, 0) 70%); }
+#queuePanel.vertical .qslot .nm { order: 2; width: 163.2px; font-size: 24.615px; line-height: 29.76px; font-weight: 700; color: var(--tc); }
+#queuePanel.vertical .qslot .nm b { font-weight: 700; }
+#queuePanel.vertical .qslot .empty-label { display: inline; }
+/* Mỗi ô một màu (Figma, đếm từ ô 1 ở dưới): 1 xanh lá, 2 tím, 3 cam, 4 hồng, 5 xanh lá. Thẻ đổi ô thì đổi màu mượt. */
+#queuePanel.vertical .qtoken { width: 163.2px; height: 138.24px; gap: 17.28px; overflow: visible; --tc: #4cb75f; }
+#queuePanel.vertical .qtoken[data-slot="2"] { --tc: #8e48e9; }
+#queuePanel.vertical .qtoken[data-slot="3"] { --tc: #d97b3b; }
+#queuePanel.vertical .qtoken[data-slot="4"] { --tc: #d0458f; }
+#queuePanel.vertical .qtoken[data-slot="5"] { --tc: #4cb75f; }
+#queuePanel.vertical .qtoken .frame .av, #queuePanel.vertical .qtoken .nm { transition: border-color .5s, color .5s; }
+/* Ô đang chờ avatar từ bảng giấy bay xuống: để trống; đáp xuống thì nảy nhẹ */
+#queuePanel .qtoken.held { opacity: 0 !important; transition: none; }
+#queuePanel .qtoken.landed .frame { animation: qLand .6s cubic-bezier(.2, 1.6, .4, 1); }
+@keyframes qLand { 0% { transform: scale(.6); } 100% { transform: scale(1); } }
+#queuePanel.vertical .qtoken .frame { width: 91.2px; height: 91.2px; order: 1; }
+#queuePanel.vertical .qtoken .frame .av { left: 0; top: 0; width: 91.2px; height: 91.2px; border: 3.84px solid var(--tc); font-size: 34.56px; }
+#queuePanel.vertical .qtoken .nm { order: 2; width: 163.2px; font-size: 24.615px; line-height: 29.76px; font-weight: 700; color: var(--tc); }
+#queuePanel.vertical .qtoken .nm b { font-weight: 700; }
+/* Huy hiệu sao: 90x37 như thiết kế; số lớn (quà to) thì giãn sang phải thay vì tràn chữ */
+#queuePanel.vertical .qtoken .coins { position: absolute; left: 72.96px; top: -9.6px; min-width: 90.24px; height: 37.44px; padding: 0 34.56px 0 17.28px; gap: 0; z-index: 2;
+  background: #000; border: 0.96px solid #fff; border-radius: 24.96px; display: flex; align-items: center; }
+#queuePanel.vertical .qtoken .coins b { font-family: var(--font-sans); font-size: 25.926px; line-height: normal; color: #fbd289; }
+#queuePanel.vertical .qtoken .coins img { position: absolute; right: 13.44px; top: 7.68px; width: 20.16px; height: 20.16px; object-fit: contain; }
+#queuePanel .qtoken .tp { display: none; }
+#queuePanel.vertical .qtoken .tp { position: absolute; left: -12px; top: 50%; width: 24px; transform: translateY(-50%); display: flex; justify-content: center; }
+#queuePanel.vertical .qtoken .tp span { writing-mode: vertical-rl; font-size: 20.175px; line-height: 24px; color: #fff; white-space: nowrap; }
+#queuePanel.vertical .qtoken .gain { top: -38.4px; }
+#stage.witch #queueMore { display: flex; align-items: center; justify-content: center; border-radius: 33.6px; background: #7425ae;
+  font-family: var(--font-sans); font-weight: 700; font-size: 24.615px; line-height: normal; color: #fff; text-align: center; }
+#stage.witch #queueMore:empty { display: none; }
+#stage.witch #queueLabel:not(.count) { display: none; }
+
+/* ---- Lá bài: mặt sau tím (đúng khung lá), mặt trước viền vàng bo 21.7px;
+        nhãn viên đen mờ: tên lá phía trên, vị trí (Quá khứ / Hiện tại / Tương lai) phía dưới ---- */
+.back-img.exact { left: 0; top: 0; right: auto; bottom: auto; width: 100%; height: 100%; }
+#stage.witch .tcard .front { border: 1.551px solid var(--card-border); border-radius: 21.715px; filter: drop-shadow(0 3.102px 12.409px rgba(255, 187, 40, .4)); }
+#stage.witch .tcard .front img { border-radius: 12.409px; }
+#stage.witch .tcard .shade { border-radius: 21.715px; }
+#stage.witch .tcard .halo { border-radius: 28.8px; }
+.tcard[data-stage="read"] .inner { transform: rotateY(180deg); }
+.tcard .tname, .tcard .tpos { position: absolute; left: 50%; min-width: 213.12px; max-width: 345.6px; padding: 9.6px 19.2px; transform: translateX(-50%); border-radius: 50.88px; background: rgba(0, 0, 0, .6);
+  font-family: var(--font-serif); font-weight: 500; font-size: 34.56px; line-height: normal; color: #fff; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  opacity: 0; transition: opacity .4s .3s; }
+.tcard .tname { bottom: 100%; margin-bottom: 15.36px; }
+.tcard .tpos { top: 100%; margin-top: 15.36px; }
+.tcard[data-stage="up"] .tpos, .tcard[data-stage="open"] .tpos, .tcard[data-stage="read"] .tpos,
+.tcard[data-stage="open"] .tname, .tcard[data-stage="read"] .tname { opacity: 1; }

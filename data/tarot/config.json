@@ -1,7 +1,7 @@
 {
   "_note": "Ghi đè mặc định trong lib/tarot-config.js. Bản theo thiết kế Figma: 3 lá/phiên, có pha xào bài trên bàn, hàng chờ 21 ô, pha dài hơn cho hiệu ứng, đếm ngược 5 giây giữa hai khách (INTERMISSION).",
   "queueMax": 200,
-  "queueVisible": 21,
+  "queueVisible": 12,
   "rejoinCooldownSec": 600,
   "lobbyWindowSec": 300,
   "lobbyMax": 24,
@@ -53,8 +53,8 @@
       "jump": "second"
     }
   ],
-  "_queueOrderNote": "Luật sao: bình luận câu hỏi +1 sao (lần vào hàng); quà + xu x starsPerCoin sao (hoa hồng 1 xu = 10 sao, khớp cột quà trên màn hình); giftStars ghi đè số sao theo tên quà. Nhiều sao xếp trước, bằng sao thì ai vào trước xếp trước.",
-  "queueOrder": "stars",
+  "_queueOrderNote": "Hai làn (lanes): làn quà đứng trước, xếp theo ⭐ (xu × starsPerCoin), bằng ⭐ thì ai vào trước; làn vào phòng đứng sau theo thời gian vào. Chống đói: cứ freeReserveEvery-1 phiên quà liên tiếp thì 1 phiên cho người chờ lâu nhất làn vào phòng. joinOnEnter: vào phòng là vào hàng. Chủ đề phiên quà theo data/tarot/gift-topics.json, nội dung từ data/tarot/readings.json (đồng bộ Google Sheet). Bình luận (bất kỳ) +commentStars sao, tối đa 1 lần/commentStarCooldownSec giây; người chưa có trong hàng thì vào hàng.",
+  "queueOrder": "lanes",
   "commentStars": 1,
   "starsPerCoin": 10,
   "giftStars": {},
@@ -76,13 +76,54 @@
     "CALLING": 6,
     "SHUFFLING": 8,
     "DRAWING": 7,
-    "REVEALING": 8,
+    "REVEALING": 3,
     "FAREWELL": 8,
-    "INTERMISSION": 5
+    "INTERMISSION": 3
   },
   "readingMinSec": 8,
-  "readingMaxSec": 40,
+  "readingMaxSec": 120,
   "readingBufferSec": 1,
   "ttsCharsPerSec": 13,
-  "ttsEnabled": true
+  "ttsEnabled": true,
+  "ttsWaitMaxSec": 20,
+  "drawOnCalling": true,
+  "joinOnEnter": true,
+  "_commentTopicCodesNote": "Mã bình luận (khớp dải chạy trên bảng giấy): bình luận đúng mã ở đầu câu (\"02\", \"2\", \"02 tình yêu\") → khách được trải 3 lá theo chủ đề đó; nữ tư tế nói \"Chủ đề bạn bình luận là 02: Tình Yêu\". Bình luận khác chỉ để vào hàng/cộng sao (1 lá Tổng quan).",
+  "_singleCardNote": "Tạm bỏ phiên 1 lá: ai không bình luận mã thì trải 3 lá Tổng quan; quà chỉ để ưu tiên hàng chờ, không đổi chủ đề.",
+  "singleCardSessions": false,
+  "_speechLeadNote": "CALLING: avatar bay từ ô 1 vào bệ đá mất ~2,3 giây → chờ 2,6 giây rồi nữ tư tế mới chào.",
+  "speechLeadSec": { "CALLING": 2.6 },
+  "giftSetsTopic": false,
+  "commentTopicCodes": {
+    "01": { "topic": "overview", "label": "Tổng Quan" },
+    "02": { "topic": "love", "label": "Tình Yêu" },
+    "03": { "topic": "finance", "label": "Tài Chính" },
+    "04": { "topic": "career", "label": "Sự Nghiệp" },
+    "05": { "topic": "study", "label": "Học Tập" }
+  },
+  "speechBufferSec": 1.2,
+  "commentStarCooldownSec": 30,
+  "_ttsNote": "Bộ đọc giọng: capcap = CapCapTTS (VieNeu, CPU, giọng cố định; bật scripts/start-capcap.bat, cổng 8002, tạo giọng ngay khi mời người, không cần đọc sẵn). omnivoice = nhân bản giọng từ data/tarot/voice/ref.wav (refText phải đúng NỘI DUNG đoạn mẫu đó) → mọi câu cùng một giọng. Cần OmniVoice đang chạy (cổng 8001). Muốn đổi giọng: thay ref.wav + refText rồi chạy lại node scripts/prerender-tarot-tts.mjs (cache tự tạo lại theo giọng mới). Về ZeroTTS: đặt engine = zerotts.",
+  "tts": {
+    "engine": "capcap",
+    "capcap": { "url": "http://localhost:8002", "voice": "Ngọc Linh", "targetDb": -18, "timeoutSec": 60 },
+    "omnivoice": {
+      "url": "http://localhost:8001",
+      "lang": "Vietnamese",
+      "steps": 32,
+      "cfg": 2,
+      "speed": 1,
+      "targetDb": -18,
+      "timeoutSec": 120,
+      "refAudio": "voice/ref.wav",
+      "refText": "Chào bạn, mời bạn ngồi xuống nhé, chị sẽ xem bài cho bạn bằng tất cả sự nhẹ nhàng và chân thành."
+    }
+  },
+  "idleAfterSec": 600,
+  "firstJoinGraceSec": 2,
+  "welcomePopupCooldownSec": 1800,
+  "_requeueNote": "Xem xong (sau lời cảm ơn): avatar tan biến trên bệ rồi bay về CUỐI hàng chờ (làn vào phòng, chủ đề về Tổng quan, phải bình luận mã lại nếu muốn đổi). Không xếp lại khi hàng đang trống (tránh đọc đi đọc lại cho một người) hoặc khách im lặng quá idleAfterSec.",
+  "requeueAfterSession": true,
+  "autoPickCount": 3,
+  "autoPickAfterSec": 10
 }

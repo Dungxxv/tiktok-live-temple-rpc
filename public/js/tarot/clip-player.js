@@ -6,18 +6,20 @@
 // - Lặp tự quản (không dùng loop gốc của trình duyệt) để chủ động chèn clip phản ứng quà ở biên clip.
 // Chưa có clip (manifest 404) thì tự tắt và để giao diện dùng ảnh tĩnh.
 const PHASE_CLIP = {
-  IDLE: 'idle_wait', INTERMISSION: 'idle_wait', CALLING: 'call_name', SHUFFLING: 'shuffle',
+  // CALLING: giữ clip chờ (avatar đang bay vào bệ), chào bằng clip nói cùng nhịp — clip gật chào phải đợi mốc nhịp
+  // mới vào được (không giật) nên trễ, làm miệng nói muộn. Gật chào vẫn dùng cho phản ứng quà (react_big).
+  IDLE: 'idle_wait', INTERMISSION: 'idle_wait', CALLING: 'idle_wait', BREAK: 'idle_wait', SHUFFLING: 'shuffle',
   DRAWING: 'draw_card', REVEALING: 'reveal', FAREWELL: 'farewell'
 };
 const FILLERS = new Set(['idle_wait', 'invite', 'talk_a', 'talk_b']);
-const BOUNDARY_WAIT_S = 2.0;   // clip nền còn ít hơn chừng này thì chờ tới chỗ nối mới chuyển
-const FADE_CUT_MS = 420;       // chuyển giữa chừng
+const FADE_CUT_MS = 420;       // chuyển giữa chừng (chỉ khi buộc phải cắt ngang clip hành động)
 // Nối clip chồng lấn: clip sau bắt đầu sớm SEAM_OVERLAP_S và hiện dần trong lúc clip trước chạy nốt,
 // che độ lệch tư thế giữa khung cuối/khung đầu (đo SSIM chỉ 0,76–0,95 ở các chỗ nối).
 const SEAM_OVERLAP_S = 0.4;
 const FADE_SEAM_MS = 380;
-const REACTION_TTL_MS = 25000; // phản ứng quá cũ thì bỏ
-const REACTION_PHASES = new Set(['IDLE', 'INTERMISSION', 'READING']);
+const REACTION_TTL_MS = 180000; // giữ phản ứng chờ tới lúc trải bài xong (một phiên có thể dài 1–2 phút)
+// Không bộc lộ cảm xúc vui khi đang trải bài: phản ứng quà chỉ phát lúc rảnh / chuyển khách (sau khi xong phiên).
+const REACTION_PHASES = new Set(['IDLE', 'INTERMISSION']);
 
 export function createClipPlayer(root, { basePath = '/assets/tarot/clips/', onCue = () => {}, onStats = () => {} } = {}) {
   let manifest = null;
@@ -26,8 +28,16 @@ export function createClipPlayer(root, { basePath = '/assets/tarot/clips/', onCu
   let cur = null;                 // { name, info, el }
   let pending = null;             // clip chờ phát ở biên clip hiện tại
   let token = 0;
-  let talking = false;
+  let speakingNow = false;        // nữ tư tế đang có thoại (theo tiếng thật đang phát) → miệng nói; hết thoại → về clip chờ
+  let silentSince = 0;            // lúc bắt đầu im (chống chập chờn giữa hai câu liền nhau)
   let talkToggle = false;
+  const wantTalk = () => speakingNow;
+  // Clip hành động được nhường cho miệng nói khi có thoại; riêng xáo bài (mắt sáng) giữ nguyên.
+  const KEEP_WHILE_TALKING = new Set(['shuffle']);
+  const TALK_CLIPS = new Set(['talk_a', 'talk_b', 'reveal']);
+  const EXPECT_TALK_MS = 1200;    // đầu pha có lời: chờ tiếng phát tối đa chừng này trước khi coi là im
+  let expectTalkUntil = 0;
+  const STOP_TALK_AFTER_MS = 250; // im quá chừng này mới thôi nhép miệng (khoảng nghỉ giữa hai câu ngắn hơn)
   let phaseNow = 'IDLE';
   const reactions = [];
   const stats = { starts: 0, lastStartMs: 0, droppedFrames: 0, errors: 0, seams: 0, cuts: 0 };
@@ -104,12 +114,12 @@ export function createClipPlayer(root, { basePath = '/assets/tarot/clips/', onCu
     if (pending) return pending;
     const r = takeReaction();
     if (r) return r;
-    if (talking) { talkToggle = !talkToggle; return talkToggle ? 'talk_b' : 'talk_a'; }
+    if (wantTalk()) { talkToggle = !talkToggle; return talkToggle ? 'talk_b' : 'talk_a'; }
     if (cur && cur.info.loop) return cur.name;
     return PHASE_CLIP[phaseNow] && clipInfo(PHASE_CLIP[phaseNow])?.loop ? PHASE_CLIP[phaseNow] : base();
   }
 
-  function start(name, fadeMs) {
+  function start(name, fadeMs, offset = 0) {
     const info = clipInfo(name);
     const pool = info && pools.get(info.file);
     if (!pool) {
@@ -124,7 +134,7 @@ export function createClipPlayer(root, { basePath = '/assets/tarot/clips/', onCu
     const restartSame = el === prev?.el;
     el.onended = null;
     el.pause();
-    try { el.currentTime = 0; } catch (_) {}
+    try { el.currentTime = offset; } catch (_) {}
     cur = { name, info, el };
     const t0 = performance.now();
 
@@ -176,14 +186,72 @@ export function createClipPlayer(root, { basePath = '/assets/tarot/clips/', onCu
   }
 
   /** Yêu cầu chuyển clip: chờ biên clip nếu clip nền sắp hết, không thì mờ chéo ngay. */
+  let markTimer = null;
   function request(name) {
     if (!active) return;
+    clearTimeout(markTimer);
+    cancelSwitch();
     if (!cur) { start(name, 0); return; }
     if (cur.name === name && cur.info.loop) { pending = null; return; }
     const remain = (cur.el.duration || 0) - cur.el.currentTime;
-    if (FILLERS.has(cur.name) && remain <= BOUNDARY_WAIT_S) { pending = name; return; }
+    if (FILLERS.has(cur.name)) {
+      // Clip hành động bắt đầu ở tư thế đầu nhịp → vào đúng mốc tròn nhịp 3 giây gần nhất của clip đang lặp (không giật).
+      const toMark = CYCLE_S - (cur.el.currentTime % CYCLE_S);
+      if (remain <= toMark + 0.05) { pending = name; return; }   // mốc gần nhất chính là cuối clip: nối tự nhiên
+      pending = name;
+      const my = token;
+      markTimer = setTimeout(() => { if (my === token && pending === name) { stats.cuts++; if (!start(name, 120)) pending = null; } }, Math.max(0, toMark * 1000 - 60));
+      return;
+    }
     stats.cuts++;
     if (!start(name, FADE_CUT_MS)) pending = null;
+  }
+
+  // Chuyển động nền (thở, tóc, đồ treo, sao) của mọi clip lặp chu kỳ 3 giây. Clip chờ ↔ clip nói ở CÙNG NHỊP giống nhau
+  // 98–99% (đo SSIM; chỉ khác miệng), lệch nhịp chỉ 89–92% → giật. Vì vậy đổi qua lại luôn vào đúng nhịp đang chạy.
+  const CYCLE_S = 3;
+  const LOOP_CLIPS = new Set(['idle_wait', 'invite', 'talk_a', 'talk_b']);
+  const IN_PHASE_FADE_MS = 120;   // cùng nhịp đã giống 98–99%: mờ chéo ngắn là đủ, dài thì dễ lộ hai lớp
+  const phaseOf = (el) => ((el.currentTime % CYCLE_S) + CYCLE_S) % CYCLE_S;
+
+  // Hai clip chớp mắt ở thời điểm khác nhau (manifest "blinks"): đổi giữa lúc đang chớp → mắt nhắm/mở ngang. Né khoảng đó.
+  // Giây còn lại tới hết khoảng chớp mắt đang diễn ra ở thời điểm t (0 = không đang chớp).
+  const blinkLeft = (info, t) => { for (const [a, b] of info?.blinks || []) if (t >= a && t <= b) return b - t; return 0; };
+  let switchTimer = null;
+  let switchTarget = null;
+
+  /** Đổi giữa hai clip lặp (chờ ↔ nói) ở cùng nhịp, né lúc chớp mắt: không giật.
+   *  maxWait: chờ hết cái chớp mắt tối đa bấy nhiêu giây (bắt đầu nói: ngắn để miệng khớp lời). */
+  function switchInPhase(name, maxWait = 1.0) {
+    const info = clipInfo(name);
+    if (!info || !pools.get(info.file)) return false;
+    const off = cur ? phaseOf(cur.el) : 0;
+    const dur = info.duration || CYCLE_S;
+    if (dur - off < 0.3) { pending = name; return true; }   // sát cuối clip đích: để nối tự nhiên ở biên
+    const wait = cur ? Math.max(blinkLeft(cur.info, cur.el.currentTime), blinkLeft(info, off)) : 0;
+    if (wait > 0 && wait <= maxWait) {
+      if (switchTarget !== name) {
+        clearTimeout(switchTimer);
+        switchTarget = name;
+        switchTimer = setTimeout(() => { const n = switchTarget; switchTarget = null; switchTimer = null; if (n) switchInPhase(n, 0); }, wait * 1000 + 30);
+      }
+      return true;
+    }
+    cancelSwitch();
+    stats.cuts++;
+    // Không né kịp cái chớp mắt: cắt gọn (không mờ chéo) để không hiện mắt hai lớp.
+    return start(name, wait > 0 ? 0 : IN_PHASE_FADE_MS, off);
+  }
+  /** Bỏ lượt đổi đang chờ (vd. vừa định về clip chờ thì lại nói tiếp). */
+  function cancelSwitch() { clearTimeout(switchTimer); switchTimer = null; switchTarget = null; }
+
+  /** Vào clip nói: từ clip chờ → đổi cùng nhịp ngay; từ clip hành động (gật chào, cảm ơn…) → chờ nó xong ở chỗ nối. */
+  function startTalk() {
+    if (!active) return;
+    if (cur && TALK_CLIPS.has(cur.name)) return;
+    talkToggle = false;
+    if (!cur || LOOP_CLIPS.has(cur.name)) { if (!switchInPhase('talk_a', 0.65)) pending = null; return; }
+    pending = 'talk_a';   // clip hành động: phát nốt rồi nói (không cắt ngang → không giật)
   }
 
   function snapshotStats() {
@@ -196,18 +264,45 @@ export function createClipPlayer(root, { basePath = '/assets/tarot/clips/', onCu
     init,
     isActive: () => active,
     /** Server đổi pha: chọn clip theo pha. READING phát talk_a/talk_b xen kẽ. */
-    setPhase(phase) {
+    /** opts.speaks = pha mở đầu bằng lời nói ngay (không có khoảng chờ): dùng clip nói luôn thay clip hành động,
+     *  tránh vừa vào clip hành động đã phải đổi sang clip nói (đổi hai lần → giật). Xáo bài (mắt sáng) giữ nguyên. */
+    setPhase(phase, opts = {}) {
       if (!active) return;
       phaseNow = phase;
-      talking = phase === 'READING';
-      if (talking) {
-        if (cur && FILLERS.has(cur.name) && cur.name.startsWith('talk_')) return;
-        talkToggle = false; request('talk_a'); return;
-      }
       if (REACTION_PHASES.has(phase)) { const r = takeReaction(); if (r) { request(r); return; } }
-      request(PHASE_CLIP[phase] || base());
+      const want = phase === 'READING' ? base() : PHASE_CLIP[phase] || base();
+      // Pha mở đầu bằng lời: vào clip nói sẵn và chờ tiếng bắt đầu (tải/giải mã ~0,1–1 giây) — không quay về chờ ngay.
+      if (opts.speaks) expectTalkUntil = performance.now() + EXPECT_TALK_MS;
+      if ((opts.speaks || speakingNow) && !KEEP_WHILE_TALKING.has(want)) { startTalk(); return; }
+      if (cur && TALK_CLIPS.has(cur.name) && LOOP_CLIPS.has(want)) return;   // đang nói: hết thoại sẽ tự về clip chờ cùng nhịp
+      if (cur && LOOP_CLIPS.has(cur.name) && LOOP_CLIPS.has(want)) { if (cur.name !== want) switchInPhase(want); return; }
+      request(want);
     },
-    /** Phản ứng quà: phát ở biên clip kế tiếp khi đang rảnh/đọc bài (không chèn lúc xào, rút, lật bài). */
+    /** Gọi định kỳ (~100ms) theo tiếng đang phát thật. Có thoại → sang clip nói cùng nhịp (trừ lúc xáo bài);
+     *  hết thoại (im > 250ms) → về clip chờ cùng nhịp. Đổi cùng nhịp nên không giật. */
+    setSpeaking(v) {
+      if (!active) return;
+      const now = performance.now();
+      if (v) { speakingNow = true; silentSince = 0; expectTalkUntil = 0; }
+      else if (now < expectTalkUntil) return;   // đầu pha có lời, tiếng chưa kịp phát: giữ clip nói
+      else if (speakingNow) {
+        if (!silentSince) silentSince = now;
+        if (now - silentSince >= STOP_TALK_AFTER_MS) speakingNow = false;
+      }
+      if (!cur) return;
+      // lượt đổi đang chờ (né chớp mắt) mà ngược hướng hiện tại thì bỏ
+      if (switchTarget && switchTarget.startsWith('talk') !== speakingNow) cancelSwitch();
+      if (speakingNow) {
+        if (!TALK_CLIPS.has(cur.name) && !KEEP_WHILE_TALKING.has(cur.name) && !(pending && pending.startsWith('talk'))) startTalk();
+      } else {
+        if (pending && pending.startsWith('talk')) pending = null;   // chưa kịp nói đã im: bỏ lượt nói chờ
+        if (cur.name === 'talk_a' || cur.name === 'talk_b') {
+          const back = PHASE_CLIP[phaseNow] && clipInfo(PHASE_CLIP[phaseNow])?.loop ? PHASE_CLIP[phaseNow] : base();
+          switchInPhase(back);
+        }
+      }
+    },
+    /** Phản ứng quà: chỉ phát khi đã trải bài xong (rảnh / chuyển khách); nhiều quà gộp thành một lần. */
     queueReaction(kind) {
       if (!active) return;
       const name = kind === 'big' ? 'react_big' : 'react_small';
@@ -219,7 +314,7 @@ export function createClipPlayer(root, { basePath = '/assets/tarot/clips/', onCu
       if (phaseNow === 'IDLE' || phaseNow === 'INTERMISSION') { const r = takeReaction(); if (r) request(r); }
     },
     /** Mất kết nối: giữ lặp idle_wait. */
-    holdIdle() { if (active) { talking = false; phaseNow = 'IDLE'; reactions.length = 0; request(base()); } },
+    holdIdle() { if (active) { speakingNow = false; phaseNow = 'IDLE'; reactions.length = 0; request(base()); } },
     /** Một số nền (OBS) có thể tạm dừng video: gọi định kỳ để phát lại nếu bị dừng bất ngờ. */
     ensurePlaying() {
       if (!active || !cur) return;

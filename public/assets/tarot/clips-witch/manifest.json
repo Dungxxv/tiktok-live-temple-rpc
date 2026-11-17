@@ -1,0 +1,122 @@
+{
+  "_note": "Bộ clip phù thủy (tóc vàng, mũ tím). Cùng định dạng manifest với clips/ nên dùng thẳng với public/js/tarot/clip-player.js: createClipPlayer(el, { basePath: '/assets/tarot/clips-witch/' }). Mọi clip bắt đầu và kết thúc ở cùng một tư thế, chuyển động nền chu kỳ 3 giây, nên nối ở biên clip không giật. Hướng dẫn: README.md.",
+  "video": {
+    "width": 1124,
+    "height": 2000,
+    "fps": 30,
+    "format": "mp4"
+  },
+  "base": "idle_wait",
+  "clips": {
+    "idle_wait": {
+      "file": "idle.mp4",
+      "loop": true,
+      "duration": 6,
+      "blinks": [
+        [
+          1.38,
+          1.95
+        ],
+        [
+          4.18,
+          5.08
+        ]
+      ]
+    },
+    "invite": {
+      "file": "idle.mp4",
+      "loop": true,
+      "duration": 6,
+      "borrowedFrom": "idle_wait",
+      "blinks": [
+        [
+          1.38,
+          1.95
+        ],
+        [
+          4.18,
+          5.08
+        ]
+      ]
+    },
+    "call_name": {
+      "file": "greet.mp4",
+      "loop": false,
+      "duration": 3
+    },
+    "shuffle": {
+      "file": "cast.mp4",
+      "loop": false,
+      "duration": 6,
+      "cues": {
+        "spell": 1.8
+      }
+    },
+    "draw_card": {
+      "file": "read.mp4",
+      "loop": false,
+      "duration": 6,
+      "cues": {
+        "touch": 1.5
+      }
+    },
+    "reveal": {
+      "file": "talk.mp4",
+      "loop": false,
+      "duration": 3,
+      "cues": {
+        "point": 1.5
+      },
+      "borrowedFrom": "talk",
+      "blinks": [
+        [
+          0.92,
+          1.45
+        ]
+      ]
+    },
+    "talk_a": {
+      "file": "talk.mp4",
+      "loop": true,
+      "duration": 3,
+      "borrowedFrom": "talk",
+      "blinks": [
+        [
+          0.92,
+          1.45
+        ]
+      ]
+    },
+    "talk_b": {
+      "file": "talk.mp4",
+      "loop": true,
+      "duration": 3,
+      "borrowedFrom": "talk",
+      "blinks": [
+        [
+          0.92,
+          1.45
+        ]
+      ]
+    },
+    "farewell": {
+      "file": "thanks.mp4",
+      "loop": false,
+      "duration": 3
+    },
+    "react_small": {
+      "file": "thanks.mp4",
+      "loop": false,
+      "duration": 3,
+      "borrowedFrom": "farewell"
+    },
+    "react_big": {
+      "file": "greet.mp4",
+      "loop": false,
+      "duration": 3,
+      "borrowedFrom": "call_name",
+      "_why": "Mắt phát sáng (cast.mp4) chỉ dành cho lúc xáo bài, không dùng cho phản ứng quà."
+    }
+  },
+  "_blinksNote": "blinks = khoảng không được bắt đầu đổi clip: lúc nhắm mắt (đo bằng độ sáng vùng mắt từng khung: idle 1,63–1,90 và 4,43–5,03; talk 1,17–1,40) nới về trước 0,25 giây cho thời gian mờ chéo. Đổi clip chờ ↔ nói giữa lúc này → mắt hai lớp (một nhắm, một mở)."
+}

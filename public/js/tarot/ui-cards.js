@@ -7,6 +7,9 @@
 // - FAREWELL: lá úp lại, bay về chỗ cũ trên vòng cung, rồi cả bộ gom lại thành chồng bài.
 // Mọi mốc tính theo phaseStartedAt của server nên client mở muộn vẫn khớp.
 import { sessionKey } from './state-store.js';
+import { drawTimes, FW_AWAY } from './deck3d.js';
+// Bố cục có "deck3d": bộ bài, xáo bài và lúc bay lên do deck3d.js (Three.js) vẽ; ở đây lá HTML chỉ hiện từ lúc chạm ô
+// (pha DRAWING, theo drawTimes) để lật, hiện nhãn, thu vào khung đọc; FAREWELL thu nhỏ bay về bàn.
 
 const CARD_DIR = '/assets/tarot/cards/';
 const BACK = '/assets/tarot/ui/back-card.svg';            // bản Figma (có bóng tím) — lá dựng đứng
@@ -30,8 +33,10 @@ export function createCardsUi({ layer, arcEl, fx, store, cues = { touch: 1.5, po
   let pointAt = null;
   let firstPaint = true;
 
-  const backImg = () => `<img class="back-img" src="${BACK_FLAT}" alt="">`;
-  const backImgUpright = () => `<img class="back-img" src="${BACK_FLAT}" alt=""><img class="back-img glow" src="${BACK}" alt="">`;
+  // Mặt sau lá: layout.cards.back (ảnh đúng khung lá, không viền bóng) thay cho bộ mặt sau cũ có bóng tím.
+  const backOf = () => L?.cards?.back;
+  const backImg = () => backOf() ? `<img class="back-img exact" src="${backOf()}" alt="">` : `<img class="back-img" src="${BACK_FLAT}" alt="">`;
+  const backImgUpright = () => backOf() ? `<img class="back-img exact" src="${backOf()}" alt="">` : `<img class="back-img" src="${BACK_FLAT}" alt=""><img class="back-img glow" src="${BACK}" alt="">`;
   const T = () => L.tableScene.tiltDeg;
 
   function arcPoint(i) {
@@ -105,6 +110,16 @@ export function createCardsUi({ layer, arcEl, fx, store, cues = { touch: 1.5, po
     return s.slice(start, start + n);
   }
 
+  /** Ô lá thu nhỏ trong khung "Thông điệp nhận được" (pha READING), cùng cách chọn ô như slotRects. */
+  function readRects(n) {
+    const s = L.readingPanel?.cardSlots;
+    if (!s) return null;
+    if (n >= s.length) return s.slice(0, n);
+    const mid = Math.floor((s.length - 1) / 2);
+    const start = Math.max(0, mid - Math.floor((n - 1) / 2));
+    return s.slice(start, start + n);
+  }
+
   function pickArcIndices(cards) {
     const n = L.arc.count;
     const used = new Set();
@@ -139,16 +154,33 @@ export function createCardsUi({ layer, arcEl, fx, store, cues = { touch: 1.5, po
           <div class="face back">${backImgUpright()}</div>
           <div class="face front"><img src="${CARD_DIR}${c.id}.jpg" alt=""></div>
         </div>
-        <div class="tlabel"><b>${c.name}</b>${c.reversed ? '<span>ngược</span>' : ''}</div>`;
+        <div class="shade"></div>
+        ${L.cards?.pillLabels
+          ? `<div class="tname">${c.name}${c.reversed ? ' (Ngược)' : ''}</div>${c.positionLabel ? `<div class="tpos">${c.positionLabel}</div>` : ''}`
+          : c.positionLabel
+            ? `<div class="tlabel"><b>${c.positionLabel}</b><small>${c.name}${c.reversed ? ' (Ngược)' : ''}</small></div>`
+            : `<div class="tlabel"><b>${c.name}</b>${c.reversed ? '<span>ngược</span>' : ''}</div>`}`;
       layer.appendChild(el);
-      return { el, card: c, arcIdx: idx[i], rect: r, stage: null };
+      return { el, card: c, arcIdx: idx[i], rect: r, readRect: readRects(cards.length)?.[i], stage: null };
     });
   }
 
   const { stagePoint, burst, flash, trail } = fx;
 
+  const mode3d = () => !!L?.deck3d;
+
   // ---- Tư thế từng lá theo pha + tuổi pha ----
   function cardStage(phase, age, i) {
+    if (mode3d()) {
+      switch (phase) {
+        // lá 3D đã lật ngửa trong lúc bay → chạm ô là lá HTML hiện mặt luôn, không chờ pha lật bài
+        case 'DRAWING': return age >= drawTimes(i).land ? 'open' : 'pre';
+        case 'REVEALING': return 'open';
+        case 'READING': return L.readingPanel?.cardSlots ? 'read' : 'open';
+        case 'FAREWELL': return age < FW_AWAY + i * 0.15 ? 'open' : 'away';
+        default: return 'away';
+      }
+    }
     switch (phase) {
       case 'DRAWING': {
         // Chờ cue từ video (clip có thể bắt đầu muộn tới ~2 giây vì nối ở biên clip); không có cue thì tự chạy.
@@ -160,7 +192,7 @@ export function createCardsUi({ layer, arcEl, fx, store, cues = { touch: 1.5, po
         const openAt = (pointAt ?? cues.point + 3.0) + i * 0.6;
         return age >= openAt ? 'open' : age >= upAt ? 'up' : 'lift';
       }
-      case 'READING': return 'open';
+      case 'READING': return L.readingPanel?.cardSlots ? 'read' : 'open';
       case 'FAREWELL': {
         if (age < FW_FLIP_BACK + i * 0.15) return 'open';
         if (age < FW_FLY_BACK + i * 0.2) return 'up';
@@ -181,7 +213,34 @@ export function createCardsUi({ layer, arcEl, fx, store, cues = { touch: 1.5, po
     const ox = r.x + r.w / 2; const oy = r.y + r.h / 2;
     el.style.transition = animated ? '' : 'none';
     el.dataset.stage = stage;
-    if (stage === 'table' || stage === 'gone') el.style.transform = lyingTransform(p, ox, oy, s);
+    if (mode3d() && (stage === 'pre' || stage === 'away' || ((stage === 'up' || stage === 'open') && (prev === 'pre' || prev === 'away' || prev === null)))) {
+      const d = L.deck;
+      if (stage === 'up' || stage === 'open') {
+        // lá 3D vừa chạm ô (đã ngửa mặt): hiện lá HTML tại chỗ, không chuyển động, không lật lại (khớp hình lá 3D), lóe sáng
+        const inner = el.querySelector('.inner');
+        el.style.transition = 'none'; inner.style.transition = 'none';
+        el.style.transform = 'translate3d(0px, 0px, 0px) rotateX(0deg) translateZ(0px) rotateZ(0deg) scale(1)';
+        el.classList.remove('hidden');
+        void el.offsetWidth; el.style.transition = ''; inner.style.transition = '';
+        if (animated) { el.classList.add('landed'); setTimeout(() => el.classList.remove('landed'), 900); }
+      } else if (stage === 'pre') {
+        el.style.transition = 'none';
+        el.style.transform = 'translate3d(0px, 0px, 0px) rotateX(0deg) translateZ(0px) rotateZ(0deg) scale(1)';
+        el.classList.add('hidden');
+        void el.offsetWidth; el.style.transition = '';
+      } else {
+        // FAREWELL: thu nhỏ, bay về chỗ bộ bài trên bàn rồi tắt
+        el.style.transform = `translate3d(${d.x - ox}px, ${d.y - oy}px, 0px) rotateX(${T()}deg) translateZ(0px) rotateZ(0deg) scale(${0.12})`;
+        el.classList.add('hidden');
+        if (animated && prev === 'open') { el.classList.add('flying'); trail(el, 800); setTimeout(() => el.classList.remove('flying'), 900); }
+      }
+      return;
+    }
+    if (stage === 'read' && c.readRect) {
+      // Thu nhỏ vào ô trong khung giấy (gốc biến đổi ở tâm lá).
+      const q = c.readRect; const k = q.w / r.w;
+      el.style.transform = `translate3d(${q.x + q.w / 2 - ox}px, ${q.y + q.h / 2 - oy}px, 0px) rotateX(0deg) translateZ(0px) rotateZ(0deg) scale(${k})`;
+    } else if (stage === 'table' || stage === 'gone') el.style.transform = lyingTransform(p, ox, oy, s);
     else if (stage === 'lift') el.style.transform = lyingTransform(p, ox, oy, s, { dy: -34, lift: 30, tilt: T() * 0.55, scale: 1.18 });
     else el.style.transform = 'translate3d(0px, 0px, 0px) rotateX(0deg) translateZ(0px) rotateZ(0deg) scale(1)';
     el.classList.toggle('hidden', stage === 'gone');
@@ -209,6 +268,11 @@ export function createCardsUi({ layer, arcEl, fx, store, cues = { touch: 1.5, po
 
   function update(state, animated) {
     const age = store.phaseAge();
+    // 3 lá bay lên → các phần khác tối/mờ đi, nằm dưới lớp lá (CSS #stage.cards-up)
+    if (mode3d()) {
+      const up = (state.phase === 'DRAWING' && state.cards?.length && age >= drawTimes(0).rise) || state.phase === 'REVEALING';
+      layer.closest('#stage')?.classList.toggle('cards-up', !!up);
+    }
     setArc(arcModeFor(state, age), animated);
     els.forEach((c, i) => applyStage(c, cardStage(state.phase, age, i), animated));
   }
@@ -236,6 +300,13 @@ export function createCardsUi({ layer, arcEl, fx, store, cues = { touch: 1.5, po
       if (!st) return;
       if (name === 'touch' && st.phase === 'DRAWING' && touchAt === null) { touchAt = store.phaseAge(); update(st, true); }
       if (name === 'point' && st.phase === 'REVEALING' && pointAt === null) { pointAt = store.phaseAge(); update(st, true); }
+    },
+    /** Lá đang được đọc (0..2) sáng viền, lá khác mờ nhẹ; null = trở lại bình thường. */
+    setFocus(index) {
+      els.forEach((c, i) => {
+        c.el.classList.toggle('focus', index !== null && i === index);
+        c.el.classList.toggle('dim', index !== null && i !== index);
+      });
     },
     cueTimes: cues
   };

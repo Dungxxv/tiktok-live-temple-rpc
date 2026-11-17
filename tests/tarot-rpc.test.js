@@ -240,3 +240,185 @@ describe('tarot-tts', () => {
     expect(await bad.prepare(['aa'])).toBe(null);
   });
 });
+
+describe('tarot-tts: chờ bộ đọc nạp xong', () => {
+  it('worker đang "loading" thì thử lại tới khi sẵn sàng, không báo lỗi', async () => {
+    let n = 0;
+    const synth = async (t) => (++n < 3 ? { ok: false, error: 'ZeroTTS đang ở trạng thái: loading' } : { ok: true, url: `/tts-cache/${t.length}.wav`, durationSec: 2, cached: true });
+    const p = createTtsProvider({ synthesize: synth, cacheDir: os.tmpdir(), sleep: async () => {} });
+    const r = await p.prepare(['Câu một.']);
+    expect(r).toEqual({ urls: ['/tts-cache/8.wav'], durations: [2] });
+    expect(n).toBe(3);
+  });
+
+  it('chờ quá maxWaitMs thì bỏ cuộc (trả null)', async () => {
+    let n = 0;
+    const p = createTtsProvider({ synthesize: async () => { n++; return { ok: false, error: 'loading' }; }, cacheDir: os.tmpdir(), retryMs: 1000, maxWaitMs: 3000, sleep: async () => {} });
+    expect(await p.prepare(['Câu.'])).toBeNull();
+    expect(n).toBe(4);
+  });
+
+  it('lỗi khác (không phải đang nạp) thì không thử lại', async () => {
+    let n = 0;
+    const p = createTtsProvider({ synthesize: async () => { n++; return { ok: false, error: 'text rỗng' }; }, cacheDir: os.tmpdir(), sleep: async () => {} });
+    expect(await p.prepare(['Câu.'])).toBeNull();
+    expect(n).toBe(1);
+  });
+});
+
+describe('tarot.setAudio: bật/tắt nhạc nền và giọng đọc từ trang admin', () => {
+  it('mặc định nhạc + giọng bật; đổi được, âm lượng kẹp trong [0,1], phát lại trạng thái cho màn live', async () => {
+    const { svc, sent } = make();
+    expect(svc.getState().audio).toMatchObject({ musicOn: true, voiceOn: true });
+    const r = await svc.rpc('tarot.setAudio', { audio: { musicOn: false, voiceVolume: 3, musicVolume: -1 } });
+    expect(r.audio).toMatchObject({ musicOn: false, voiceOn: true, voiceVolume: 1, musicVolume: 0 });
+    expect(svc.getState().audio.musicOn).toBe(false);
+    expect(sent.some(([m, p]) => m === 'tarot.state' && p.audio?.musicOn === false)).toBe(true);
+  });
+
+  it('hiệu ứng âm thanh: mặc định bật 40%, tắt được, âm lượng kẹp trong [0,1]', async () => {
+    const { svc } = make();
+    expect(svc.getState().audio).toMatchObject({ sfxOn: true, sfxVolume: 0.4 });
+    const r = await svc.rpc('tarot.setAudio', { audio: { sfxOn: false, sfxVolume: 2 } });
+    expect(r.audio).toMatchObject({ sfxOn: false, sfxVolume: 1, musicOn: true });
+  });
+
+  it('là phương thức quản trị: cần token khi server đặt ADMIN_TOKEN', async () => {
+    const { svc } = make({}, { env: { ADMIN_TOKEN: 'k' } });
+    await expect(svc.rpc('tarot.setAudio', { audio: { voiceOn: false } })).rejects.toThrow();
+    expect((await svc.rpc('tarot.setAudio', { audio: { voiceOn: false }, token: 'k' })).audio.voiceOn).toBe(false);
+  });
+
+  it('cài đặt âm thanh được lưu và khôi phục sau khởi động lại', async () => {
+    let saved = null;
+    const a = make({}, { persist: (s) => { saved = JSON.parse(JSON.stringify(s)); } });
+    await a.svc.rpc('tarot.setAudio', { audio: { musicOn: false, voiceVolume: 0.5 } });
+    a.clock.advance(1000);
+    const b = make({}, { loadSaved: () => saved });
+    b.svc.boot();
+    expect(b.svc.getState().audio).toMatchObject({ musicOn: false, voiceVolume: 0.5 });
+  });
+});
+
+describe('tarot-rpc: bốc ngẫu nhiên khi không ai bình luận (autoPickCount)', () => {
+  const opts = { queueOrder: 'lanes', joinOnEnter: false, autoPickCount: 3, autoPickAfterSec: 10, firstJoinGraceSec: 0 };
+  const enter = (svc, n) => { for (let i = 1; i <= n; i++) svc.noteActivity({ uniqueId: `u${i}`, name: `Khách ${i}` }); };
+
+  it('vào phòng không tự vào hàng; hàng trống 10s thì bốc 3 người trong phòng', () => {
+    const { svc, clock } = make(opts);
+    enter(svc, 5);
+    expect(svc.queue.size()).toBe(0);
+    clock.advance(9000);
+    expect(svc.queue.size()).toBe(0);
+    clock.advance(1500);
+    const total = svc.queue.size() + (svc.session.getSeat() ? 1 : 0);
+    expect(total).toBe(3);
+  });
+
+  it('có người bình luận trong lúc chờ thì không bốc', () => {
+    const { svc, clock } = make(opts);
+    enter(svc, 5);
+    clock.advance(5000);
+    svc.onComment({ uniqueId: 'u1', name: 'Khách 1', text: 'xin chào' });
+    expect(svc.session.getSeat()?.viewerId).toBe('u1');   // người bình luận được mời lên ghế, không bị bốc nhầm
+    expect(svc.queue.size()).toBe(0);
+  });
+
+  it('mỗi người chỉ bị bốc một lần', () => {
+    const { svc } = make(opts);
+    enter(svc, 3);
+    const first = svc.autoPickNow();
+    expect(first.length).toBe(3);
+    for (const id of first) svc.queue.remove(id);
+    for (const id of first) svc.lobby.touch({ viewerId: id, name: 'x', avatar: '' }, 5_000_000);
+    expect(svc.autoPickNow()).toEqual([]);
+  });
+
+  it('autoPickCount = 0: tắt', () => {
+    const { svc, clock } = make({ ...opts, autoPickCount: 0 });
+    enter(svc, 3);
+    clock.advance(60000);
+    expect(svc.queue.size() + (svc.session.getSeat() ? 1 : 0)).toBe(0);
+  });
+});
+
+describe('tarot-rpc: câu chào người đầu tiên (welcome)', () => {
+  const fixedLines = { welcomeNamed: ['Chào {name}, bạn chuẩn bị ngồi vào ghế để trải bài tarot nhé.'], welcome: ['Chào bạn, bạn chuẩn bị ngồi vào ghế nhé.'] };
+  const opts = { queueOrder: 'lanes', joinOnEnter: false, firstJoinGraceSec: 5 };
+
+  it('người đầu bình luận: state có lời chào trong lúc chờ, hết chờ thì mất', () => {
+    const { svc, clock } = make(opts, { fixedLines });
+    svc.onComment({ uniqueId: 'u1', name: 'Lan', text: 'hi' });
+    const w = svc.getState().welcome;
+    expect(w.line).toContain('Lan'); expect(w.line).toContain('chuẩn bị ngồi vào ghế');
+    clock.advance(5200);
+    expect(svc.getState().phase).toBe('CALLING');
+    expect(svc.getState().welcome).toBe(null);
+  });
+});
+
+describe('tarot-rpc: popup chào người vào phòng', () => {
+  it('phát tarot.welcome một lần cho mỗi người trong thời gian cooldown, không đụng hàng chờ', () => {
+    const { svc, clock, sent } = make({ queueOrder: 'lanes', joinOnEnter: false, welcomePopupCooldownSec: 60 });
+    svc.noteActivity({ uniqueId: 'u1', name: 'Lan' });
+    svc.noteActivity({ uniqueId: 'u1', name: 'Lan' });
+    svc.noteActivity({ uniqueId: 'u2', name: 'Minh' });
+    const w = sent.filter(([m]) => m === 'tarot.welcome').map(([, p]) => p.name);
+    expect(w).toEqual(['Lan', 'Minh']);
+    expect(svc.queue.size()).toBe(0);
+    clock.advance(61000);
+    svc.noteActivity({ uniqueId: 'u1', name: 'Lan' });
+    expect(sent.filter(([m]) => m === 'tarot.welcome').length).toBe(3);
+  });
+  it('gói tarot.welcome kèm viewerId + avatar (để màn live hiện avatar và cho bay vào hàng chờ)', () => {
+    const { svc, sent } = make({ welcomePopupCooldownSec: 60 });
+    svc.noteActivity({ uniqueId: 'u9', name: 'Lan', avatar: 'https://x/a.jpg' });
+    const p = sent.find(([m]) => m === 'tarot.welcome')[1];
+    expect(p).toEqual({ viewerId: 'u9', name: 'Lan', avatar: 'https://x/a.jpg' });
+  });
+  it('welcomePopupCooldownSec = 0: tắt', () => {
+    const { svc, sent } = make({ welcomePopupCooldownSec: 0 });
+    svc.noteActivity({ uniqueId: 'u1', name: 'Lan' });
+    expect(sent.some(([m]) => m === 'tarot.welcome')).toBe(false);
+  });
+});
+
+describe('tarot-rpc: tarot.getRoom (toàn bộ khách trong phòng)', () => {
+  it('liệt kê mọi khách đã thấy với trạng thái đang xem / trong hàng / ngồi ghế', async () => {
+    const { svc, clock } = make({ queueOrder: 'lanes', joinOnEnter: false, firstJoinGraceSec: 5, autoPickCount: 0 });
+    svc.noteActivity({ uniqueId: 'u1', name: 'Lan' });
+    svc.noteActivity({ uniqueId: 'u2', name: 'Minh' });
+    svc.touch({ uniqueId: 'u3', name: 'Hoa' });
+    svc.onComment({ uniqueId: 'u2', name: 'Minh', text: 'hi' });
+    clock.advance(1000);
+    const r = await svc.rpc('tarot.getRoom', {});
+    expect(r.total).toBe(3);
+    const by = Object.fromEntries(r.viewers.map((v) => [v.viewerId, v]));
+    expect(by.u2.status).toBe('queued'); expect(by.u2.position).toBe(1); expect(by.u2.comments).toBe(1);
+    expect(by.u1.status).toBe('watching'); expect(by.u3.status).toBe('watching');
+    expect(r.viewers[0].viewerId).toBe('u2');   // người trong hàng đứng trước
+  });
+});
+
+describe('tarot-rpc: tarot.removeRoom (xóa khách khỏi danh sách phòng)', () => {
+  const opts = { queueOrder: 'lanes', joinOnEnter: false, firstJoinGraceSec: 5, autoPickCount: 3, autoPickAfterSec: 10 };
+  it('xóa khỏi danh sách phòng và hàng chờ; không bị bốc ngẫu nhiên lại', async () => {
+    const { svc, clock } = make(opts);
+    svc.noteActivity({ uniqueId: 'u1', name: 'Lan' });
+    svc.onComment({ uniqueId: 'u2', name: 'Minh', text: 'hi' });
+    const r = await svc.rpc('tarot.removeRoom', { viewerId: 'u2' }, { admin: true });
+    expect(r.removedFromQueue).toBe(true);
+    await svc.rpc('tarot.removeRoom', { viewerId: 'u1' }, { admin: true });
+    const room = await svc.rpc('tarot.getRoom', {});
+    expect(room.total).toBe(0);
+    svc.noteActivity({ uniqueId: 'u1', name: 'Lan' });   // quay lại phòng
+    clock.advance(30000);
+    expect(svc.queue.has('u1')).toBe(false);   // không bị bốc
+    expect((await svc.rpc('tarot.getRoom', {})).viewers[0].status).not.toBe('seated');
+  });
+  it('không xóa được người đang ngồi ghế', async () => {
+    const { svc } = make({ ...opts, firstJoinGraceSec: 0 });
+    svc.onComment({ uniqueId: 'u1', name: 'Lan', text: 'hi' });
+    await expect(svc.rpc('tarot.removeRoom', { viewerId: 'u1' }, { admin: true })).rejects.toThrow(/ngồi ghế/);
+  });
+});

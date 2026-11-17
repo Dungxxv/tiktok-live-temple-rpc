@@ -1,0 +1,66 @@
+{
+  "_note": "Câu cố định của nữ tư tế. Mỗi loại là một mảng biến thể, chọn xoay vòng, không lặp liền kề. {name} = tên khách, {names} = tên người tặng quà đã qua bộ lọc (không qua thì dùng loại không tên). Mỗi câu ≤ 140 ký tự. Không viết 'Tôi rút cho bạn', không dùng 'sẽ'/'chắc chắn' cho dự đoán. Sau đồng bộ/sửa file: node scripts/prerender-tarot-tts.mjs",
+  "_figmaNote": "Thoại mở đầu theo Figma (section 39:991): chờ → '{name} chuẩn bị vào phòng xem bài nha'; vào ghế → 'Chào {name}' + 'Chủ đề của bạn là {topic}'; xáo bài → 'Hãy nghĩ đến chuyện {topic} của bạn trong lúc xáo bài nhé!'. {topic} = nhãn chủ đề (gift-topics.json). Phiên Tổng quan / Hỏi cụ thể dùng introSingle / introTriple.",
+  "welcomeNamed": [
+    "{name} chuẩn bị vào phòng xem bài nha."
+  ],
+  "welcome": [
+    "Bạn chuẩn bị vào phòng xem bài nha."
+  ],
+  "greetingNamed": [
+    "Chào {name}."
+  ],
+  "greeting": [
+    "Chào bạn."
+  ],
+  "topicCommented": [
+    "Chủ đề bạn bình luận là {code}: {topic}."
+  ],
+  "topicIs": [
+    "Chủ đề của bạn là {topic}."
+  ],
+  "questionIs": [
+    "Câu hỏi của bạn là: {question}"
+  ],
+  "introQuestion": [
+    "Hãy giữ câu hỏi đó trong lòng trong lúc xáo bài nhé!"
+  ],
+  "introTopic": [
+    "Hãy nghĩ đến chuyện {topic} của bạn trong lúc xáo bài nhé!"
+  ],
+  "introSingle": [
+    "Hãy nghĩ đến chuyện của bạn hôm nay trong lúc xáo bài nhé!"
+  ],
+  "introTriple": [
+    "Hãy nghĩ đến điều bạn muốn hỏi trong lúc xáo bài nhé!"
+  ],
+  "drawSingle": [
+    "Bạn hãy tập trung, lá bài của bạn đang được rút ra.",
+    "Một lá bài đang tìm đến bạn, hãy để lòng mình thật nhẹ nhé."
+  ],
+  "drawTriple": [
+    "Bạn hãy tập trung, ba lá bài của bạn đang được rút ra.",
+    "Ba lá bài đang tìm đến bạn: quá khứ, hiện tại và tương lai."
+  ],
+  "reveal": [
+    "Đây là ba lá bài của bạn.",
+    "Ba lá bài của bạn đã hiện ra."
+  ],
+  "inviteGift": [
+    "Nếu muốn trải ba lá theo một chủ đề riêng, bạn chọn món quà ở cột bên phải nhé.",
+    "Muốn xem kỹ hơn về tình yêu, sự nghiệp hay tài chính, bạn chọn quà theo chủ đề ở cột bên phải nhé."
+  ],
+  "goodbye": [
+    "Cảm ơn bạn đã ghé xem bài, chúc bạn một ngày nhẹ nhàng.",
+    "Cảm ơn bạn, mong những lá bài hôm nay giúp bạn thêm bình tâm.",
+    "Cảm ơn bạn đã ngồi cùng, chúc bạn mọi điều an yên."
+  ],
+  "thanksNamed": [
+    "Cảm ơn {names} và các bạn đã tặng quà cho phòng, chúc các bạn nhiều may mắn.",
+    "Xin cảm ơn {names} cùng các bạn đã gửi quà, chúc các bạn một ngày an yên."
+  ],
+  "thanksGeneric": [
+    "Cảm ơn các bạn đã tặng quà cho phòng, chúc các bạn nhiều may mắn.",
+    "Xin cảm ơn những món quà của các bạn, chúc các bạn một ngày an yên."
+  ]
+}

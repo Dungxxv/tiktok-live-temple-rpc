@@ -11,14 +11,18 @@ const { createTarotService } = require('./lib/tarot-rpc');
 const { loadConfig: loadTarotConfig } = require('./lib/tarot-config');
 const { loadDeck: loadTarotDeck } = require('./lib/tarot-deck');
 const { createTtsProvider: createTarotTts } = require('./lib/tarot-tts');
+const { createTarotSynth } = require('./lib/tarot-voice');
 
 const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(__dirname, 'data');
 const TTS_CACHE_DIR = path.join(DATA_DIR, 'tts-cache');
-const STATE_FILE = path.join(DATA_DIR, 'merit-state.json');
-// APP_MODE: temple (mặc định) | tarot | both. Chỉ tarot/both mới nhận bình luận và quà TikTok thật cho Tarot.
-const APP_MODE = process.env.APP_MODE || 'temple';
+const STATE_FILE = process.env.MERIT_STATE_FILE || path.join(DATA_DIR, 'merit-state.json');
+// APP_MODE: tarot (mặc định) | temple | both. Chỉ tarot/both mới nhận bình luận và quà TikTok thật cho Tarot;
+// cảnh chùa cũ vẫn giữ nguyên, muốn dùng thì chạy với APP_MODE=temple.
+const APP_MODE = process.env.APP_MODE || 'tarot';
 const TAROT_ON = APP_MODE === 'tarot' || APP_MODE === 'both';
+console.log(TAROT_ON ? `[Chế độ] APP_MODE=${APP_MODE}: TikTok đi vào phòng Tarot`
+  : `[Chế độ] APP_MODE=${APP_MODE}: TikTok KHÔNG đi vào phòng Tarot (cần APP_MODE=tarot trong .env hoặc chạy scripts\\start-tarot.bat)`);
 
 fs.mkdirSync(TTS_CACHE_DIR, { recursive: true });
 
@@ -245,7 +249,7 @@ class ZeroTTSManager {
       const timer = setTimeout(() => {
         this.pending.delete(id);
         resolve({ ok: false, error: 'ZeroTTS synthesis timeout' });
-      }, 30000);
+      }, 30000 + this.pending.size * 8000);   // mỗi câu xếp trước thêm 8 giây
 
       this.pending.set(id, { resolve, timer });
       const payload = JSON.stringify({ id, text: cleanText, voice }) + '\n';
@@ -291,7 +295,7 @@ const DEFAULT_STATE = {
   tiktok: {
     connected: false,
     connecting: false,
-    username: 'dungxxv',
+    username: 'xemtarotnhanh',
     roomId: null,
     viewerCount: 0,
     lastError: null
@@ -949,12 +953,14 @@ async function connectTikTokLive(usernameOrUrl) {
     if (!isCurrentConnection()) return;
     const { user, uniqueId, avatar } = extractUserFromEvent(data);
     const likeCount = Math.min(15, Math.max(1, Number(data?.count ?? data?.likeCount ?? 1)));
+    if (TAROT_ON) tarot.touch({ name: user, uniqueId, avatar });   // thả tim = còn trong phòng
     Rituals.strikeWoodenFish({ user, uniqueId, avatar, count: likeCount });
   });
 
   const handleSocialEvent = (data) => {
     if (!isCurrentConnection()) return;
     const { user, uniqueId, avatar } = extractUserFromEvent(data);
+    if (TAROT_ON) tarot.touch({ name: user, uniqueId, avatar });   // theo dõi/chia sẻ = còn trong phòng
     Rituals.ringBell({
       user,
       uniqueId,
@@ -1009,7 +1015,7 @@ async function connectTikTokLive(usernameOrUrl) {
       groupId
     });
 
-    if (TAROT_ON) tarot.onGift({ name: user, uniqueId, avatar, coins: totalCoins, giftName: rawGiftName });
+    if (TAROT_ON) tarot.onGift({ name: user, uniqueId, avatar, coins: totalCoins, giftName: rawGiftName, giftId });
     if (APP_MODE === 'tarot') return;
 
     Rituals.offerGift({
@@ -1287,21 +1293,33 @@ wss.on('connection', (ws) => {
 const zeroTts = new ZeroTTSManager();
 
 // Chế độ Tarot: toàn bộ logic nằm ở lib/tarot-*.js; ở đây chỉ nối phụ thuộc (broadcast, TTS, lưu file).
-const TAROT_STATE_FILE = path.join(DATA_DIR, 'tarot-state.json');
+// Server thử chạy song song (cổng khác) phải dùng file riêng, kẻo ghi đè trạng thái của server live.
+const TAROT_STATE_FILE = process.env.TAROT_STATE_FILE || path.join(DATA_DIR, 'tarot-state.json');
+const TAROT_READINGS_FILE = path.join(DATA_DIR, 'tarot', 'readings.json');
+const readTarotJson = (f) => { try { return fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : null; } catch (e) { console.error(`[Tarot] Lỗi đọc ${f}:`, e.message); return null; } };
+const tarotConfig = loadTarotConfig(path.join(DATA_DIR, 'tarot', 'config.json'));
+// Bộ đọc giọng Tarot: ZeroTTS (có sẵn) hoặc OmniVoice (data/tarot/config.json → tts.engine); logic ở lib/tarot-voice.js.
+const tarotSynth = createTarotSynth({ config: tarotConfig, zeroTts, cacheDir: TTS_CACHE_DIR, dataDir: path.join(DATA_DIR, 'tarot'), log: console.log });
 const tarot = createTarotService({
-  config: loadTarotConfig(path.join(DATA_DIR, 'tarot', 'config.json')),
+  readings: readTarotJson(TAROT_READINGS_FILE),
+  giftTopics: readTarotJson(path.join(DATA_DIR, 'tarot', 'gift-topics.json')),
+  fixedLines: readTarotJson(path.join(DATA_DIR, 'tarot', 'fixed-lines.json')),
+  config: tarotConfig,
   deck: loadTarotDeck(path.join(DATA_DIR, 'tarot', 'cards.json')),
   clock: { now: () => Date.now(), setTimeout: (fn, ms) => setTimeout(fn, ms), clearTimeout: (h) => clearTimeout(h) },
   broadcast: broadcastNotification,
   sanitizeUserName,
   isBlocked: isBlockedSpamOrToxic,
-  tts: createTarotTts({ synthesize: (text, voice) => zeroTts.synthesize(text, voice), cacheDir: TTS_CACHE_DIR, log: console.log }),
+  tts: createTarotTts({ synthesize: tarotSynth.synthesize, status: tarotSynth.status, cacheDir: TTS_CACHE_DIR, log: console.log }),
   persist: (s) => fs.promises.writeFile(TAROT_STATE_FILE, JSON.stringify(s), 'utf8').catch((e) => console.error('[Tarot] Lỗi lưu:', e.message)),
   loadSaved: () => (fs.existsSync(TAROT_STATE_FILE) ? JSON.parse(fs.readFileSync(TAROT_STATE_FILE, 'utf8')) : null),
   log: console.log,
-  env: { ADMIN_TOKEN: process.env.ADMIN_TOKEN, NODE_ENV: process.env.NODE_ENV }
+  env: { ADMIN_TOKEN: process.env.ADMIN_TOKEN, NODE_ENV: process.env.NODE_ENV, APP_MODE, TAROT_ON },
+  aiWriter: require('./lib/tarot-ai').createReadingWriter({ log: console.log })   // nháp lời giải bằng Claude (cần ANTHROPIC_API_KEY trong .env)
 });
 tarot.boot();
+// Chạy scripts/sync-tarot-sheet.mjs xong thì phiên sau dùng nội dung mới, không cần khởi động lại.
+fs.watchFile(TAROT_READINGS_FILE, { interval: 2000 }, () => { const r = readTarotJson(TAROT_READINGS_FILE); if (r) tarot.reloadReadings(r); });
 
 server.listen(PORT, () => {
   console.log(`============================================================`);
@@ -1313,8 +1331,8 @@ server.listen(PORT, () => {
 
   // Visual/browser audits can opt out of external live connections.
   if (process.env.DISABLE_TIKTOK_AUTOCONNECT !== '1') {
-    // Tự động kết nối tới @dungxxv ngay khi khởi động server
-    const defaultChannel = process.env.TIKTOK_USER || state.tiktok?.username || 'dungxxv';
+    // Tự động kết nối tới @xemtarotnhanh ngay khi khởi động server
+    const defaultChannel = process.env.TIKTOK_USER || state.tiktok?.username || 'xemtarotnhanh';
     if (defaultChannel) {
       connectTikTokLive(defaultChannel).catch((err) => {
         console.warn(`[Auto-Connect @${defaultChannel}] Chưa kết nối được ngay:`, err.message);

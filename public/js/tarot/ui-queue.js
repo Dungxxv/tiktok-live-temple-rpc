@@ -30,11 +30,20 @@ export function slotPosition(i, g) {
   return { x: g.x + col * g.colStep, y: g.y + row * g.rowStep };
 }
 
+// Nhãn chủ đề (cột hàng chờ dọc kiểu phù thủy) theo mã chủ đề của khách.
+const TOPIC_LABEL = { general: 'Tổng Quan', overview: 'Tổng Quan', love: 'Tình Yêu', money: 'Tài Chính', finance: 'Tài Chính', career: 'Sự Nghiệp', study: 'Học Tập', specific: 'Hỏi cụ thể' };
+
 export function createQueueUi({ slotsEl, tokensEl, pointerEl, moreEl, labelEl, layout, store, fx }) {
   const g = layout.queue.grid;
   const panel = layout.queue.panel;
   const s = g.scale || 1;
+  const FRAME_AV_ = g.av || FRAME_AV;              // tâm/đường kính avatar trong ô (layout có thể ghi đè)
+  const COIN = g.coinIcon ? UI + g.coinIcon : UI + 'coin.svg';
+  const vertical = g.cols === 1;                   // cột dọc bên trái: không kẻ ngang, không mũi tên
+  slotsEl.parentElement?.classList.toggle('vertical', vertical);
   const tokens = new Map();   // viewerId → { el, idx, coins }
+  // Người đang được chào trên bảng giấy: ô của họ để trống (thẻ ẩn) cho tới khi avatar bay tới nơi → không đè lên ai.
+  const held = new Map();     // viewerId → hạn tự mở (ms)
   let firstRender = true;
   let lastCount = null;
 
@@ -44,15 +53,16 @@ export function createQueueUi({ slotsEl, tokensEl, pointerEl, moreEl, labelEl, l
     const p = slotPosition(i, g);
     const d = document.createElement('div');
     d.className = 'qslot';
+    d.dataset.slot = String(i + 1);   // màu theo ô (cột dọc kiểu phù thủy: ô trống hiện vòng nét đứt + "Trống")
     d.style.cssText = `left:${p.x}px;top:${p.y}px;transform:scale(${s})`;
     d.innerHTML = `
-      <div class="coins"><b>0</b><img src="${UI}coin.svg" alt=""></div>
+      <div class="coins"><b>0</b><img src="${COIN}" alt=""></div>
       <div class="frame"><img src="${UI}slot-frame.svg" alt=""><div class="av"></div></div>
-      <div class="nm"><b>${i + 1}</b></div>`;
+      <div class="nm"><b>${i + 1}</b><span class="empty-label">.Trống</span></div>`;
     slotsEl.appendChild(d);
     return d;
   });
-  const rows = Math.ceil(g.count / g.cols);
+  const rows = vertical ? 0 : Math.ceil(g.count / g.cols);
   for (let r = 1; r < rows; r++) {
     const y = (g.y + (r - 1) * g.rowStep + g.slotH * s + g.y + r * g.rowStep) / 2;
     const line = document.createElement('img');
@@ -69,7 +79,7 @@ export function createQueueUi({ slotsEl, tokensEl, pointerEl, moreEl, labelEl, l
   /** Tâm + đường kính avatar ô thứ i theo tọa độ khung (dùng cho hiệu ứng bay vào ghế). */
   function avatarRect(i) {
     const p = slotPosition(i, g);
-    return { x: panel.x + p.x + FRAME_AV.cx * s, y: panel.y + p.y + FRAME_AV.cy * s, d: FRAME_AV.d * s };
+    return { x: panel.x + p.x + FRAME_AV_.cx * s, y: panel.y + p.y + FRAME_AV_.cy * s, d: FRAME_AV_.d * s };
   }
 
   function makeToken(e) {
@@ -77,9 +87,10 @@ export function createQueueUi({ slotsEl, tokensEl, pointerEl, moreEl, labelEl, l
     el.className = 'qtoken';
     el.style.transform = `scale(${s})`;
     el.innerHTML = `
-      <div class="coins"><b>0</b><img src="${UI}coin.svg" alt=""></div>
+      <div class="coins"><b>0</b><img src="${COIN}" alt=""></div>
       <div class="frame"></div>
-      <div class="nm"><b></b><span></span></div>`;
+      <div class="nm"><b></b><span></span></div>
+      <div class="tp"><span></span></div>`;
     el.querySelector('.frame').appendChild(avatarEl(e));
     el.querySelector('.nm span').textContent = `.${e.name}`;
     tokensEl.appendChild(el);
@@ -105,7 +116,8 @@ export function createQueueUi({ slotsEl, tokensEl, pointerEl, moreEl, labelEl, l
         t.el.style.transition = 'none';
         t.el.style.left = p.x + 'px'; t.el.style.top = p.y + 'px';
         void t.el.offsetWidth; t.el.style.transition = '';
-        if (!firstRender) {
+        if (held.has(e.viewerId)) t.el.classList.add('held');   // chờ avatar từ bảng giấy bay tới
+        else if (!firstRender) {
           t.el.classList.add('enter');
           setTimeout(() => t.el.classList.remove('enter'), 900);
           setTimeout(() => sparkleAt(i, 10, 44), 350);
@@ -128,6 +140,7 @@ export function createQueueUi({ slotsEl, tokensEl, pointerEl, moreEl, labelEl, l
         }
       }
       t.idx = i;
+      t.el.dataset.slot = String(i + 1);   // màu viền + tên theo ô (Figma)
       t.el.querySelector('.nm b').textContent = String(i + 1);
       // Số sao: bình luận +1, quà + sao tương ứng. Tăng sao → "+N⭐" bay lên.
       const stars = e.stars ?? e.coins ?? 0;
@@ -146,6 +159,8 @@ export function createQueueUi({ slotsEl, tokensEl, pointerEl, moreEl, labelEl, l
       }
       t.seenOnce = true;
       t.el.classList.toggle('gift', e.lane === 'gift');
+      const topic = e.commentTopic || e.topic || 'general';
+      if (t.el.dataset.topic !== topic) { t.el.dataset.topic = topic; t.el.querySelector('.tp span').textContent = TOPIC_LABEL[topic] || topic; }
       t.el.classList.toggle('locked', !!e.locked);
       t.el.classList.toggle('next', i === 0 && state.phase === 'INTERMISSION');
     });
@@ -157,17 +172,19 @@ export function createQueueUi({ slotsEl, tokensEl, pointerEl, moreEl, labelEl, l
       t.el.classList.add('leave');
       setTimeout(() => t.el.remove(), 450);
     }
-    slots.forEach((d, i) => d.classList.toggle('taken', i < q.length));
+    // ô đang chờ avatar bay xuống (held) vẫn hiện như ô trống cho tới khi avatar đáp
+    slots.forEach((d, i) => d.classList.toggle('taken', i < q.length && !held.has(q[i].viewerId)));
     firstRender = false;
 
     const hidden = Math.max(0, (state.queueTotal ?? q.length) - q.length);
-    moreEl.textContent = hidden > 0 ? `+${hidden} người nữa đang chờ` : '';
+    moreEl.textContent = hidden > 0 ? (vertical ? `+${hidden} người` : `+${hidden} người nữa đang chờ`) : '';
     pointerEl.style.visibility = q.length ? 'visible' : 'hidden';
     renderLabel(state);
   }
 
   function renderLabel(state) {
-    if (state.phase === 'INTERMISSION' && state.phaseEndsAt) {
+    // Ghế bệ đá (layout.seat.face) đã có số đếm ngược 3-2-1 trên bệ → nhãn hàng chờ giữ nguyên "Kế tiếp".
+    if (state.phase === 'INTERMISSION' && state.phaseEndsAt && !layout.seat?.face) {
       const n = Math.max(1, Math.min(9, Math.ceil(store.phaseLeft() ?? 1)));
       labelEl.classList.remove('hint');
       labelEl.classList.add('count');
@@ -186,5 +203,31 @@ export function createQueueUi({ slotsEl, tokensEl, pointerEl, moreEl, labelEl, l
   // Đếm ngược chạy theo giờ server, không chờ gói trạng thái.
   setInterval(() => { const st = store.get(); if (st && st.phase === 'INTERMISSION') renderLabel(st); }, 100);
 
-  return { render, avatarRect };
+  /** Giữ trống ô của người này (avatar đang chuẩn bị bay từ bảng giấy xuống). Tự mở sau ttlMs nếu không ai mở. */
+  function hold(viewerId, ttlMs = 20000) {
+    if (!viewerId) return;
+    held.set(viewerId, Date.now() + ttlMs);
+    tokens.get(viewerId)?.el.classList.add('held');
+    setTimeout(() => { if (held.has(viewerId) && held.get(viewerId) <= Date.now()) release(viewerId, false); }, ttlMs + 50);
+  }
+  /** Avatar đã bay tới: hiện thẻ trong ô (kèm hạt sáng). */
+  function release(viewerId, sparkle = true) {
+    held.delete(viewerId);
+    const t = tokens.get(viewerId);
+    if (t && t.idx >= 0) slots[t.idx]?.classList.add('taken');
+    if (!t || !t.el.classList.contains('held')) return;
+    t.el.classList.remove('held');
+    if (sparkle && t.idx >= 0) {
+      t.el.classList.add('landed');
+      setTimeout(() => t.el.classList.remove('landed'), 700);
+      sparkleAt(t.idx, 12, 50);
+    }
+  }
+  /** Ô đích cho avatar bay từ bảng giấy: ô hiện tại của người đó; không thấy trong các ô hiển thị → null. */
+  function slotOf(viewerId) {
+    const t = tokens.get(viewerId);
+    return t && t.idx >= 0 && t.idx < g.count ? t.idx : null;
+  }
+
+  return { render, avatarRect, hold, release, slotOf };
 }

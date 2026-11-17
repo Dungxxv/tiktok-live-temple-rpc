@@ -70,9 +70,57 @@
   td.stars { white-space: nowrap; font-weight: 700; color: var(--gold); }
   td.act { white-space: nowrap; text-align: right; }
   tr.locked td { background: rgba(255, 217, 135, .08); }
-  .tag { font-size: 10px; padding: 1px 6px; border-radius: 6px; background: var(--panel-2); color: var(--muted); margin-left: 4px; }
+  .tag { font-size: 10px; padding: 1px 6px; border-radius: 6px; background: var(--panel-2); color: var(--muted); margin-left: 4px; white-space: nowrap; flex: none; }
+  .tag.topic { color: #e6d6ff; background: #3b2466; }
+  th.ck, td.ck { width: 26px; padding-right: 0; }
+  th.ck input, td.ck input { width: 16px; height: 16px; accent-color: var(--gold); margin: 0; cursor: pointer; vertical-align: middle; }
+  tr.sel td { background: rgba(155, 107, 255, .14); }
+  .bulk { display: none; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 8px; padding: 6px 8px; border: 1px solid var(--violet); border-radius: 8px; background: rgba(155, 107, 255, .1); font-size: 12px; }
+  .bulk.on { display: flex; }
+  .bulk span { margin-right: auto; color: var(--text); font-weight: 600; }
+  .sim-box { margin-top: 10px; padding: 8px 10px; border: 1px dashed var(--line); border-radius: 8px; }
+  .chips button { padding: 2px 9px; font-size: 12px; }
+  .vlink { cursor: pointer; border-bottom: 1px dotted var(--muted); }
+  .vlink:hover { color: var(--gold); border-color: var(--gold); }
+
+  /* Popup khách */
+  #vModal { position: fixed; inset: 0; z-index: 50; display: none; align-items: flex-start; justify-content: center; padding: 30px 12px; background: rgba(5, 2, 10, .72); overflow: auto; }
+  #vModal.on { display: flex; }
+  .vbox { width: min(820px, 100%); background: var(--panel); border: 1px solid var(--violet); border-radius: 14px; box-shadow: 0 20px 60px rgba(0,0,0,.6); }
+  .vhead { display: flex; gap: 12px; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--panel); border-radius: 14px 14px 0 0; }
+  .vhead h3 { margin: 0; font-size: 18px; color: var(--gold); }
+  .vhead .meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .vhead .x { margin-left: auto; font-size: 18px; padding: 2px 10px; }
+  .vbody { padding: 12px 16px 16px; display: grid; gap: 14px; }
+  .vbody h4 { margin: 0 0 6px; font-size: 12px; color: var(--gold); text-transform: uppercase; letter-spacing: .05em; display: flex; gap: 8px; align-items: center; }
+  .vhist { max-height: 170px; overflow: auto; border: 1px solid var(--line); border-radius: 8px; }
+  .vhist div { display: flex; gap: 8px; padding: 5px 8px; border-bottom: 1px dashed var(--line); font-size: 13px; }
+  .vhist div:last-child { border-bottom: 0; }
+  .vhist time { color: var(--muted); font-size: 11px; white-space: nowrap; min-width: 62px; }
+  .vhist .k { white-space: nowrap; font-size: 11px; color: var(--muted); min-width: 64px; }
+  .vhist .gift { color: #ffe9b8; }
+  .vplan-cards { display: flex; gap: 10px; flex-wrap: wrap; }
+  .vsec { display: grid; gap: 8px; }
+  .vsec label { display: grid; gap: 3px; font-size: 12px; color: var(--muted); }
+  .vsec textarea, .vsec input, .vsec select { width: 100%; font: inherit; font-size: 13px; color: var(--text); background: #120a20; border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; resize: vertical; }
+  .vsec textarea.changed, .vsec input.changed { border-color: var(--gold); background: #1d1408; }
+  .vsec .lbl { display: flex; gap: 6px; align-items: center; }
+  .vsec .lbl .tag { margin-left: auto; }
+  .vwarn { padding: 8px 10px; border: 1px solid var(--warn); border-radius: 8px; color: var(--warn); font-size: 12px; }
+  .vnote { font-size: 12px; color: var(--muted); }
+  .vspeech { font-size: 12px; color: var(--muted); }
+  .vspeech ol { margin: 6px 0 0; padding-left: 20px; }
+  table.room th, table.room td { padding: 6px 4px; }
+  table.room td:not(.name) { white-space: nowrap; }
+  table.room td.num { text-align: right; color: var(--muted); }
+  table.room td.st .tag { margin-left: 0; }
   .tag.gift { color: #ffe9b8; background: #5a3e0c; } .tag.lock { color: #1a0f2b; background: var(--gold); }
   .queue-wrap { max-height: 520px; overflow: auto; }
+  tr.idle td { background: rgba(255, 180, 77, .08); }
+  tr.idle td.name span:first-of-type { opacity: .75; }
+  .tag.idle { color: #1a0f2b; background: var(--warn); }
+  .queue-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 8px; }
+  .queue-tools label { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); cursor: pointer; }
   .empty { padding: 18px; text-align: center; color: var(--muted); }
 
   /* Giả lập */
@@ -80,6 +128,10 @@
   .gifts button { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px; }
   .gifts img { width: 34px; height: 34px; object-fit: contain; }
   .gifts small { color: var(--gold); }
+  .audio-grid { display: grid; grid-template-columns: auto minmax(0, 1fr) 44px; gap: 8px 10px; align-items: center; }
+  .audio-grid input[type=range] { width: 100%; accent-color: var(--gold); }
+  .switch { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .switch input { width: 18px; height: 18px; accent-color: var(--gold); }
   .cfg { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
   .cfg label { display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--muted); }
 
@@ -104,6 +156,7 @@
   </div>
 </header>
 
+<div id="modeWarn" style="display:none;margin:12px 16px 0;padding:12px 14px;border:2px solid var(--bad);border-radius:10px;background:#3a0f1a;color:#ffd5dc;font-weight:600"></div>
 <main>
   <div>
     <section>
@@ -131,11 +184,64 @@
     </section>
 
     <section>
+      <h2>Phiên nghỉ · nữ tư tế nói riêng <span class="sub" id="brkState"></span></h2>
+      <p class="muted small-text" style="margin:0 0 8px">Ghế trống, nữ tư tế nói một đoạn với cả phòng (xin quà, mời bình luận, tâm sự cuối ngày…). Xong thì mời khách tiếp như thường.</p>
+      <div class="row chips" id="brkIdeas"><span class="muted small-text">Ý nhanh:</span></div>
+      <div class="row" style="margin-top:6px">
+        <input id="brkIdea" placeholder="Ý cho Claude, vd. xin 3 bạn tặng quà để trả lời câu hỏi chi tiết" maxlength="400">
+        <button class="gold" id="brkAi" title="Claude viết đoạn thoại theo ý này (chưa lên lịch)">✨ Nhờ Claude viết</button>
+      </div>
+      <textarea id="brkText" rows="4" maxlength="1500" placeholder="Lời nữ tư tế sẽ nói (tự viết hoặc để Claude viết rồi sửa)" style="width:100%;margin-top:8px;font:inherit;font-size:13px;color:var(--text);background:#120a20;border:1px solid var(--line);border-radius:8px;padding:7px 9px;resize:vertical"></textarea>
+      <div class="row" style="margin-top:8px">
+        <label class="muted small-text">Phát sau
+          <select id="brkAfter">
+            <option value="0">ngay (sau phiên đang đọc)</option>
+            <option value="1">1 khách nữa</option>
+            <option value="2" selected>2 khách nữa</option>
+            <option value="3">3 khách nữa</option>
+            <option value="5">5 khách nữa</option>
+          </select>
+        </label>
+        <button class="primary" id="brkGo">Chuẩn bị phiên nghỉ</button>
+        <button class="danger" id="brkCancel" disabled>Hủy</button>
+      </div>
+      <div class="muted small-text" id="brkInfo" style="margin-top:6px"></div>
+    </section>
+
+    <section>
+      <h2>Claude (nhờ viết) <span class="sub" id="aiState"></span></h2>
+      <div class="row">
+        <label class="muted small-text">Model
+          <select id="aiModel">
+            <option value="opus">Opus 5.5 (viết hay nhất)</option>
+            <option value="sonnet">Sonnet 5.5 (tốn ~nửa hạn mức)</option>
+          </select>
+        </label>
+        <span class="muted small-text" id="aiStats"></span>
+      </div>
+    </section>
+
+    <section>
       <h2>Giả lập (thử khi chưa live)</h2>
       <div class="row">
         <input id="simName" placeholder="Tên khách" value="">
-        <input id="simText" placeholder="Bình luận" value="bói tình yêu">
+        <input id="simText" placeholder="Bình luận" value="02">
         <button class="primary" id="simComment">Bình luận</button>
+      </div>
+      <div class="row chips" id="codeChips" style="margin-top:6px"><span class="muted small-text">Mã nhanh:</span></div>
+      <div class="sim-box">
+        <b class="small-text" style="color:var(--gold)">Tạo nhiều khách</b>
+        <div class="row" style="margin-top:6px">
+          <label class="muted small-text">Số người <input id="genCount" type="number" min="1" max="50" value="5" style="width:64px"></label>
+          <select id="genMode" title="Mỗi khách giả lập sẽ bình luận gì">
+            <option value="random">Mã chủ đề ngẫu nhiên 01–05</option>
+            <option value="text">Bình luận ở ô trên (vd. 02)</option>
+            <option value="chat">Bình luận thường (Tổng Quan)</option>
+            <option value="enter">Chỉ vào phòng, chưa bình luận</option>
+          </select>
+          <label class="switch small-text"><input type="checkbox" id="genGift"> kèm 1 hoa hồng</label>
+          <button class="primary" id="genRun">Tạo</button>
+        </div>
       </div>
       <div class="gifts" id="giftButtons"></div>
       <div class="row">
@@ -144,6 +250,7 @@
         <span class="muted small-text">Quà tặng cho tên ở ô “Tên khách”.</span>
       </div>
       <div class="row" style="margin-top:10px">
+        <button id="bulkEnters">+5 người vào phòng</button>
         <button id="bulkComments">+5 khách bình luận</button>
         <button id="bulkGifts">+3 quà ngẫu nhiên</button>
       </div>
@@ -153,14 +260,66 @@
   <div>
     <section>
       <h2>Hàng chờ <span class="sub" id="queueCount"></span></h2>
+      <div class="queue-tools">
+        <span class="pill" id="idleSummary" title="TikTok không báo khi ai rời phòng. Người im lặng (không bình luận, thả tim, tặng quà, chia sẻ) quá thời gian đặt ở Cấu hình nhanh được gắn nhãn là có thể đã rời.">Không hoạt động: 0</span>
+        <label><input type="checkbox" id="idleOnly"> Chỉ hiện người không hoạt động</label>
+        <button class="small danger" id="removeIdle" disabled>Xóa người không hoạt động</button>
+      </div>
+      <div class="bulk" id="qBulk">
+        <span id="qSelTxt">Đã chọn 0</span>
+        <button class="small gold" id="qBulkStar" title="Giả lập mỗi người được chọn tặng 1 hoa hồng">+10⭐</button>
+        <button class="small danger" id="qBulkDel">Xóa đã chọn</button>
+        <button class="small" id="qBulkClear">Bỏ chọn</button>
+      </div>
       <div class="queue-wrap">
         <table>
-          <thead><tr><th>#</th><th>Khách</th><th>Sao</th><th></th></tr></thead>
+          <thead><tr><th class="ck"><input type="checkbox" id="qAll" title="Chọn tất cả đang hiện"></th><th>#</th><th>Khách</th><th>Sao</th><th></th></tr></thead>
           <tbody id="queueBody"></tbody>
         </table>
         <div class="empty" id="queueEmpty">Chưa có ai. Khách bình luận “bói …” để vào hàng.</div>
       </div>
-      <p class="muted small-text" style="margin:8px 0 0">Luật: bình luận +1⭐, quà 1 xu = 10⭐ (chỉnh ở dưới). Nhiều sao xếp trước, bằng sao ai vào trước xếp trước. Người có <span class="tag lock">sắp vào</span> đã được khóa, không ai chen được.</p>
+      <p class="muted small-text" style="margin:8px 0 0">Luật: bình luận +1⭐, quà 1 xu = 10⭐ (chỉnh ở dưới). Nhiều sao xếp trước, bằng sao ai vào trước xếp trước. Người có <span class="tag lock">sắp vào</span> đã được khóa, không ai chen được. Nhãn <span class="tag idle">im lặng 12p</span> = đã lâu không hoạt động, có thể đã rời phòng (TikTok không báo khi ai rời), bạn bấm Xóa nếu đúng.</p>
+    </section>
+
+    <section>
+      <h2>Khách trong phòng <span class="sub" id="roomCount"></span></h2>
+      <div class="queue-tools">
+        <label><input type="checkbox" id="roomWatchOnly"> Chỉ hiện người chưa vào hàng</label>
+        <span class="muted small-text">Tính người có hoạt động trong 60 phút qua (TikTok không báo khi ai rời phòng).</span>
+      </div>
+      <div class="bulk" id="rBulk">
+        <span id="rSelTxt">Đã chọn 0</span>
+        <button class="small" id="rBulkJoin" title="Cho những người chưa vào hàng vào hàng chờ (như bình luận thường)">Mời vào hàng</button>
+        <button class="small gold" id="rBulkGift" title="Giả lập mỗi người được chọn tặng 1 hoa hồng">🎁 Quà</button>
+        <button class="small danger" id="rBulkDel">Xóa đã chọn</button>
+        <button class="small" id="rBulkClear">Bỏ chọn</button>
+      </div>
+      <div class="queue-wrap">
+        <table class="room">
+          <thead><tr><th class="ck"><input type="checkbox" id="rAll" title="Chọn tất cả đang hiện (trừ người trên bệ)"></th><th>Khách</th><th>Trạng thái</th><th title="Vào phòng cách đây">Vào</th><th title="Hoạt động cuối cách đây">Hoạt động</th><th title="Số bình luận">💬</th><th>Xu</th><th></th></tr></thead>
+          <tbody id="roomBody"></tbody>
+        </table>
+        <div class="empty" id="roomEmpty">Chưa thấy ai vào phòng.</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Âm thanh màn live <span class="sub">áp dụng ngay, được lưu lại</span></h2>
+      <div class="audio-grid">
+        <label class="switch"><input type="checkbox" id="auMusicOn"> Nhạc nền</label>
+        <input type="range" id="auMusicVol" min="0" max="100" step="1"><span id="auMusicVolTxt" class="muted small-text"></span>
+        <label class="switch"><input type="checkbox" id="auVoiceOn"> Giọng nữ tư tế</label>
+        <input type="range" id="auVoiceVol" min="0" max="100" step="1"><span id="auVoiceVolTxt" class="muted small-text"></span>
+        <span class="muted small-text">Nhạc khi đang nói</span>
+        <input type="range" id="auDuck" min="0" max="100" step="5"><span id="auDuckTxt" class="muted small-text"></span>
+        <label class="switch"><input type="checkbox" id="auSfxOn"> Hiệu ứng</label>
+        <input type="range" id="auSfxVol" min="0" max="100" step="1"><span id="auSfxVolTxt" class="muted small-text"></span>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="danger" id="auMuteAll">Tắt hết tiếng</button>
+        <button id="auUnmuteAll">Bật lại tiếng</button>
+      </div>
+      <p class="muted small-text" style="margin:8px 0 0">Khung xem trước bên phải luôn không có tiếng (để không bị hai nơi cùng nói). Trên OBS: bật "Control audio via OBS" cho Browser Source.</p>
     </section>
 
     <section>
@@ -184,7 +343,11 @@
   <div class="preview-col">
     <section>
       <h2>Màn live <span class="sub"><a href="/tarot?obs=1" target="_blank" rel="noopener">URL cho OBS ↗</a></span></h2>
-      <div class="preview" id="preview"><iframe src="/tarot?obs=1" title="Xem trước màn live" loading="lazy"></iframe></div>
+      <div class="preview" id="preview"><iframe src="/tarot?obs=1&mute=1" title="Xem trước màn live (không tiếng)" loading="lazy"></iframe></div>
+    </section>
+    <section>
+      <h2>Quà thật đã thấy <span class="sub"><button class="small" id="giftsRefresh">Làm mới</button></span></h2>
+      <div class="log" id="giftsSeen"><span class="muted">Chưa có quà thật nào. Khi live có quà, giftId/tên/xu thật hiện ở đây để điền vào data/tarot/gift-topics.json.</span></div>
     </section>
     <section>
       <h2>Nhật ký</h2>
@@ -193,25 +356,69 @@
   </div>
 </main>
 <div id="toast"></div>
+<div id="vModal" role="dialog" aria-modal="true" aria-labelledby="vName">
+  <div class="vbox">
+    <div class="vhead">
+      <div class="av" id="vAv"></div>
+      <div><h3 id="vName">—</h3><div class="meta" id="vMeta"></div></div>
+      <button class="x" id="vClose" title="Đóng (Esc)">✕</button>
+    </div>
+    <div class="vbody">
+      <div>
+        <h4>Đã bình luận / tặng quà <span class="sub muted" id="vHistCount" style="text-transform:none"></span></h4>
+        <div class="vhist" id="vHist"></div>
+      </div>
+      <div>
+        <h4>Kế hoạch trả lời <span id="vSource"></span></h4>
+        <div class="muted small-text" id="vPlanInfo" style="margin-bottom:8px"></div>
+        <div class="vplan-cards" id="vCards"></div>
+      </div>
+      <div id="vEditWrap">
+        <h4>Câu hỏi &amp; lời giải riêng <span class="tag" style="text-transform:none">dùng cho trường hợp đặc biệt</span></h4>
+        <div class="vwarn" id="vWarn" style="display:none"></div>
+        <div class="vsec" id="vSec"></div>
+        <p class="vnote">Ô có viền vàng = đã sửa khác sheet. Phần không sửa giữ nguyên lời trong sheet. Câu hỏi sẽ được nữ tư tế đọc to:
+          “Câu hỏi của bạn là: …”. Viết nhẹ nhàng, chỉ để giải trí; không khẳng định về sức khỏe, pháp lý, tài chính, tính mạng, thai sản;
+          tránh “sẽ”, “chắc chắn”. Lưu xong bộ lá được giữ cố định cho khách này và giọng đọc được tạo sẵn.</p>
+        <div class="row ai-row">
+          <button class="gold" id="vAi" title="Câu hỏi đặc biệt: Claude bốc bộ lá mới và soạn riêng cả phiên, không dựa vào sheet. Chỉ gửi câu hỏi + tên lá, không gửi tên khách. Nháp chưa lưu cho tới khi bấm Lưu.">✨ Nhờ Claude viết theo câu hỏi</button>
+          <span class="muted small-text" id="vAiInfo"></span>
+        </div>
+        <div class="row">
+          <button class="primary" id="vSave">Lưu &amp; giữ bài</button>
+          <button id="vReset" title="Bỏ câu hỏi và mọi phần đã sửa, đọc đúng như sheet">Về lời trong sheet</button>
+          <button id="vJoin" style="display:none">Mời vào hàng</button>
+          <span class="muted small-text" id="vSaveInfo"></span>
+        </div>
+      </div>
+      <details class="vspeech" id="vSpeechBox" style="display:none">
+        <summary>Xem toàn bộ lời sẽ nói</summary>
+        <div id="vSpeech"></div>
+      </details>
+    </div>
+  </div>
+</div>
 
 <script>
 (() => {
   const $ = (id) => document.getElementById(id);
   const PHASES = ['IDLE', 'CALLING', 'SHUFFLING', 'DRAWING', 'REVEALING', 'READING', 'FAREWELL', 'INTERMISSION'];
-  const PHASE_VI = { IDLE: 'Chờ khách', CALLING: 'Mời khách', SHUFFLING: 'Xào bài', DRAWING: 'Rút bài', REVEALING: 'Lật bài', READING: 'Đọc lời giải', FAREWELL: 'Tạm biệt', INTERMISSION: 'Chuyển khách' };
-  // Quà trên cột phải của màn live (tên TikTok + số xu). Tên quà thứ 5 chưa rõ, tạm để "Perfume".
+  const PHASE_VI = { IDLE: 'Chờ khách', CALLING: 'Mời khách', SHUFFLING: 'Xào bài', DRAWING: 'Rút bài', REVEALING: 'Lật bài', READING: 'Đọc lời giải', FAREWELL: 'Tạm biệt', INTERMISSION: 'Chuyển khách', BREAK: 'Phiên nghỉ' };
+  // Quà trên cột phải của màn live (tên TikTok + số xu). Tên quà đã đối chiếu biểu tượng với streamtoearn.io/gifts?region=VN.
   const GIFTS = [
     { name: 'Rose', vi: 'Hoa hồng', coins: 1, icon: 'gift-1.png' },
     { name: 'Ice Cream Cone', vi: 'Kem', coins: 1, icon: 'gift-2.png' },
-    { name: 'Heart Me', vi: 'Tim', coins: 1, icon: 'gift-3.png' },
+    { name: 'Wink wink', vi: 'Nháy mắt', coins: 1, icon: 'gift-3.png' },
     { name: 'Finger Heart', vi: 'Bắn tim', coins: 5, icon: 'gift-4.png' },
-    { name: 'Perfume', vi: 'Nước hoa', coins: 5, icon: 'gift-5.png' },
+    { name: 'Love in Scent', vi: 'Nước hoa', coins: 5, icon: 'gift-5.png' },
     { name: 'Cap', vi: 'Mũ', coins: 99, icon: 'gift-6.png' }
   ];
   const NAMES = ['Lan Anh', 'Minh Thư', 'Quốc Bảo', 'Hà My', 'Tuấn Kiệt', 'Ngọc Hân', 'Đức Huy', 'Thu Trang', 'Gia Bảo', 'Khánh Linh', 'Phương Vy', 'Hoàng Nam'];
   const TOPICS = ['bói tình yêu', 'bói công việc', 'xem bài tài lộc', 'tarot', 'bói giúp em với'];
 
-  let state = null; let offset = 0; let cfg = null; let rpcId = 0;
+  let state = null; let offset = 0; let cfg = null; let rpcId = 0; let topicLabels = {};
+  let fullQueue = null; let idleAfter = 600;   // toàn bộ hàng chờ (lấy bằng tarot.getQueue) + ngưỡng không hoạt động (giây)
+  const fmtIdle = (sec) => (sec >= 3600 ? `${Math.floor(sec / 3600)}g${String(Math.floor((sec % 3600) / 60)).padStart(2, '0')}` : `${Math.max(1, Math.round(sec / 60))}p`);
   let token = ''; try { token = localStorage.getItem('tarotAdminToken') || ''; } catch (_) {}
   $('adminToken').value = token;
 
@@ -250,43 +457,106 @@
     $('enabledText').textContent = state.enabled ? 'đang nhận khách' : 'đang TẠM DỪNG';
     $('enabledText').style.color = state.enabled ? 'var(--ok)' : 'var(--warn)';
     $('btnStart').disabled = state.enabled; $('btnStop').disabled = !state.enabled; $('btnSkip').disabled = !state.seat;
-    $('timeline').innerHTML = PHASES.map((p) => `<span class="${p === state.phase ? 'on' : ''}">${PHASE_VI[p]}</span>`).join('');
+    $('timeline').innerHTML = PHASES.map((p) => `<span class="${p === state.phase ? 'on' : ''}">${PHASE_VI[p]}</span>`).join('')
+      + (state.phase === 'BREAK' ? '<span class="on">Phiên nghỉ</span>' : '');
+    renderBreak(state.break, state.phase);
+    const wrongMode = state.tiktokToTarot === false;
+    $('modeWarn').style.display = wrongMode ? '' : 'none';
+    if (wrongMode) $('modeWarn').textContent = `⚠ Server đang chạy chế độ "${state.appMode}": người vào phòng, bình luận, quà TikTok KHÔNG vào phòng Tarot. `
+      + 'Tắt server rồi chạy lại bằng scripts\\start-tarot.bat (hoặc thêm APP_MODE=tarot vào file .env).';
 
     const seat = $('seatBox'); seat.innerHTML = '';
     if (state.seat) {
       const info = document.createElement('div');
-      info.innerHTML = `<b>${esc(state.seat.name)}</b><div class="muted small-text">Chủ đề: ${esc(state.seat.topic)} · ${state.seat.cardsPlanned} lá</div>`;
+      const kind = state.seat.sessionType === 'gift' ? 'Phiên quà' : state.seat.sessionType === 'join' ? 'Phiên vào phòng' : 'Phiên';
+      info.innerHTML = `<b>${esc(state.seat.name)}</b><div class="muted small-text">${kind} · Chủ đề: ${esc(state.seat.topicLabel || state.seat.topic)} · ${state.seat.cardsPlanned} lá</div>`;
       seat.append(avatar(state.seat), info);
     } else seat.innerHTML = '<span class="muted">Ghế đang trống</span>';
 
     $('cards').innerHTML = (state.cards || []).map((c) =>
-      `<div class="card ${c.reversed ? 'rev' : ''}"><img src="/assets/tarot/cards/${esc(c.id)}.jpg" alt=""><div>${esc(c.name)}${c.reversed ? ' (ngược)' : ''}</div></div>`).join('');
+      `<div class="card ${c.reversed ? 'rev' : ''}"><img src="/assets/tarot/cards/${esc(c.id)}.jpg" alt="">${c.positionLabel ? `<div style="color:var(--gold)">${esc(c.positionLabel)}</div>` : ''}<div>${esc(c.name)}${c.reversed ? ' (ngược)' : ''}</div></div>`).join('');
 
-    const q = state.queue || [];
-    $('queueCount').textContent = `${state.queueTotal ?? q.length} người` + ((state.queueTotal ?? 0) > q.length ? ` · hiện ${q.length} người đầu` : '');
+    renderQueue();
+  }
+
+  function isIdle(e) { return idleAfter > 0 && (e.idleSec ?? 0) >= idleAfter; }
+
+  // Nhãn chủ đề trong hàng chờ: mã khách bình luận ("02 · Tình Yêu · 3 lá"); không bình luận mã → Tổng Quan 3 lá
+  // (hoặc 1 lá nếu bật lại phiên 1 lá); quà chỉ đổi chủ đề khi bật giftSetsTopic.
+  function topicTag(e) {
+    const codes = cfg?.commentTopicCodes || {};
+    if (e.commentTopic) {
+      const info = codes[e.commentCode];
+      return `${e.commentCode ? e.commentCode + ' · ' : ''}${info?.label || topicLabels[e.commentTopic] || e.commentTopic} · 3 lá`;
+    }
+    if (e.lane === 'gift' && cfg?.giftSetsTopic && e.topic) return `${topicLabels[e.topic] || e.topic} · 3 lá`;
+    if (cfg?.singleCardSessions === false || e.lane === 'gift') {
+      const ov = Object.entries(codes).find(([, v]) => v.topic === 'overview');
+      return `${ov ? ov[0] + ' · ' + ov[1].label : topicLabels.overview || 'Tổng Quan'} · 3 lá`;
+    }
+    return 'vào phòng · 1 lá';
+  }
+  // ---- Chọn nhiều (giữ theo viewerId qua các lần vẽ lại) ----
+  const qSel = new Set(); const rSel = new Set();
+  let qShown = []; let rShown = [];   // viewerId đang hiện, dùng cho "chọn tất cả"
+  function selCell(set, id, tr, onChange) {
+    const td = document.createElement('td'); td.className = 'ck';
+    const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = set.has(id);
+    if (cb.checked) tr.classList.add('sel');
+    cb.onchange = () => { cb.checked ? set.add(id) : set.delete(id); tr.classList.toggle('sel', cb.checked); onChange(); };
+    td.append(cb); return td;
+  }
+  function syncBulk(set, shown, allBox, bar, txt) {
+    for (const id of [...set]) if (!shown.includes(id)) set.delete(id);   // người đã rời bảng thì bỏ chọn
+    const n = set.size;
+    $(bar).classList.toggle('on', n > 0);
+    $(txt).textContent = `Đã chọn ${n} người`;
+    $(allBox).checked = n > 0 && shown.every((id) => set.has(id));
+    $(allBox).indeterminate = n > 0 && !$(allBox).checked;
+  }
+  const updateQBulk = () => syncBulk(qSel, qShown, 'qAll', 'qBulk', 'qSelTxt');
+  const updateRBulk = () => syncBulk(rSel, rShown, 'rAll', 'rBulk', 'rSelTxt');
+  function renderQueue() {
+    const all = fullQueue || state?.queue || [];
+    const idleN = all.filter((e) => isIdle(e) && !e.locked).length;
+    const onlyIdle = $('idleOnly').checked;
+    const q = onlyIdle ? all.filter(isIdle) : all;
+    $('queueCount').textContent = `${all.length} người` + (onlyIdle ? ` · hiện ${q.length} người không hoạt động` : '');
+    $('idleSummary').textContent = idleAfter > 0 ? `Không hoạt động > ${fmtIdle(idleAfter)}: ${idleN}` : 'Nhãn không hoạt động: tắt';
+    $('idleSummary').style.borderColor = idleN ? 'var(--warn)' : '';
+    $('removeIdle').disabled = idleN === 0;
+    $('removeIdle').textContent = idleN ? `Xóa ${idleN} người không hoạt động` : 'Xóa người không hoạt động';
     $('queueEmpty').style.display = q.length ? 'none' : '';
+    $('queueEmpty').textContent = onlyIdle ? 'Không có ai ở trạng thái không hoạt động.' : 'Chưa có ai. Khách vào phòng hoặc bình luận để vào hàng.';
     const body = $('queueBody'); body.innerHTML = '';
-    q.forEach((e, i) => {
-      const tr = document.createElement('tr'); if (e.locked) tr.className = 'locked';
+    q.forEach((e) => {
+      const i = all.indexOf(e);
+      const tr = document.createElement('tr'); if (e.locked) tr.className = 'locked'; else if (isIdle(e)) tr.className = 'idle';
       const nameTd = document.createElement('td'); nameTd.className = 'name';
       const wrap = document.createElement('div');
       const nm = document.createElement('span'); nm.textContent = e.name;
+      nm.className = 'vlink'; nm.title = 'Xem bình luận, quà, kế hoạch trả lời'; nm.onclick = () => openViewer(e.viewerId);
       wrap.append(avatar(e, 'av sm'), nm);
-      if (e.lane === 'gift') wrap.insertAdjacentHTML('beforeend', `<span class="tag gift">${e.coins || 0} xu</span>`);
+      if (e.custom) wrap.insertAdjacentHTML('beforeend', '<span class="tag lock" title="Admin đã viết câu hỏi / lời giải riêng">✎ riêng</span>');
+      wrap.insertAdjacentHTML('beforeend', `<span class="tag topic">${esc(topicTag(e))}</span>`);
+      if (e.lane === 'gift') wrap.insertAdjacentHTML('beforeend', `<span class="tag gift">🎁 ${e.coins || 0} xu</span>`);
       if (e.locked) wrap.insertAdjacentHTML('beforeend', '<span class="tag lock">sắp vào</span>');
+      if (isIdle(e)) wrap.insertAdjacentHTML('beforeend', `<span class="tag idle" title="Lần cuối thấy hoạt động cách đây ${fmtIdle(e.idleSec)}. Có thể đã rời phòng.">im lặng ${fmtIdle(e.idleSec)}</span>`);
       nameTd.append(wrap);
       tr.innerHTML = `<td class="rank">${i + 1}</td>`;
+      tr.prepend(selCell(qSel, e.viewerId, tr, updateQBulk));
       tr.append(nameTd);
       tr.insertAdjacentHTML('beforeend', `<td class="stars">${e.stars ?? 0}⭐</td>`);
       const act = document.createElement('td'); act.className = 'act';
       const plus = document.createElement('button'); plus.className = 'small gold'; plus.textContent = '+10⭐'; plus.title = 'Giả lập tặng 1 hoa hồng';
       plus.onclick = run(async () => { await rpc('tarot.simulateGift', { viewerId: e.viewerId, name: e.name, coins: 1, giftName: 'Rose' }); });
       const del = document.createElement('button'); del.className = 'small danger'; del.textContent = 'Xóa';
-      del.onclick = run(async () => { if (confirm(`Xóa ${e.name} khỏi hàng chờ?`)) { await rpc('tarot.remove', { viewerId: e.viewerId }); toast(`Đã xóa ${e.name}`); } });
+      del.onclick = run(async () => { if (confirm(`Xóa ${e.name} khỏi hàng chờ?`)) { await rpc('tarot.remove', { viewerId: e.viewerId }); toast(`Đã xóa ${e.name}`); refreshQueue(); } });
       act.append(plus, document.createTextNode(' '), del);
       tr.append(act);
       body.append(tr);
     });
+    qShown = q.map((e) => e.viewerId); updateQBulk();
   }
   // Thanh thời gian + câu đang đọc chạy theo giờ server
   setInterval(() => {
@@ -315,11 +585,353 @@
     if (tt?.username && !$('ttUser').value) $('ttUser').value = '@' + tt.username;
   }
 
+  // ---- Âm thanh ----
+  let audioCfg = null;
+  function renderAudio(a) {
+    if (!a) return;
+    audioCfg = a;
+    $('auMusicOn').checked = a.musicOn; $('auVoiceOn').checked = a.voiceOn;
+    if (document.activeElement !== $('auMusicVol')) $('auMusicVol').value = Math.round(a.musicVolume * 100);
+    if (document.activeElement !== $('auVoiceVol')) $('auVoiceVol').value = Math.round(a.voiceVolume * 100);
+    if (document.activeElement !== $('auDuck')) $('auDuck').value = Math.round(a.duck * 100);
+    $('auMusicVolTxt').textContent = Math.round(a.musicVolume * 100) + '%';
+    $('auVoiceVolTxt').textContent = Math.round(a.voiceVolume * 100) + '%';
+    $('auDuckTxt').textContent = Math.round(a.duck * 100) + '%';
+    $('auSfxOn').checked = a.sfxOn !== false;
+    const sv = Math.round((a.sfxVolume ?? 0.4) * 100);
+    if (document.activeElement !== $('auSfxVol')) $('auSfxVol').value = sv;
+    $('auSfxVolTxt').textContent = sv + '%';
+  }
+  const sendAudio = run(async (patch) => { renderAudio((await rpc('tarot.setAudio', { audio: patch })).audio); });
+  $('auMusicOn').onchange = () => sendAudio({ musicOn: $('auMusicOn').checked });
+  $('auVoiceOn').onchange = () => sendAudio({ voiceOn: $('auVoiceOn').checked });
+  $('auMusicVol').onchange = () => sendAudio({ musicVolume: $('auMusicVol').value / 100 });
+  $('auVoiceVol').onchange = () => sendAudio({ voiceVolume: $('auVoiceVol').value / 100 });
+  $('auDuck').onchange = () => sendAudio({ duck: $('auDuck').value / 100 });
+  $('auSfxOn').onchange = () => sendAudio({ sfxOn: $('auSfxOn').checked });
+  $('auSfxVol').onchange = () => sendAudio({ sfxVolume: $('auSfxVol').value / 100 });
+  $('auMuteAll').onclick = () => { sendAudio({ musicOn: false, voiceOn: false, sfxOn: false }); toast('Đã tắt hết tiếng màn live'); };
+  $('auUnmuteAll').onclick = () => { sendAudio({ musicOn: true, voiceOn: true, sfxOn: true }); toast('Đã bật lại tiếng'); };
+
+  // ---- Hàng chờ đầy đủ + người không hoạt động ----
+  let qTimer = null;
+  async function refreshQueue() {
+    try { const r = await rpc('tarot.getQueue'); fullQueue = r.queue; idleAfter = r.idleAfterSec; renderQueue(); } catch (_) { /* giữ bản cũ */ }
+  }
+  function scheduleQueueRefresh() { if (qTimer) return; qTimer = setTimeout(() => { qTimer = null; refreshQueue(); }, 700); }
+  setInterval(refreshQueue, 10000);   // thời gian "im lặng" tăng dần theo giờ nên làm mới định kỳ
+  $('idleOnly').onchange = renderQueue;
+
+  // ---- Toàn bộ khách trong phòng ----
+  const fmtAgo = (sec) => (sec < 10 ? 'vừa xong' : sec < 60 ? `${sec} giây trước` : `${fmtIdle(sec)} trước`);
+  const fmtAgoShort = (sec) => (sec < 10 ? 'vừa xong' : sec < 60 ? `${sec}s` : fmtIdle(sec));
+  let roomData = null;
+  function renderRoom() {
+    if (!roomData) return;
+    const all = roomData.viewers;
+    const list = $('roomWatchOnly').checked ? all.filter((v) => v.status === 'watching') : all;
+    const inQ = all.filter((v) => v.status !== 'watching').length;
+    $('roomCount').textContent = `${all.length} người · ${inQ} trong hàng/ghế · ${all.length - inQ} chưa vào hàng`;
+    $('roomEmpty').style.display = list.length ? 'none' : '';
+    const body = $('roomBody'); body.innerHTML = '';
+    for (const v of list) {
+      const tr = document.createElement('tr');
+      if (v.status === 'seated') tr.insertAdjacentHTML('beforeend', '<td class="ck"></td>');
+      else tr.append(selCell(rSel, v.viewerId, tr, updateRBulk));
+      const nameTd = document.createElement('td'); nameTd.className = 'name';
+      const wrap = document.createElement('div'); const nm = document.createElement('span'); nm.textContent = v.name;
+      nm.className = 'vlink'; nm.title = 'Xem bình luận, quà, kế hoạch trả lời'; nm.onclick = () => openViewer(v.viewerId);
+      wrap.append(avatar(v, 'av sm'), nm); nameTd.append(wrap);
+      const st = v.status === 'seated' ? '<span class="tag lock">trên bệ</span>'
+        : v.status === 'queued' ? `<span class="tag gift">hàng #${v.position}</span>` : '<span class="tag">đang xem</span>';
+      tr.append(nameTd);
+      tr.insertAdjacentHTML('beforeend', `<td class="st">${st}${v.picked ? '<span class="tag" title="Được bốc ngẫu nhiên khi không ai bình luận">bốc</span>' : ''}</td>`
+        + `<td title="${fmtAgo(v.sinceSec)}">${fmtAgoShort(v.sinceSec)}</td><td title="${fmtAgo(v.idleSec)}">${fmtAgoShort(v.idleSec)}</td><td class="num">${v.comments}</td><td class="num">${v.coins || 0}</td>`);
+      const act = document.createElement('td'); act.className = 'act';
+      if (v.status !== 'seated') {
+        const gift = document.createElement('button'); gift.className = 'small gold'; gift.textContent = '🎁 Quà';
+        gift.title = 'Giả lập tặng 1 hoa hồng: đẩy người này lên làn quà (phiên 3 lá). Màn live cũng hiện hiệu ứng nhận quà.';
+        gift.onclick = run(async () => { await rpc('tarot.simulateGift', { viewerId: v.viewerId, name: v.name, avatar: v.avatar, coins: 1, giftName: 'Rose' }); toast(`Đã tặng quà cho ${v.name}`); refreshQueue(); refreshRoom(); });
+        act.append(gift);
+        if (v.status === 'watching') {
+          const join = document.createElement('button'); join.className = 'small'; join.textContent = 'Vào hàng';
+          join.title = 'Cho vào hàng chờ như khi bình luận (trải 3 lá Tổng Quan)';
+          join.onclick = run(async () => { await rpc('tarot.simulateComment', { viewerId: v.viewerId, name: v.name, avatar: v.avatar, text: 'xin chào' }); toast(`Đã cho ${v.name} vào hàng`); refreshQueue(); refreshRoom(); });
+          act.append(document.createTextNode(' '), join);
+        }
+        const del = document.createElement('button'); del.className = 'small danger'; del.textContent = 'Xóa';
+        del.title = 'Xóa khỏi danh sách phòng' + (v.status === 'queued' ? ' và khỏi hàng chờ' : '') + '. Không bị bốc ngẫu nhiên lại; họ vẫn có thể bình luận để vào hàng.';
+        del.onclick = run(async () => { if (confirm(`Xóa ${v.name} khỏi danh sách phòng${v.status === 'queued' ? ' và hàng chờ' : ''}?`)) { await rpc('tarot.removeRoom', { viewerId: v.viewerId }); toast(`Đã xóa ${v.name}`); refreshQueue(); refreshRoom(); } });
+        act.append(document.createTextNode(' '), del);
+      }
+      tr.append(act);
+      body.append(tr);
+    }
+    rShown = list.filter((v) => v.status !== 'seated').map((v) => v.viewerId); updateRBulk();
+  }
+
+  // ---- Popup chi tiết khách: bình luận, quà, kế hoạch trả lời, câu hỏi / lời giải riêng ----
+  const SEC_LABEL = { opening: 'Mở đầu', card1: 'Lá 1 · Quá khứ', card2: 'Lá 2 · Hiện tại', card3: 'Lá 3 · Tương lai', closing: 'Lời kết', lead: 'Dẫn', present: 'Hiện tại', advice: 'Lời khuyên' };
+  let vCur = null;   // dữ liệu popup đang mở
+  let vDraftCards = null;   // bộ lá Claude vừa bốc cho nháp (chưa lưu)
+  function renderCards(cards, draftNote = '') {
+    $('vCards').innerHTML = cards.map((c) =>
+      `<div class="card ${c.reversed ? 'rev' : ''}"><img src="/assets/tarot/cards/${esc(c.id)}.jpg" alt="">${c.positionLabel ? `<div style="color:var(--gold)">${esc(c.positionLabel)}</div>` : ''}<div>${esc(c.name)}${c.reversed ? ' (ngược)' : ''}</div></div>`).join('')
+      + (draftNote ? `<div class="vwarn" style="align-self:center;max-width:260px">${esc(draftNote)}</div>` : '');
+  }
+  const fmtClock = (ms) => new Date(ms).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  async function openViewer(id) {
+    try { renderViewer(await rpc('tarot.getViewer', { viewerId: id })); $('vModal').classList.add('on'); }
+    catch (e) { toast(e.message, true); }
+  }
+  function closeViewer() { $('vModal').classList.remove('on'); vCur = null; }
+  $('vClose').onclick = closeViewer;
+  $('vModal').addEventListener('click', (ev) => { if (ev.target === $('vModal')) closeViewer(); });
+  document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && vCur) closeViewer(); });
+
+  function renderViewer(d) {
+    vCur = d;
+    const v = d.viewer;
+    $('vAv').className = ''; $('vAv').innerHTML = ''; $('vAv').append(avatar(v, 'av'));
+    $('vName').textContent = v.name;
+    const st = d.status === 'seated' ? '<span class="tag lock">đang trên bệ</span>' : d.status === 'queued' ? `<span class="tag gift">hàng chờ #${d.position}</span>` : '<span class="tag">đang xem, chưa vào hàng</span>';
+    const e = d.entry;
+    $('vMeta').innerHTML = st
+      + (e ? `<span class="tag topic">${esc(topicTag({ ...e, viewerId: v.viewerId, topic: d.plan.topic }))}</span><span class="tag">${e.stars}⭐</span>` : '')
+      + `<span class="tag">💬 ${v.comments}</span><span class="tag ${v.coins ? 'gift' : ''}">${v.coins ? `🎁 đã tặng ${v.coins} xu` : 'chưa tặng quà'}</span>`
+      + (v.firstAt ? `<span class="tag">vào lúc ${fmtClock(v.firstAt)}</span>` : '');
+    // Lịch sử
+    $('vHistCount').textContent = d.history.length ? `${d.history.length} mục gần nhất` : '';
+    $('vHist').innerHTML = d.history.length ? d.history.map((h) => {
+      const what = h.kind === 'comment' ? `<span>${esc(h.text || '')}</span>`
+        : h.kind === 'gift' ? `<span class="gift">🎁 ${esc(h.giftName || 'Quà')} · ${h.coins} xu</span>` : '<span class="muted">vào phòng</span>';
+      const k = h.kind === 'comment' ? 'bình luận' : h.kind === 'gift' ? 'tặng quà' : 'vào phòng';
+      return `<div><time>${fmtClock(h.at)}</time><span class="k">${k}</span>${what}</div>`;
+    }).join('') : '<div class="muted">Chưa có bình luận hay quà nào (trong 60 phút qua).</div>';
+    // Kế hoạch
+    const p = d.plan;
+    vDraftCards = null;
+    const srcTxt = p.aiMode && p.source !== 'seated' ? ['lock', 'phiên riêng · Claude soạn']
+      : { seated: ['lock', 'đang đọc'], reserved: ['gift', 'đã giữ bài'], preview: ['', 'dự kiến, chưa giữ bài'], none: ['', 'chưa có'] }[p.source] || ['', p.source];
+    $('vSource').innerHTML = `<span class="tag ${srcTxt[0]}" style="text-transform:none">${srcTxt[1]}</span>`;
+    $('vPlanInfo').innerHTML = !p.cards.length ? 'Chưa xác định được lá (chưa có dữ liệu sheet).'
+      : p.aiMode ? `Chủ đề <b style="color:var(--text)">${esc(p.topicLabel || '')}</b> · 3 lá · <b style="color:var(--gold)">phiên riêng</b>: bộ lá và lời do Claude soạn theo câu hỏi, không dùng sheet.`
+      : `Chủ đề <b style="color:var(--text)">${esc(p.topicLabel || '')}</b> · ${p.type === 'single' ? '1 lá' : '3 lá'}${p.sheetRow ? ` · dòng ${p.sheetRow} trong sheet` : ''}${p.fallback ? ` · (chủ đề “${esc(p.fallback)}” chưa có tab, đọc tạm tab này)` : ''}`
+        + (p.source === 'preview' ? '<br>Lá có thể đổi nếu người khác cùng chủ đề vào bệ trước. Bấm “Lưu & giữ bài” để cố định.' : '')
+        + '<br>Khách có câu hỏi đặc biệt? Ghi câu hỏi rồi bấm “Nhờ Claude viết”: Claude bốc bộ lá mới và soạn riêng, không dựa vào sheet.';
+    renderCards(p.cards);
+    // Ô sửa
+    const custom = d.custom || { question: '', lines: {} };
+    const canEdit = d.status === 'queued' && p.cards.length > 0;
+    const topicOpts = (d.topics || []).map((t) => `<option value="${esc(t.topic)}" ${t.topic === p.topic ? 'selected' : ''}>${esc((t.code ? t.code + ' · ' : '') + t.label)}</option>`).join('');
+    let html = `<label><span class="lbl">Câu hỏi của khách (để trống = nói chủ đề như bình thường)</span><input id="vQ" maxlength="150" placeholder="vd. Người ấy có còn nghĩ đến mình không?" value="${esc(custom.question || '')}"></label>`
+      + `<label><span class="lbl">Chủ đề (tự đổi theo câu hỏi khi bấm Nhờ Claude; đổi tay ở đây thì bộ lá đổi theo)</span><select id="vTopic">${topicOpts}</select></label>`;
+    for (const k of p.sections) {
+      const val = custom.lines?.[k] ?? p.sheet[k] ?? '';
+      html += `<label><span class="lbl">${esc(SEC_LABEL[k] || k)}${custom.lines?.[k] ? '<span class="tag lock">đã sửa</span>' : ''}</span><textarea data-k="${k}" rows="${Math.min(5, Math.max(2, Math.ceil(val.length / 90)))}" maxlength="800">${esc(val)}</textarea></label>`;
+    }
+    $('vSec').innerHTML = html;
+    const mark = () => {
+      $('vQ').classList.toggle('changed', !!$('vQ').value.trim());
+      $('vSec').querySelectorAll('textarea').forEach((t) => t.classList.toggle('changed', t.value.trim() !== (p.sheet[t.dataset.k] || '').trim()));
+    };
+    $('vSec').querySelectorAll('input,textarea').forEach((x) => { x.disabled = !canEdit; x.oninput = mark; });
+    $('vTopic').disabled = !canEdit;
+    $('vTopic').onchange = run(async () => {
+      const q = $('vQ').value;   // giữ câu hỏi đang gõ
+      const nd = await rpc('tarot.setTopic', { viewerId: v.viewerId, topic: $('vTopic').value });
+      renderViewer(nd); $('vQ').value = q; $('vQ').dispatchEvent(new Event('input'));
+      refreshQueue(); toast(`Đã đổi chủ đề sang ${nd.plan.topicLabel}, bộ lá mới đã được giữ`);
+    });
+    mark();
+    $('vSave').disabled = !canEdit; $('vReset').disabled = !canEdit || !d.custom;
+    $('vAi').disabled = !canEdit || !d.ai;
+    $('vAiInfo').textContent = !d.ai ? 'Chưa bật: không thấy Claude Code trên máy (hoặc ANTHROPIC_API_KEY trong .env)' : canEdit ? 'Viết câu hỏi ở ô trên rồi bấm. Nháp điền vào các ô, bạn đọc lại rồi mới Lưu.' : '';
+    $('vJoin').style.display = d.status === 'watching' ? '' : 'none';
+    const warn = [];
+    if (d.status === 'seated') warn.push('Khách đang ngồi trên bệ: phiên đang đọc không sửa được nữa.');
+    if (d.status === 'watching') warn.push('Khách chưa vào hàng chờ. Bấm “Mời vào hàng” rồi mới viết lời giải riêng được.');
+    if (d.custom?.cardsChanged) warn.push('Bộ lá đã đổi sau khi bạn viết lời riêng (khách vừa đổi chủ đề). Hãy đọc lại lá mới và sửa cho khớp.');
+    $('vWarn').style.display = warn.length ? '' : 'none'; $('vWarn').innerHTML = warn.map(esc).join('<br>');
+    $('vSaveInfo').textContent = d.custom ? `Đã lưu lúc ${fmtClock(d.custom.at)}` : '';
+    // Toàn bộ lời sẽ nói (khi kịch bản đã dựng)
+    const sp = p.speech;
+    $('vSpeechBox').style.display = sp ? '' : 'none';
+    if (sp) $('vSpeech').innerHTML = `<b>Lúc mời vào bệ</b><ol>${sp.CALLING.map((l) => `<li>${esc(l)}</li>`).join('')}</ol><b>Lúc đọc bài</b><ol>${sp.READING.map((l) => `<li>${esc(l)}</li>`).join('')}</ol>`;
+  }
+  $('vSave').onclick = run(async () => {
+    if (!vCur) return;
+    const question = $('vQ').value.trim();
+    // Phiên riêng (nháp Claude vừa bốc lá, hoặc đã lưu trước đó): gửi đủ lời + bộ lá, không so với sheet.
+    const own = vDraftCards || (vCur.plan.aiMode ? vCur.plan.cards : null);
+    const lines = {};
+    $('vSec').querySelectorAll('textarea').forEach((t) => {
+      const v = t.value.trim();
+      if (v && (own || v !== (vCur.plan.sheet[t.dataset.k] || '').trim())) lines[t.dataset.k] = v;
+    });
+    if (own && !question) throw new Error('Phiên riêng cần câu hỏi của khách');
+    const d = await rpc('tarot.setCustom', { viewerId: vCur.viewer.viewerId, question, lines, ...(own ? { cards: own.map((c) => ({ id: c.id, reversed: c.reversed })) } : {}) });
+    renderViewer(d); refreshQueue();
+    toast(d.plan.aiMode ? `Đã lưu phiên riêng cho ${d.viewer.name}: bộ lá + lời Claude soạn, giọng đọc đang được tạo sẵn`
+      : d.custom ? `Đã lưu lời riêng cho ${d.viewer.name} (${Object.keys(d.custom.lines).length} phần sửa${d.custom.question ? ' + câu hỏi' : ''}), đã giữ bài` : 'Không có gì khác sheet, giữ nguyên lời trong sheet');
+  });
+  $('vAi').onclick = run(async () => {
+    if (!vCur) return;
+    const question = $('vQ').value.trim();
+    if (!question) { $('vQ').focus(); throw new Error('Nhập câu hỏi của khách trước'); }
+    const viewerId = vCur.viewer.viewerId;
+    const btn = $('vAi'); btn.disabled = true; const old = btn.textContent; btn.textContent = '✨ Claude đang viết…';
+    $('vAiInfo').textContent = 'Thường mất 10–40 giây.';
+    try {
+      const r = await rpc('tarot.aiDraft', { viewerId, question });
+      if (!vCur || vCur.viewer.viewerId !== viewerId) return;   // đã đóng / mở khách khác
+      // Chủ đề có thể vừa đổi: vẽ lại popup, giữ câu hỏi; hiện bộ lá Claude vừa bốc (chưa lưu).
+      if (r.detail) { renderViewer(r.detail); $('vQ').value = question; $('vQ').dispatchEvent(new Event('input')); refreshQueue(); }
+      vDraftCards = r.cards;
+      renderCards(r.cards, 'Bộ lá mới Claude bốc cho câu hỏi này (chưa lưu). Bấm “Lưu & giữ bài” để dùng bộ lá và lời này thay cho sheet.');
+      $('vSource').innerHTML = '<span class="tag" style="text-transform:none">nháp phiên riêng, chưa lưu</span>';
+      $('vSec').querySelectorAll('textarea').forEach((t) => { if (r.lines[t.dataset.k]) { t.value = r.lines[t.dataset.k]; t.rows = Math.min(6, Math.max(2, Math.ceil(t.value.length / 90))); } });
+      $('vSec').querySelector('textarea')?.dispatchEvent(new Event('input'));
+      const notes = [];
+      if (r.topicChanged) notes.push(`đã đổi chủ đề ${r.topicChanged.from} → ${r.topicChanged.to} (theo từ “${r.topicChanged.hits.join('”, “')}”)`);
+      if (r.warnings?.length) notes.push(`còn từ nên tránh: ${r.warnings.join(', ')}`);
+      if (r.blocked?.length) notes.push(`có từ bị chặn ở: ${r.blocked.join(', ')}`);
+      $('vAiInfo').textContent = `Đã điền nháp (${String(r.model || '').replace('claude-', '')} · ${fmtTok(r.usage?.input || 0)} vào · ${fmtTok(r.usage?.output || 0)} ra token). Đọc lại, sửa nếu cần rồi bấm Lưu & giữ bài.` + (notes.length ? ' Lưu ý: ' + notes.join('; ') + '.' : '');
+      renderAiStats(r.stats);
+      toast('Claude đã viết nháp, kiểm tra rồi bấm Lưu');
+    } finally { btn.textContent = old; btn.disabled = false; }
+  });
+  $('vReset').onclick = run(async () => {
+    if (!vCur || !confirm('Bỏ câu hỏi, phiên riêng và mọi phần đã sửa, đọc đúng như sheet?')) return;
+    const d = await rpc('tarot.setCustom', { viewerId: vCur.viewer.viewerId, question: '', lines: {} });
+    renderViewer(d); refreshQueue(); toast('Đã về lời trong sheet');
+  });
+  $('vJoin').onclick = run(async () => {
+    if (!vCur) return;
+    const v = vCur.viewer;
+    await rpc('tarot.simulateComment', { viewerId: v.viewerId, name: v.name, avatar: v.avatar, text: 'xin chào' });
+    toast(`Đã mời ${v.name} vào hàng`); refreshQueue(); refreshRoom();
+    renderViewer(await rpc('tarot.getViewer', { viewerId: v.viewerId }));
+  });
+
+  // ---- Phiên nghỉ ----
+  const BREAK_IDEAS = [
+    ['Xin quà', 'Phần đọc bài xin dừng một chút. Mời 3 bạn may mắn tặng quà để tôi trả lời câu hỏi chi tiết, hoặc bình luận câu hỏi để có cơ hội được xem bài.'],
+    ['Cuối ngày', 'Lại một ngày sắp trôi qua, hỏi thăm mọi người hôm nay có mệt không hay đón được nhiều niềm vui, chúc mọi người nghỉ ngơi nhẹ nhàng.'],
+    ['Mời bình luận', 'Mời mọi người bình luận mã chủ đề 01 đến 05 để vào hàng xem bài, thả tim để phòng ấm hơn.'],
+    ['Chào người mới', 'Chào những bạn vừa vào phòng, giới thiệu ngắn phòng xem tarot giải trí và cách bình luận để được xem bài.']
+  ];
+  BREAK_IDEAS.forEach(([label, idea]) => {
+    const b = document.createElement('button'); b.textContent = label; b.title = idea;
+    b.onclick = () => { $('brkIdea').value = idea; };
+    $('brkIdeas').append(b);
+  });
+  const fmtTok = (n) => (n >= 1000 ? (n / 1000).toFixed(1).replace('.', ',') + 'k' : String(n));
+  function renderBreak(b, phase) {
+    $('brkCancel').disabled = !b;
+    $('brkGo').disabled = phase === 'BREAK';
+    if (!b) { $('brkState').textContent = ''; $('brkInfo').textContent = 'Chưa có phiên nghỉ nào đang chờ.'; return; }
+    const voice = { ready: 'giọng đã sẵn sàng', pending: 'đang tạo giọng…', failed: 'tạo giọng lỗi (sẽ chỉ hiện chữ)', none: 'không có giọng' }[b.ttsStatus] || b.ttsStatus;
+    $('brkState').textContent = b.playing ? 'ĐANG PHÁT' : 'đã lên lịch';
+    $('brkState').style.color = b.playing ? 'var(--gold)' : 'var(--ok)';
+    $('brkInfo').textContent = b.playing ? `Nữ tư tế đang nói (${b.lines.length} câu) · ${voice}.`
+      : b.after === 0 ? `Phát ngay sau phiên đang đọc (hoặc ngay nếu phòng rảnh) · ${b.lines.length} câu · ${voice}.`
+      : `Phát sau khi đọc xong cho ${b.after} khách nữa (đã xong ${b.done}/${b.after}) · ${b.lines.length} câu · ${voice}.`;
+  }
+  $('brkAi').onclick = run(async () => {
+    const idea = $('brkIdea').value.trim();
+    if (!idea) { $('brkIdea').focus(); throw new Error('Ghi ý cho đoạn thoại trước (hoặc bấm một Ý nhanh)'); }
+    const btn = $('brkAi'); btn.disabled = true; const old = btn.textContent; btn.textContent = '✨ Claude đang viết…';
+    try {
+      const r = await rpc('tarot.aiBreak', { idea });
+      $('brkText').value = r.text;
+      const notes = [];
+      if (r.warnings?.length) notes.push(`còn từ nên tránh: ${r.warnings.join(', ')}`);
+      if (r.blocked) notes.push('có từ bị chặn, sửa trước khi lên lịch');
+      $('brkInfo').textContent = `Claude đã viết (${fmtTok(r.usage?.input || 0)} vào · ${fmtTok(r.usage?.output || 0)} ra token). Đọc lại, sửa nếu cần rồi bấm Chuẩn bị.` + (notes.length ? ' Lưu ý: ' + notes.join('; ') + '.' : '');
+      renderAiStats(r.stats);
+    } finally { btn.textContent = old; btn.disabled = false; }
+  });
+  $('brkGo').onclick = run(async () => {
+    const text = $('brkText').value.trim();
+    if (!text) { $('brkText').focus(); throw new Error('Chưa có lời cho phiên nghỉ'); }
+    const r = await rpc('tarot.scheduleBreak', { text, after: Number($('brkAfter').value) });
+    renderBreak(r.break, state?.phase);
+    toast(r.break.after === 0 ? 'Phiên nghỉ sẽ phát ngay sau phiên đang đọc' : `Phiên nghỉ sẽ phát sau ${r.break.after} khách nữa`);
+  });
+  $('brkCancel').onclick = run(async () => {
+    if (!confirm(state?.phase === 'BREAK' ? 'Dừng phiên nghỉ đang phát và mời khách tiếp?' : 'Hủy phiên nghỉ đang chờ?')) return;
+    await rpc('tarot.cancelBreak', {}); toast('Đã hủy phiên nghỉ');
+  });
+
+  // ---- Claude: model + token đã dùng ----
+  function renderAiStats(s) {
+    if (!s) return;
+    const lines = Object.entries(s.byModel || {}).map(([m, x]) => `${m.replace('claude-', '')}: ${x.calls} lần`).join(' · ');
+    $('aiStats').textContent = s.calls ? `Từ lúc server chạy: ${s.calls} lần · ${fmtTok(s.input)} vào · ${fmtTok(s.output)} ra token${lines ? ' (' + lines + ')' : ''}` : 'Chưa nhờ Claude lần nào từ lúc server chạy.';
+  }
+  async function refreshAi() {
+    try {
+      const c = await rpc('tarot.aiConfig', {});
+      if (!c.enabled) { $('aiState').textContent = 'chưa bật'; $('aiModel').disabled = true; $('aiStats').textContent = 'Không thấy Claude Code trên máy (hoặc ANTHROPIC_API_KEY).'; return; }
+      $('aiState').textContent = c.stats?.engine === 'cli' ? 'dùng tài khoản Claude đang đăng nhập' : 'dùng khóa API';
+      if (document.activeElement !== $('aiModel')) $('aiModel').value = c.model;
+      renderAiStats(c.stats);
+    } catch (e) { $('aiStats').textContent = e.message; }
+  }
+  $('aiModel').onchange = run(async () => { const c = await rpc('tarot.aiConfig', { model: $('aiModel').value }); renderAiStats(c.stats); toast(`Claude sẽ dùng ${c.model === 'sonnet' ? 'Sonnet 5.5' : 'Opus 5.5'}`); });
+  refreshAi(); setInterval(refreshAi, 30000);
+
+  // ---- Thao tác hàng loạt ----
+  async function forEachSel(set, list, fn) {
+    const items = list.filter((x) => set.has(x.viewerId));
+    for (const x of items) { try { await fn(x); } catch (_) { /* bỏ qua người lỗi, làm tiếp */ } }
+    return items.length;
+  }
+  $('qAll').onchange = () => { qShown.forEach((id) => ($('qAll').checked ? qSel.add(id) : qSel.delete(id))); renderQueue(); };
+  $('rAll').onchange = () => { rShown.forEach((id) => ($('rAll').checked ? rSel.add(id) : rSel.delete(id))); renderRoom(); };
+  $('qBulkClear').onclick = () => { qSel.clear(); renderQueue(); };
+  $('rBulkClear').onclick = () => { rSel.clear(); renderRoom(); };
+  $('qBulkDel').onclick = run(async () => {
+    if (!qSel.size || !confirm(`Xóa ${qSel.size} người đã chọn khỏi hàng chờ?`)) return;
+    const n = await forEachSel(qSel, fullQueue || [], (e) => rpc('tarot.remove', { viewerId: e.viewerId }));
+    qSel.clear(); toast(`Đã xóa ${n} người khỏi hàng chờ`); refreshQueue(); refreshRoom();
+  });
+  $('qBulkStar').onclick = run(async () => {
+    const n = await forEachSel(qSel, fullQueue || [], (e) => rpc('tarot.simulateGift', { viewerId: e.viewerId, name: e.name, avatar: e.avatar, coins: 1, giftName: 'Rose' }));
+    toast(`Đã tặng hoa hồng cho ${n} người`); refreshQueue();
+  });
+  $('rBulkDel').onclick = run(async () => {
+    if (!rSel.size || !confirm(`Xóa ${rSel.size} người đã chọn khỏi danh sách phòng (và khỏi hàng chờ nếu đang trong hàng)?`)) return;
+    const n = await forEachSel(rSel, roomData?.viewers || [], (v) => rpc('tarot.removeRoom', { viewerId: v.viewerId }));
+    rSel.clear(); toast(`Đã xóa ${n} người`); refreshQueue(); refreshRoom();
+  });
+  $('rBulkJoin').onclick = run(async () => {
+    const n = await forEachSel(rSel, (roomData?.viewers || []).filter((v) => v.status === 'watching'),
+      (v) => rpc('tarot.simulateComment', { viewerId: v.viewerId, name: v.name, avatar: v.avatar, text: 'xin chào' }));
+    rSel.clear(); toast(n ? `Đã mời ${n} người vào hàng` : 'Người đã chọn đều đang trong hàng rồi'); refreshQueue(); refreshRoom();
+  });
+  $('rBulkGift').onclick = run(async () => {
+    const n = await forEachSel(rSel, roomData?.viewers || [], (v) => rpc('tarot.simulateGift', { viewerId: v.viewerId, name: v.name, avatar: v.avatar, coins: 1, giftName: 'Rose' }));
+    toast(`Đã tặng hoa hồng cho ${n} người`); refreshQueue(); refreshRoom();
+  });
+  async function refreshRoom() { try { roomData = await rpc('tarot.getRoom'); renderRoom(); } catch (_) { /* giữ bản cũ */ } }
+  setInterval(refreshRoom, 5000);
+  refreshRoom();
+  $('roomWatchOnly').onchange = renderRoom;
+  $('removeIdle').onclick = run(async () => {
+    const n = (fullQueue || []).filter((e) => isIdle(e) && !e.locked).length;
+    if (!n || !confirm(`Xóa ${n} người đã im lặng quá ${fmtIdle(idleAfter)} khỏi hàng chờ?`)) return;
+    const r = await rpc('tarot.removeIdle', {});
+    toast(`Đã xóa ${r.removed} người không hoạt động`);
+    refreshQueue();
+  });
+
   // ---- Cấu hình nhanh ----
   const CFG_FIELDS = [
     ['phaseSec.CALLING', 'Mời khách (s)'], ['phaseSec.SHUFFLING', 'Xào bài (s)'], ['phaseSec.DRAWING', 'Rút bài (s)'],
     ['phaseSec.REVEALING', 'Lật bài (s)'], ['phaseSec.FAREWELL', 'Tạm biệt (s)'], ['phaseSec.INTERMISSION', 'Đếm ngược (s)'],
-    ['readingMaxSec', 'Đọc tối đa (s)'], ['commentStars', 'Sao khi bình luận'], ['starsPerCoin', 'Sao mỗi xu'], ['defaultCards', 'Số lá mỗi phiên']
+    ['readingMaxSec', 'Đọc tối đa (s)'], ['idleAfterSec', 'Báo "im lặng" sau (s)'], ['commentStars', 'Sao khi bình luận'], ['starsPerCoin', 'Sao mỗi xu'], ['defaultCards', 'Số lá mỗi phiên']
   ];
   const getPath = (o, p) => p.split('.').reduce((x, k) => x?.[k], o);
   function renderCfg() {
@@ -333,7 +945,7 @@
       if (b) (patch[a] ||= {})[b] = Number(inp.value); else patch[a] = Number(inp.value);
     });
     const r = await rpc('tarot.setConfig', { config: patch });
-    cfg = r.config; renderCfg(); toast('Đã áp dụng cấu hình');
+    cfg = r.config; renderCfg(); toast('Đã áp dụng cấu hình'); refreshQueue();
   });
 
   // ---- Nút điều khiển ----
@@ -358,12 +970,43 @@
     const b = ev.target.closest('button'); if (!b) return;
     const g = GIFTS[b.dataset.i]; const name = simName();
     const r = await rpc('tarot.simulateGift', { name, coins: g.coins, giftName: g.name });
-    toast(r.seated ? `${name} đang ngồi ghế, quà không đổi thứ tự` : `${name} tặng ${g.vi}: +${r.stars ?? '?'}⭐`);
+    toast(r.seated ? `${name} đang ngồi ghế, quà không đổi thứ tự` : `${name} tặng ${g.vi}: +${r.stars ?? '?'}⭐ · chủ đề ${r.topicLabel || r.topic}`);
   });
   $('simCustomGift').onclick = run(async () => {
     const coins = Number($('simCoins').value); if (!(coins >= 1)) return toast('Nhập số xu ≥ 1', true);
     const name = simName(); const r = await rpc('tarot.simulateGift', { name, coins, giftName: 'Gift' });
     toast(`${name} tặng ${coins} xu: +${r.stars ?? '?'}⭐`);
+  });
+  $('bulkEnters').onclick = run(async () => { for (let i = 0; i < 5; i++) await rpc('tarot.simulateEnter', { name: pick(NAMES) + ' ' + Math.floor(Math.random() * 90 + 10) }); toast('Đã thêm 5 người vào phòng'); });
+  // Mã nhanh: bấm để điền vào ô bình luận
+  function renderCodeChips() {
+    const box = $('codeChips'); box.querySelectorAll('button').forEach((b) => b.remove());
+    const codes = Object.entries(cfg?.commentTopicCodes || { '01': { label: 'Tổng Quan' }, '02': { label: 'Tình Yêu' }, '03': { label: 'Tài Chính' }, '04': { label: 'Sự Nghiệp' }, '05': { label: 'Học Tập' } });
+    for (const [code, info] of codes) {
+      const b = document.createElement('button'); b.textContent = `${code} ${info.label}`;
+      b.onclick = () => { $('simText').value = code; };
+      box.append(b);
+    }
+  }
+  renderCodeChips();
+  $('genRun').onclick = run(async () => {
+    const count = Math.max(1, Math.min(50, Number($('genCount').value) || 1));
+    const mode = $('genMode').value; const gift = $('genGift').checked;
+    const codes = Object.keys(cfg?.commentTopicCodes || { '01': 1, '02': 1, '03': 1, '04': 1, '05': 1 });
+    let joined = 0;
+    for (let i = 0; i < count; i++) {
+      const name = pick(NAMES) + ' ' + Math.floor(Math.random() * 90 + 10);
+      const viewerId = 'sim:' + Date.now().toString(36) + ':' + i;
+      await rpc('tarot.simulateEnter', { name, viewerId });
+      if (mode !== 'enter') {
+        const text = mode === 'random' ? pick(codes) : mode === 'text' ? ($('simText').value || '01') : pick(TOPICS);
+        const r = await rpc('tarot.simulateComment', { name, viewerId, text });
+        if (r?.joined) joined++;
+      }
+      if (gift) await rpc('tarot.simulateGift', { name, viewerId, coins: 1, giftName: 'Rose' });
+    }
+    toast(mode === 'enter' ? `Đã thêm ${count} người vào phòng` : `Đã tạo ${count} khách, ${joined} người vào hàng`);
+    refreshQueue(); refreshRoom();
   });
   $('bulkComments').onclick = run(async () => { for (let i = 0; i < 5; i++) await rpc('tarot.simulateComment', { name: pick(NAMES) + ' ' + Math.floor(Math.random() * 90 + 10), text: pick(TOPICS) }); toast('Đã thêm 5 khách'); });
   $('bulkGifts').onclick = run(async () => {
@@ -386,7 +1029,7 @@
       let m; try { m = JSON.parse(ev.data); } catch { return; }
       const p = m.params;
       if (m.method === 'tarot.state') {
-        state = p; offset = p.serverTime - Date.now(); renderState();
+        state = p; offset = p.serverTime - Date.now(); renderState(); renderAudio(p.audio); scheduleQueueRefresh();
         if (p.phase !== lastPhase) { if (lastPhase) log(`Pha: ${PHASE_VI[p.phase] || p.phase}${p.seat ? ' – ' + p.seat.name : ''}`); lastPhase = p.phase; }
       } else if (m.method === 'tarot.queue') {
         const who = p.name || p.viewerId || '';
@@ -401,10 +1044,53 @@
 
   // Nạp ban đầu
   run(async () => {
-    state = await rpc('tarot.getState'); offset = state.serverTime - Date.now(); renderState();
-    try { cfg = (await rpc('tarot.setConfig', { config: {} })).config; renderCfg(); } catch (e) { $('cfgForm').innerHTML = `<span class="muted">Cần mã quản trị để xem cấu hình (${esc(e.message)})</span>`; }
+    state = await rpc('tarot.getState'); offset = state.serverTime - Date.now(); renderState(); renderAudio(state.audio); refreshQueue();
+    try { cfg = (await rpc('tarot.setConfig', { config: {} })).config; renderCfg(); renderQueue(); renderCodeChips(); } catch (e) { $('cfgForm').innerHTML = `<span class="muted">Cần mã quản trị để xem cấu hình (${esc(e.message)})</span>`; }
     try { renderTikTok((await rpc('temple.getState')).tiktok); } catch (_) {}
+    try {
+      const gm = await rpc('tarot.giftMenu');
+      gm.menu.forEach((m) => { if (m.topic) topicLabels[m.topic] = m.label; });
+      document.querySelectorAll('#giftButtons button').forEach((b, i) => { const m = gm.menu[i]; if (m) b.querySelector('small').textContent = `${GIFTS[i].coins} xu · ${m.label}`; });
+      renderState();
+    } catch (_) {}
+    loadGiftsSeen();
   })();
+
+  // ---- Quà thật đã thấy: so với 6 quà trong cột quà và với danh mục quà Việt Nam ----
+  let giftCatalog = null; let giftMenu = [];
+  const gkey = (s) => String(s || '').toLowerCase().replace(/\s+/g, ' ').trim();
+  async function loadGiftsSeen() {
+    try {
+      if (!giftCatalog) {
+        try { const c = await (await fetch('/assets/tarot/gift-catalog-vn.json')).json(); giftCatalog = new Map(c.gifts.map((g) => [gkey(g.name), g])); }
+        catch (_) { giftCatalog = new Map(); }
+      }
+      const r = await rpc('tarot.giftsSeen');
+      giftMenu = r.menu || giftMenu;
+      const real = r.gifts.filter((g) => g.giftId !== null && g.giftId !== undefined && g.giftId !== '');
+      const sim = r.gifts.length - real.length;
+      const box = $('giftsSeen');
+      if (!real.length) {
+        box.innerHTML = `<span class="muted">Chưa có quà thật nào từ live${sim ? ` (đang ẩn ${sim} loại quà giả lập)` : ''}. Khi có người tặng, quà hiện ở đây kèm kết quả so với 6 quà trong cột quà và với danh mục quà Việt Nam.</span>`;
+        return;
+      }
+      box.innerHTML = real.map((g) => {
+        const slot = giftMenu.find((m) => gkey(m.name) === gkey(g.giftName));
+        const cat = giftCatalog.get(gkey(g.giftName));
+        const checks = [];
+        if (slot) {
+          checks.push(`<span style="color:var(--ok)">✓ khớp quà slot ${slot.slot} “${esc(slot.name)}” → ${esc(slot.label)}</span>`);
+          if (slot.coins != null && slot.coins !== g.coins) checks.push(`<span style="color:var(--warn)">⚠ giá cấu hình ${slot.coins} xu ≠ nhận ${g.coins} xu</span>`);
+        } else checks.push(`<span style="color:var(--warn)">✗ không khớp quà nào trong cột quà → chủ đề mặc định (${esc(topicLabels[g.topic] || g.topic)})</span>`);
+        if (cat) checks.push(cat.coins === g.coins ? `<span class="muted">danh mục VN: ${cat.coins} xu ✓</span>` : `<span style="color:var(--warn)">danh mục VN: ${cat.coins} xu ≠ nhận ${g.coins}</span>`);
+        else checks.push('<span class="muted">tên này không có trong danh mục VN</span>');
+        const icon = cat?.img ? `<img src="${esc(cat.img)}" alt="" width="34" height="34" style="border-radius:6px;background:#fff;flex:none" referrerpolicy="no-referrer">` : '<span style="width:34px;flex:none"></span>';
+        return `<div style="display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px dashed var(--line)">${icon}<div style="min-width:0"><b>${esc(g.giftName)}</b> · giftId <b>${esc(g.giftId)}</b> · ${g.coins} xu · ${g.count} lần<br>${checks.join(' · ')}</div></div>`;
+      }).join('') + (sim ? `<div class="muted small-text" style="margin-top:6px">Đang ẩn ${sim} loại quà giả lập (không có giftId).</div>` : '');
+    } catch (_) { /* giữ nội dung cũ */ }
+  }
+  $('giftsRefresh').onclick = loadGiftsSeen;
+  setInterval(loadGiftsSeen, 8000);
   connect();
 })();
 </script>

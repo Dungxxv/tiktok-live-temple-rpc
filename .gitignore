@@ -12,3 +12,13 @@ public/assets/bg_chant.m4a
 # Tarot: clip video nặng và manifest sinh bởi scripts/make-placeholder-clips.mjs; trạng thái chạy
 public/assets/tarot/clips/*.mp4
 public/assets/tarot/clips/manifest.json
+.venv/
+
+# Mẫu giọng thật để nhân bản giọng (riêng tư, chép tay sang máy khác) + nhạc nền cũ dự phòng
+data/tarot/voice/*.wav
+public/assets/tarot/audio/bgm-old.ogg
+
+# Khóa bí mật (ANTHROPIC_API_KEY, ADMIN_TOKEN...) — không commit
+.env
+.env.*
+!.env.example

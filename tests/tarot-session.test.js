@@ -301,6 +301,7 @@ describe('tarot-lobby', () => {
 describe('tarot-session: chuyển khách (INTERMISSION, đếm ngược trên màn hình)', () => {
   const over = { phaseSec: { CALLING: 5, SHUFFLING: 5, DRAWING: 5, REVEALING: 5, FAREWELL: 5, INTERMISSION: 5 } };
   const runToFarewellEnd = (s, clock) => {
+    clock.advance(5000);    // đếm ngược trước người đầu tiên (INTERMISSION từ IDLE)
     clock.advance(15000);   // CALLING + DRAWING + REVEALING (bỏ SHUFFLING mặc định)
     const st = s.getState();
     clock.advance(st.phaseEndsAt - st.phaseStartedAt);   // READING
@@ -341,6 +342,18 @@ describe('tarot-session: chuyển khách (INTERMISSION, đếm ngược trên m�
     expect(s.getState().seat.viewerId).toBe('b');
   });
 
+  it('người đầu tiên lúc ghế rảnh cũng được đếm ngược trước khi vào bệ, và bị khóa ở ô 1 (quà không chen được)', () => {
+    const { s, clock, join, queue } = setup(over);
+    join('a');
+    expect(s.getPhase()).toBe('INTERMISSION');
+    expect(s.getState().seat).toBeNull();
+    expect(s.getState().queue[0]).toMatchObject({ viewerId: 'a', locked: true });
+    expect(queue.getLockedId()).toBe('a');
+    clock.advance(5000);
+    expect(s.getPhase()).toBe('CALLING');
+    expect(s.getState().seat.viewerId).toBe('a');
+  });
+
   it('tắt phiên trong lúc đếm ngược: hết giờ thì về IDLE, không gọi ai', () => {
     const { s, clock, join } = setup(over);
     join('a'); join('b');
@@ -349,5 +362,155 @@ describe('tarot-session: chuyển khách (INTERMISSION, đếm ngược trên m�
     clock.advance(5000);
     expect(s.getPhase()).toBe('IDLE');
     expect(s.getState().seat).toBeNull();
+  });
+});
+
+describe('tarot-session: chờ giọng đọc (ttsWaitMaxSec) và bốc bài sớm (drawOnCalling)', () => {
+  // TTS giả điều khiển tay: prepare() trả về promise, test tự quyết lúc nào xong.
+  function manualTts() {
+    const calls = [];
+    return {
+      calls,
+      prepare(lines) { return new Promise((resolve, reject) => calls.push({ lines, resolve, reject })); },
+      finish(i = calls.length - 1) { const c = calls[i]; c.resolve({ urls: c.lines.map((_, k) => `/tts-cache/x${k}.wav`), durations: c.lines.map(() => 3) }); },
+      fail(i = calls.length - 1) { calls[i].reject(new Error('boom')); }
+    };
+  }
+  const flush = () => new Promise((r) => setTimeout(r, 0));
+  const over = { ttsWaitMaxSec: 20 };   // mặc định bỏ SHUFFLING: CALLING 5 → DRAWING 5 → REVEALING 5
+
+  it('drawOnCalling + số lá tối đa: bốc bài và bắt đầu TTS ngay ở CALLING', async () => {
+    const tts = manualTts();
+    const { s, join } = setup({ drawOnCalling: true, defaultCards: 3, maxCardsPerSession: 3 }, tts);
+    join('a');
+    await flush();
+    expect(s.getPhase()).toBe('CALLING');
+    expect(s.getState().cards.length).toBe(3);
+    expect(tts.calls.length).toBe(1);
+  });
+
+  it('drawOnCalling nhưng còn có thể được thêm lá nhờ quà: vẫn chờ tới DRAWING mới bốc', () => {
+    const tts = manualTts();
+    const { s, clock, join } = setup({ drawOnCalling: true, defaultCards: 1, maxCardsPerSession: 3 }, tts);
+    join('a');
+    expect(s.getState().cards).toEqual([]);
+    clock.advance(5000);
+    expect(s.getPhase()).toBe('DRAWING');
+    expect(s.getState().cards.length).toBe(1);
+  });
+
+  it('TTS chưa xong khi hết REVEALING: giữ REVEALING, xong lúc nào vào READING lúc đó (đọc trọn từ câu đầu)', async () => {
+    const tts = manualTts();
+    const { s, clock, join } = setup(over, tts);
+    join('a');
+    clock.advance(15000);                    // hết CALLING + DRAWING + REVEALING
+    await flush();
+    expect(s.getPhase()).toBe('REVEALING');
+    const st = s.getState();
+    expect(st.phaseEndsAt - clock.now()).toBe(20000);   // báo client: chờ tối đa 20 giây
+    clock.advance(4000);
+    tts.finish();
+    await flush();
+    expect(s.getPhase()).toBe('READING');
+    expect(s.getState().reading.ready).toBe(true);
+  });
+
+  it('TTS quá lâu: hết ttsWaitMaxSec thì vẫn vào READING (đọc bằng phụ đề)', () => {
+    const tts = manualTts();
+    const { s, clock, join } = setup(over, tts);
+    join('a');
+    clock.advance(15000);
+    clock.advance(19999);
+    expect(s.getPhase()).toBe('REVEALING');
+    clock.advance(1);
+    expect(s.getPhase()).toBe('READING');
+    expect(s.getState().reading.ready).toBe(false);
+  });
+
+  it('TTS lỗi: không chờ, vào READING đúng giờ', async () => {
+    const tts = manualTts();
+    const { s, clock, join } = setup(over, tts);
+    join('a');
+    clock.advance(5000);                     // DRAWING: gọi prepare
+    await flush();
+    tts.fail();
+    await flush();
+    clock.advance(10000);                    // hết DRAWING + REVEALING
+    expect(s.getPhase()).toBe('READING');
+  });
+
+  it('TTS xong trước khi hết REVEALING: không chờ thêm', async () => {
+    const tts = manualTts();
+    const { s, clock, join } = setup(over, tts);
+    join('a');
+    clock.advance(5000);
+    await flush();
+    tts.finish();
+    await flush();
+    clock.advance(10000);
+    expect(s.getPhase()).toBe('READING');
+  });
+
+  it('ttsWaitMaxSec = 0 (mặc định): hành vi cũ, không chờ', () => {
+    const tts = manualTts();
+    const { s, clock, join } = setup({}, tts);
+    join('a');
+    clock.advance(15000);
+    expect(s.getPhase()).toBe('READING');
+  });
+});
+
+describe('tarot-session: chờ người đầu tiên (firstJoinGraceSec)', () => {
+  it('người đầu vào lúc rảnh: chờ 5s mới lên ghế', () => {
+    const { s, clock, join } = setup({ firstJoinGraceSec: 5 });
+    join('a');
+    expect(s.getPhase()).toBe('IDLE');
+    clock.advance(4900);
+    expect(s.getPhase()).toBe('IDLE');
+    clock.advance(200);
+    expect(s.getPhase()).toBe('CALLING');
+    expect(s.getState().seat.viewerId).toBe('a');
+  });
+
+  it('trong lúc chờ có người tặng quà: người quà lên ghế ngay', () => {
+    const { s, clock, queue, join } = setup({ firstJoinGraceSec: 5, queueOrder: 'lanes' });
+    join('a');
+    clock.advance(2000);
+    queue.boost(v('b'), 100, clock.now());
+    s.kick();
+    expect(s.getPhase()).toBe('CALLING');
+    expect(s.getState().seat.viewerId).toBe('b');
+  });
+
+  it('firstJoinGraceSec = 0: mời ngay như cũ', () => {
+    const { s, join } = setup({ firstJoinGraceSec: 0 });
+    join('a');
+    expect(s.getPhase()).toBe('CALLING');
+  });
+});
+
+describe('tarot-session: xem xong đẩy về cuối hàng (requeueAfterSession)', () => {
+  // Thứ tự khách được mời lên ghế trong ~3 phút giả lập (clock giả, không chờ thật).
+  const order = (over, ids, sec = 600) => {
+    const { s, clock, join, events } = setup(over);
+    ids.forEach(join);
+    for (let t = 0; t < sec * 2; t++) clock.advance(500);
+    return events.filter(([n]) => n === 'session.start').map(([, p]) => p.viewerId);
+  };
+
+  it('còn người chờ: người vừa xem xong về cuối hàng (a, b, c, rồi a lại)', () => {
+    expect(order({ requeueAfterSession: true, idleAfterSec: 100000 }, ['a', 'b', 'c']).slice(0, 5)).toEqual(['a', 'b', 'c', 'a', 'b']);
+  });
+
+  it('tắt cấu hình: mỗi người một lần', () => {
+    expect(order({ requeueAfterSession: false }, ['a', 'b', 'c'])).toEqual(['a', 'b', 'c']);
+  });
+
+  it('một mình thì không bị xếp lại', () => {
+    expect(order({ requeueAfterSession: true, idleAfterSec: 100000 }, ['a'])).toEqual(['a']);
+  });
+
+  it('khách im quá idleAfterSec thì không xếp lại', () => {
+    expect(order({ requeueAfterSession: true, idleAfterSec: 1 }, ['a', 'b'])).toEqual(['a', 'b']);
   });
 });

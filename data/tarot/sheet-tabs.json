@@ -1,0 +1,12 @@
+{
+  "_note": "Tab nào trong Google Sheet 'Data bài' được đọc và là loại gì. Chủ đề lấy theo tên tab. Tab không có ở đây (vd. 'Thư viện') bị bỏ qua. Đổi tên tab trong sheet thì sửa tên ở đây rồi chạy: node scripts/sync-tarot-sheet.mjs",
+  "sheetId": "10OQDmK9Q_tyJ8Qjld2vdSobDGxrTLPCn4IvphR9FQtE",
+  "tabs": {
+    "Bốc 1 lá": { "type": "single" },
+    "Bốc 3 lá chủ đề tổng quan": { "type": "triple", "topic": "overview" },
+    "Bốc 3 lá chủ đề tình yêu": { "type": "triple", "topic": "love" },
+    "Bốc 3 lá chủ đề sự nghiệp": { "type": "triple", "topic": "career" },
+    "Bốc 3 lá chủ đề tài chính": { "type": "triple", "topic": "finance" },
+    "Bốc 3 lá chủ đề học tập": { "type": "triple", "topic": "study" }
+  }
+}
